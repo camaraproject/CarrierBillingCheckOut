@@ -1,0 +1,807 @@
+openapi: 3.0.3
+info:
+  title: Checkout
+  description: Service Enabling Payments against OB Carrier Billing Systems
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: project-email@sample.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.0 - DRAFT
+externalDocs:
+  description: Product documentation at Camara
+  url: https://github.com/camaraproject/
+security:
+  - oAuth2ClientCredentials: []
+servers:
+  - url: "{apiRoot}/{basePath}"
+    variables:
+      apiRoot:
+        default: http://localhost:9091
+        description: API root
+      basePath:
+        default: checkout/v0
+        description: Base path for the Checkout API
+paths:
+  /purchases:
+    post:
+      tags:
+        - Purchases
+      summary: Creates a new purchase
+      description: Creates a new Purchase for a given payable
+      operationId: createPurchase
+      requestBody:
+        description: Creates a new purchase
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePurchase"
+        required: true
+      callbacks:
+        notifications:
+          "{$request.body#/notificationUrl}/notifications":
+            $ref: "#/paths/~1notifications"
+      responses:
+        "201":
+          description: Purchase created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PurchaseCreated"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              examples:
+                Generic400:
+                  summary: Schema validation failed
+                  value: 
+                    code: INVALID_ARGUMENT
+                    message: "Schema validation failed at  ..."
+                PayableRequired:
+                  summary: Payable is required
+                  value: 
+                    code: INVALID_ARGUMENT
+                    message: "Expected property is missing: payable"
+                PayableTypeRequired:
+                  summary: Payable type is required
+                  value: 
+                    code: INVALID_ARGUMENT
+                    message: "Expected property is missing: payable.type"
+                MerchantRequired:
+                  summary: Merchant is required
+                  value: 
+                    code: INVALID_ARGUMENT
+                    message: "Expected property is missing: merchant"
+                MerchantInfoRequired:
+                  summary: Merchant info is required
+                  value: 
+                    code: INVALID_ARGUMENT
+                    message: "Expected property in merchant info is missing: ..."
+                OrderRequired:
+                  summary: Order is required
+                  value: 
+                    code: INVALID_ARGUMENT
+                    message: "Expected property is missing: order"
+                OrderInfoRequired:
+                  summary: Order info is required
+                  value: 
+                    code: INVALID_ARGUMENT
+                    message: "Expected property in order info is missing: ..."
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              examples:
+                Generic403:
+                  summary: Forbidden
+                  value: 
+                    code: FORBIDDEN
+                    message: "Operation not allowed: ..."
+                PSD2TransactionAmountOverpassed:
+                  summary: Purchase amount overpassed according to PSD2 regulation
+                  value: 
+                    code: CHECKOUT.PURCHASE_AMOUNT_OVERPASSED
+                    message: "Purchase Amount overpasses PSD2 regulation"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
+  /purchases/{purchase_id}:
+    get:
+      tags:
+        - Purchases
+      summary: Retrieve Purchase Information
+      operationId: getPurchaseInfo
+      description: Get Purchase Information of a given payable
+      parameters:
+        - name: purchase_id
+          in: path
+          description: Purchase ID that was obtained from the createPurchase operation
+          required: true
+          schema:
+            $ref: "#/components/schemas/PurchaseId"
+      responses:
+        "200":
+          description: Contains information about a given purchase
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PurchaseInfo"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Generic403"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
+  /purchases/{purchase_id}/payment/prepare:
+    post:
+      tags:
+        - Payments
+      summary: Creates a new Payment
+      description: Creates a new Payment Procedure for a given payable
+      operationId: preparePayment
+      parameters:
+        - name: purchase_id
+          in: path
+          description: Purchase ID that was obtained from the createPurchase operation
+          required: true
+          schema:
+            $ref: "#/components/schemas/PurchaseId"
+      requestBody:
+        description: Creates a new Payment
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentMethod"
+        required: true
+      responses:
+        "200":
+          description: Payment Triggered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PreparePaymentInfo"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              examples:
+                Generic400:
+                  summary: Schema validation failed
+                  value: 
+                    code: INVALID_ARGUMENT
+                    message: "Schema validation failed at  ..."
+                PaymentMethodRequired:
+                  summary: payment method is required
+                  value: 
+                    code: INVALID_ARGUMENT
+                    message: "Expected property is missing: payment_method"
+                InvalidPaymentMethod:
+                  summary: payment method is not valid
+                  value: 
+                    code: CHECKOUT.INVALID_PAYMENT_METHOD
+                    message: "Property payment_method has invalid value"                    
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              examples:
+                Generic403:
+                  summary: Forbidden
+                  value: 
+                    code: FORBIDDEN
+                    message: "Operation not allowed: ..."
+                PSD2AccumulatedTransactionAmountOverpassed:
+                  summary: Accumulated Purchases amount overpassed according to PSD2 regulation
+                  value: 
+                    code: CHECKOUT.ACCUMULATED_PURCHASE_AMOUNT_OVERPASSED
+                    message: "Accumulated Purchases Amount overpasses PSD2 regulation"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
+  /purchases/{purchase_id}/payment/confirm:
+    post:
+      tags:
+        - Payments
+      summary: Confirm a Payment
+      description: Confirms a Payment for a given payable
+      operationId: confirmPayment
+      parameters:
+        - name: purchase_id
+          in: path
+          description: Purchase ID that was obtained from the createPurchase operation
+          required: true
+          schema:
+            $ref: "#/components/schemas/PurchaseId"
+      responses:
+        "202":
+          description: Payment Accepted
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              examples:
+                Generic403:
+                  summary: Forbidden
+                  value: 
+                    code: FORBIDDEN
+                    message: "Operation not allowed: ..."
+                PSD2AccumulatedTransactionAmountOverpassed:
+                  summary: Accumulated Purchases amount overpassed according to PSD2 regulation
+                  value: 
+                    code: CHECKOUT.ACCUMULATED_PURCHASE_AMOUNT_OVERPASSED
+                    message: "Accumulated Purchases Amount overpasses PSD2 regulation"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              examples:
+                Generic409:
+                  summary: Conflict
+                  value: 
+                    code: CONFLICT
+                    message: "Another payment confirmation or cancellation has been triggered for the same purchase"
+                PaymentAlreadyConfirmed:
+                  summary: Payment Confirmation already performed for this purchase
+                  value: 
+                    code: CHECKOUT.PAYMENT_ALREADY_CONFIRMED
+                    message: "Payment confirmation already executed"
+                PaymentAlreadyCancelled:
+                  summary: Payment Cancellation already performed for this purchase
+                  value: 
+                    code: CHECKOUT.PAYMENT_ALREADY_CANCELLED
+                    message: "Payment cancellation already executed"
+        "412":
+          $ref: "#/components/responses/Generic412"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
+  /purchases/{purchase_id}/payment/cancel:
+    post:
+      tags:
+        - Payments
+      summary: Cancel a Payment
+      description: Cancels a Payment for a given payable
+      operationId: cancelPayment
+      parameters:
+        - name: purchase_id
+          in: path
+          description: Purchase ID that was obtained from the createPurchase operation
+          required: true
+          schema:
+            $ref: "#/components/schemas/PurchaseId"
+      responses:
+        "202":
+          description: Payment Cancellation Accepted
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Generic403"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              examples:
+                Generic409:
+                  summary: Conflict
+                  value: 
+                    code: CONFLICT
+                    message: "Another payment confirmation or cancellation has been triggered for the same purchase"
+                PaymentAlreadyConfirmed:
+                  summary: Payment Confirmation already performed for this purchase
+                  value: 
+                    code: CHECKOUT.PAYMENT_ALREADY_CONFIRMED
+                    message: "Payment confirmation already executed"
+                PaymentAlreadyCancelled:
+                  summary: Payment Cancellation already performed for this purchase
+                  value: 
+                    code: CHECKOUT.PAYMENT_ALREADY_CANCELLED
+                    message: "Payment cancellation already executed"
+        "412":
+          $ref: "#/components/responses/Generic412"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
+  /notifications:
+    post:
+      tags:
+        - Purchase notifications callback
+      summary: "Purchase notifications callback"
+      description: |
+        Important: this endpoint is to be implemented by the API consumer.
+        The Checkout server will call this endpoint whenever any purchase related event occurs.
+      operationId: purchaseNotification
+      requestBody:
+        description: Creates a new purchase Notification
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Notification"
+        required: true
+      responses:
+        "204":
+          description: Successful notification
+        "400":
+          $ref: "#/components/responses/Generic400"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Generic403"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
+      security:
+        - apiKey: []
+components:
+  securitySchemes:
+    oAuth2ClientCredentials:
+      type: oauth2
+      description: This API uses OAuth 2 with the client credentials grant flow.
+      flows:
+        clientCredentials:
+          tokenUrl: "{tokenUrl}"
+          scopes: {}
+    apiKey:
+      type: apiKey
+      description: API key to authorize requests
+      name: apikey
+      in: query
+  schemas:
+    CreatePurchase:
+      allOf:
+        - $ref: '#/components/schemas/PurchaseBase'
+        - additionalProperties: false
+    PurchaseCreated:
+      allOf:
+        - $ref: '#/components/schemas/PurchaseBase'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Unique Identifier of the purchase transaction
+            status:
+              type: string
+              enum:
+                - initialising
+                - ready_to_confirm
+                - processing
+                - succeeded
+                - failed
+                - cancelled
+              description: |
+                * `initialising` - Purchase process is triggered
+                * `ready_to_confirm` - PreparePayment has been successfully accomplished
+                * `processing` - ConfirmPayment has been successfully triggered
+                * `succeeded` - Purchase payment has been successfully executed
+                * `failed` - Purchase process failed at any step. New purchase needs to be triggered
+                * `cancelled` - CancelPayment has been successfully accomplished
+            payment_methods:
+              type: array
+              minItems: 0
+              items:
+                type: string
+                description: payment method
+                enum:
+                  - carrier_billing
+              description: The payment methods available for this purchase. Empty array is returned in case no available `payment_methods` for this purchase.
+          required:
+            - id
+            - status
+            - payment_methods
+          additionalProperties: false
+    PurchaseBase:
+      type: object
+      description: Basic Representation of a Purchase Context
+      properties:
+        payable:
+          $ref: '#/components/schemas/PolymorphicPayable'
+        notification_url:
+          type: string
+          format: uri
+          description: Allows asynchronous delivery of purchase related events
+          example: "https://application-server.com/notifications"
+      required:
+        - payable
+    PolymorphicPayable:
+      type: object
+      description: Basic representation of a payable resource/entity. Please refer to the Model to see all possible instances of Payable
+      properties:
+        type:
+          type: string
+          description: Type of payable
+      required:
+        - type
+      discriminator:
+        propertyName: type
+        mapping:
+          digital_good: "#/components/schemas/DigitalGood"
+      oneOf:
+        - $ref: "#/components/schemas/DigitalGood"
+    DigitalGood:
+      description: Basic representation of a digital good, including the total sum of all amount of the items.
+      allOf:
+        - $ref: '#/components/schemas/PolymorphicPayable'
+        - $ref: '#/components/schemas/MerchantInfo'
+      example:
+        type: digital_good
+        order:
+          id: MarketOrder1
+          items:
+            - name: MarketOrderItemName1
+              amount:
+                value: 25
+                currency: EUR
+                tax_included: true
+            - name: MarketOrderItemName2
+              amount:
+                value: 40
+                currency: EUR
+                tax_included: true
+          total_amount:
+            value: 65
+            currency: EUR
+            tax_included: true
+        merchant:
+          id: MerchantId1
+          name: MerchantName1
+          fee: 15.45
+    MerchantInfo:
+      type: object
+      description: Represents a collection of goods belonging to a external merchant/provider to be paid
+      properties:
+        merchant:
+          $ref: '#/components/schemas/MarketMerchant'
+        order:
+          $ref: '#/components/schemas/MarketOrder'
+      required:
+        - merchant
+        - order
+    MarketMerchant:
+      type: object
+      description: Represents a merchant/provider from external market
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the merchant
+        name:
+          type: string
+          description: Merchant description
+        fee:
+          type: number
+          format: float
+          description: Fee percentage for the merchant/provider
+      required:
+        - id
+        - name
+        - fee
+      example:
+        id: MerchantId1
+        name: MerchantName1
+        fee: 15.45
+    MarketOrder:
+      type: object
+      description: Represents an order from external market
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the order on the merchant/provider external system
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/MarketOrderItem'
+        total_amount:
+          $ref: '#/components/schemas/MoneyAmount'
+      required:
+        - id
+        - items
+        - total_amount
+      example:
+        id: MarketOrder1
+        items:
+          - name: MarketOrderItemName1
+            amount:
+              value: 25
+              currency: EUR
+              tax_included: true
+          - name: MarketOrderItemName2
+            amount:
+              value: 40
+              currency: EUR
+              tax_included: true
+        total_amount:
+          value: 65
+          currency: EUR
+          tax_included: true
+    MarketOrderItem:
+      type: object
+      description: A item from external merchant/provider to be paid during checkout
+      properties:
+        name:
+          type: string
+          description: Item description provided by external merchant
+        amount:
+          $ref: '#/components/schemas/MoneyAmount'
+      required:
+        - name
+        - amount
+      example:
+        name: MarketOrderItemName1
+        amount:
+          value: 25
+          currency: EUR
+          tax_included: true
+    MoneyAmount:
+      type: object
+      description: Money amount
+      properties:
+        value:
+          type: number
+          format: float
+          multipleOf: 0.01
+          description: Amount value
+        currency:
+          type: string
+          description: Currency code in which the amount is expressed. ISO 4217
+        tax_included:
+          type: boolean
+          description: true if the amount includes government taxes
+          default: false
+      required:
+        - value
+        - currency
+    PaymentMethod:
+      type: object
+      description: Data Type to indicate payment method
+      properties:
+        payment_method:
+          type: string
+          description: payment_method
+          enum:
+            - carrier_billing
+      required:
+        - payment_method
+    PurchaseId:
+      type: string
+      format: uuid
+      description: Unique Purchase identifier
+    PurchaseInfo:
+      allOf:
+        - $ref: '#/components/schemas/PurchaseBase'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Unique Identifier of the purchase transaction
+            status:
+              type: string
+              enum:
+                - initialising
+                - ready_to_confirm
+                - processing
+                - succeeded
+                - failed
+                - cancelled
+              description: |
+                * `initialising` - Purchase process is triggered
+                * `ready_to_confirm` - PreparePayment has been successfully accomplished
+                * `processing` - ConfirmPayment has been successfully triggered
+                * `succeeded` - ConfirmPayment has been successfully executed
+                * `failed` - Purchase process failed at any step. New purchase needs to be triggered
+                * `cancelled` - CancelPayment has been successfully accomplished
+            payment_methods:
+              type: array
+              minItems: 0
+              items:
+                type: string
+                description: payment method
+                enum:
+                  - carrier_billing
+              description: The payment methods available for this purchase. Empty array is returned in case no available `payment_methods` for this purchase.
+          required:
+            - id
+            - status
+            - payment_methods
+          additionalProperties: false
+    PreparePaymentInfo:
+      type: object
+      description: Data Type to indicate prepare payment information 
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique Identifier of the purchase transaction
+        status:
+          type: string
+          enum:
+          - initialising
+          - ready_to_confirm
+          - failed
+          description: |
+            * `initialising` - Purchase process is triggered
+            * `ready_to_confirm` - PreparePayment has been successfully accomplished
+            * `failed` - Purchase process failed at any step. New purchase needs to be triggered
+      required:
+        - id
+        - status
+    Notification:
+      type: object
+      description: Data type with attributes required for generating a Purchase notification
+      properties:
+        purchase_id:
+          type: string
+          description: Unique Identifier of the purchase transaction
+        action:
+          type: string
+          enum:
+            - prepare_payment
+            - confirm_payment
+            - cancel_payment
+          description: |
+            Indication of the action notified by the event.
+            * `prepare_payment`: Notification about preparePayment procedure
+            * `confirm_payment`: Notification about confirmPayment procedure
+            * `cancel_payment`: Notificacion about cancelPayment procedure
+        status:
+          type: string
+          enum:
+            - succeeded
+            - failed
+          description: | 
+            Status of the procedure. Possible status are:
+            * `succeeded`: procedure was accomplished 
+            * `failed`: procedure failed.
+            
+            NOTE: Under reception of a notification with failed status, new purchase procedure shall be initiated by API Client, if required.
+        description:
+          type: string
+          description: Description of the notification, both used when process was `succeeded` or `failed` indicating in the latter case human understable reason about why process failed.
+      required:
+        - purchase_id
+        - action
+        - status
+        - description
+    ErrorInfo:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+  responses:
+    Generic400:
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: INVALID_ARGUMENT
+            message: "Schema validation failed at  ..."
+    Generic401:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: UNAUTHORIZED
+            message: "Authorization failed: ..."
+    Generic403:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: FORBIDDEN
+            message: "Operation not allowed: ..."
+    Generic404:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: NOT_FOUND
+            message: "The specified resource is not found"
+    Generic409:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: CONFLICT
+            message: "A specified resource duplicate entry found"
+    Generic412:
+      description: Request cannot be executed in the current system state
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: FAILED_PRECONDITION
+            message: "Request cannot be executed in the current system state"
+    Generic500:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: INTERNAL
+            message: "Server error"
+    Generic503:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: SERVICE_UNAVALIBLE
+            message: "Service unavailable"
+    Generic504:
+      description: Request timeout exceeded
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: TIMEOUT
+            message: "Request timeout exceeded"
