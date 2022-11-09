@@ -671,9 +671,24 @@ components:
             * `initialising` - Purchase process is triggered
             * `ready_to_confirm` - PreparePayment has been successfully accomplished
             * `failed` - Purchase process failed at any step. New purchase needs to be triggered
+        payment_otp:
+          $ref: '#/components/schemas/PaymentOtp'
       required:
         - id
         - status
+    PaymentOtp:
+      type: object
+      description: Data type to provide the necessary information in order to validate an OTP
+      properties:
+        validation_endpoint:
+          type: string
+          format: uri
+          description: URL for OTP validation
+        parameters:
+          type: object
+          description: Pairs of key/value for the parameters that have to be submitted as query parameters when calling the validation endpoint
+      required:
+        - validation_endpoint
     Notification:
       type: object
       description: Data type with attributes required for generating a Purchase notification
