@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Checkout
+  title: Carrier Billing Checkout
   description: Service Enabling Payments against OB Carrier Billing Systems
   termsOfService: http://swagger.io/terms/
   contact:
