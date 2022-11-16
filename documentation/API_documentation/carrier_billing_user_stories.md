@@ -7,11 +7,3 @@
 | ***Post-conditions*** | TBD  |
 | ***Exceptions*** | TBD|
 <br>
-| **Item** | **Details** |
-| ---- | ------- |
-| ***Summary*** | As an application developer belonging to an enterprise, I want to add (using my application server/backend service) CarrierBillingCheckout Payment method as a verified payment method , so that I allow customers to manage payment methods.  |
-| ***Roles, Actors and Scope*** | **Roles:** Customer:User<br> **Actors:** Application service providers, hyperscalers, application developers. <br> **Scope:** *Request Carrier Eligibility/Approval for CBC* \- Verify Customer:User ownership of Carrier Service to be used in CBC. |
-| ***Pre-conditions*** |The preconditions are listed below:<br><ol><li>The Customer:User have initiated adding CBC as a payment method from application/portal/product channel</li>|
-| ***Activities/Steps*** | **Starts when:** TBD<br>**Ends when:** TBD |
-| ***Post-conditions*** | TBD  |
-| ***Exceptions*** | TBD|
