@@ -1,0 +1,41 @@
+@startuml
+participant APPClient as APP
+participant APIServer as cam
+
+== Payment preparation (optional) ==
+
+opt Optionaly a payment preparation may be needed
+APP -> cam : Prepare an amount for subsequent charging to an end user’s bill
+alt server accept request
+cam --> APP : OK done - payment # is prepared
+else server denied request
+cam --> APP : payment preparation request denied
+end
+end
+
+== Payment request ==
+
+APP -> cam : request to execute (confirm) payment
+alt server accept request
+cam --> APP : OK done - payment # is charged (confirmed)
+else server denied request
+cam --> APP : payment execution request denied
+end
+
+== Payment cancellation ==
+
+opt 
+APP -> cam : request to cancel payment
+alt server accept request
+cam --> APP : OK done - payment # is cancelled (released)
+else server denied request
+cam --> APP : payment execution request denied - PONR reached
+end
+
+end
+
+== Payment Consultation (anytime) ==
+APP -> cam : request to retrieve a payment (by list or id)
+cam --> APP : Get payment information
+
+@enduml
