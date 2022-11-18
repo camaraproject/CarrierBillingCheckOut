@@ -11,3 +11,4 @@
 * Support for Notifications
 * Recurring Payments Procedure
 * Refund Payments Procedure
+* Features like 3DS secure banking
