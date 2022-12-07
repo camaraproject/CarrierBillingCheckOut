@@ -1,4 +1,4 @@
-# Carrier Billing Checkout API Readiness minimum criteria checklist
+# Carrier Billing API Readiness minimum criteria checklist
 
 <br>
 
