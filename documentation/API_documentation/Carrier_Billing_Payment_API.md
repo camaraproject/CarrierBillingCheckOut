@@ -114,7 +114,7 @@ ChargingMetaData
 
 Follow schema provides information about the payment state engine (state description & transition)
 
-<img src="./resources/Carrier_Billing_Payment_State_Engine.jpg" alt="PaymentState" title="Carrier Billing Payment API state engine">
+<img src="./resources/Carrier_Billing_Payment_State_Engine.JPG" alt="PaymentState" title="Carrier Billing Payment API state engine">
 
 
 ### 4.3 Endpoint Definitions
