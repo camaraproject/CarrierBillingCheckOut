@@ -41,10 +41,6 @@ In order to identify the mobile line to be chaged an identifer must be provided.
 Developers may provide a callback URL on which status change notifications regarding the payment can be received from the service provider. This is an optional parameter.
 
 
-**App-Flow (between the application client and application server)**
-The precise application data flow the developer wants to prioritize and have stable latency or throughput for. This flow is in the current API version determined by the identifiers used for the user equipment and the application server. And can be further elaborated with details such as ports or port-ranges. Future version of the API might allow more detailed flow identification features.
-
-
 
 Sample API invocations are presented in Section 4.6.
 
@@ -118,7 +114,7 @@ ChargingMetaData
 
 Follow schema provides information about the payment state engine (state description & transition)
 
-<img src="./resources/Carrier_Billing_Payment_State_Engine.png" alt="PaymentState" title="Carrier Billing Payment API state engine">
+<img src="./resources/Carrier_Billing_Payment_State_Engine.jpg" alt="PaymentState" title="Carrier Billing Payment API state engine">
 
 
 ### 4.3 Endpoint Definitions
