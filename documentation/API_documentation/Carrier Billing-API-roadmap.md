@@ -1,4 +1,4 @@
-# Carrier Billing Checkout API roadmap
+# Carrier Billing API roadmap
 
 **Phase 1 Features - Initial Version**
 * Individual Payments Procedure
