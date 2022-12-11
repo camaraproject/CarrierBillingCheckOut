@@ -46,7 +46,8 @@
 | ---- | ------- |
 | ***Summary*** | As an application developer belonging to an enterprise, I want to get a list of performed payments from criteria (using my application server/backend service), by means of that application.  |
 | ***Roles, Actors and Scope*** | **Roles:** Customer:User<br> **Actors:** Application service providers, hyperscalers, application developers. <br> **Scope:** *Request Payments list done against Carrier Billing* |
-| ***Pre-conditions*** |The preconditions are listed below:<br><ol><li>The Customer:User has performed payments via application, both success and failed</li><li>The requester provide a list of criteria(s) to select payment (Customer/user identifier, payment status)</li></ol>|
+| ***Pre-conditions*** |The preconditions are listed below:<br><ol><li>The Customer:User has performed payments via application, both success and failed</li><li>The requester provides a list of criteria(s) to select payment (Customer/user identifier, payment status)</li></ol>|
+
 | ***Activities/Steps*** | **Starts when:** The customer application server makes a request to the Carrier Billing Checkout to get payment/payments details performed via that application<br>**Ends when:** Response is received from Carrier Billing Checkout showing the details |
 | ***Post-conditions*** | N/A  |
 | ***Exceptions*** | Several exceptions might occur during the Carrier Billing API operations:<br><ul><li>Unauthorized: Not valid credentials (e.g. use of already expired access token).</li><li>Denied by Carrier: Any user/business condition and/or regulation that forbids the retrieval of the payment</li></ul>|
