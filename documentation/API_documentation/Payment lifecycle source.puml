@@ -10,7 +10,8 @@ choice --> Processing : async
 
 choice --> fork : sync
 
-note left of choice: Business response is provided\nsynchronously or synchronously
+note left of choice: Business response is provided\nsynchronously or asynchronously
+
 
 Processing --> fork
 
