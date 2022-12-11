@@ -1,0 +1,672 @@
+openapi: 3.0.3
+info:
+  title: Carrier Billing Checkout
+  description: |-
+    Service that provides functionality for enabling the purchase, payment and follow up of fulfilment of goods against OB carrier billing systems.
+
+    # Relevant Definitions and concepts
+
+    - **Purchase**: The action of acquiring a good, service or product.
+    - **Payment**: The act or process of paying for that good, service or product.
+    - **Fulfillment**: The dispatch of a customer's order.
+    - **Payable**: The concept, service or good a client is paying for.
+
+    # API functionality
+
+    This API allows to create, pay and follow up purchases of several Payables. Initial scope is focused in the purchase of digital goods via OB carrier billing systems.
+
+    # Resources and Operations overview
+
+     There are 2 resources in the API:
+    - The first one, **Purchases**, exposes two operations that allow to create and retrieve purchase info for a specific user. The unique supported **payable** so far is:
+      - **Digital Good:** Good that the user will acquire, provided by a third party (not the OB) (e.g.: purchase "extra" credit in online gaming, transport tickets, etc).
+
+    - **Payments** is the second one and it exposes three operations to request the payment of a specific purchase via OB carrier billing systems (payment preparation, payment confirmation or payment cancellation):
+      - **Carrier Billing:** It means that the operator will perform the billing, accordingly to the user's configuration in the OB; usually this implies that the purchase will be included in the user invoice and then charged to the user, but actually other options may eventually happen, like charge against user prepay balance or other. Notice that this option do not explicitly define the actual payment method, but means that the carrier will be doing the charge based on configuration out of scope of this API.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: project-email@sample.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.5.0
+externalDocs:
+  description: Product documentation at Camara
+  url: https://github.com/camaraproject/
+security:
+  - three_legged:
+    - carrier-billing-checkout-purchase-digital-good-user-write
+    - carrier-billing-checkout-purchase-digital-good-user-read
+    - carrier-billing-checkout-payment-user-write
+servers:
+  - url: "{apiRoot}/{basePath}"
+    variables:
+      apiRoot:
+        default: http://localhost:9091
+        description: API root
+      basePath:
+        default: carrier-billing-checkout/v0
+        description: Base path for the Carrier Billing Checkout API
+paths:
+  /purchases:
+    post:
+      tags:
+        - Purchases
+      summary: Creates a new purchase
+      description: Creates a new Purchase for a given payable
+      operationId: createPurchase
+      security:
+        - three_legged:
+          - carrier-billing-checkout-purchase-digital-good-user-write
+      requestBody:
+        description: Creates a new purchase
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePurchase"
+        required: true
+      responses:
+        "201":
+          description: Purchase created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PurchaseCreated"
+        "400":
+          $ref: "#/components/responses/Generic400"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              examples:
+                Generic403:
+                  summary: Forbidden
+                  value: 
+                    code: FORBIDDEN
+                    message: "Operation not allowed: ..."
+                RegulationTransactionAmountOverpassed:
+                  summary: Purchase amount overpassed according to applicable regulation
+                  value: 
+                    code: CARRIER_BILLING_CHECKOUT.PURCHASE_AMOUNT_OVERPASSED
+                    message: "Purchase amount overpasses applicable regulation"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
+  /purchases/{purchase_id}:
+    get:
+      tags:
+        - Purchases
+      summary: Retrieve Purchase Information
+      description: Get Purchase Information of a given payable
+      operationId: getPurchaseInfo
+      security:
+        - three_legged:
+          - carrier-billing-checkout-purchase-digital-good-user-read
+      parameters:
+        - name: purchase_id
+          in: path
+          description: Purchase ID that was obtained from the createPurchase operation
+          required: true
+          schema:
+            $ref: "#/components/schemas/PurchaseId"
+      responses:
+        "200":
+          description: Contains information about a given purchase
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PurchaseInfo"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Generic403"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
+  /purchases/{purchase_id}/payment/prepare:
+    post:
+      tags:
+        - Payments
+      summary: Creates a new Payment
+      description: Creates a new Payment Procedure for a given payable
+      operationId: preparePayment
+      security:
+        - three_legged:
+          - carrier-billing-checkout-payment-user-write
+      parameters:
+        - name: purchase_id
+          in: path
+          description: Purchase ID that was obtained from the createPurchase operation
+          required: true
+          schema:
+            $ref: "#/components/schemas/PurchaseId"
+      responses:
+        "200":
+          description: Payment Triggered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PreparePaymentInfo"
+        "400":
+          $ref: "#/components/responses/Generic400"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              examples:
+                Generic403:
+                  summary: Forbidden
+                  value: 
+                    code: FORBIDDEN
+                    message: "Operation not allowed: ..."
+                RegulationAccumulatedTransactionAmountOverpassed:
+                  summary: Accumulated Purchases amount overpassed according to applicable regulation
+                  value: 
+                    code: CARRIER_BILLING_CHECKOUT.ACCUMULATED_PURCHASE_AMOUNT_OVERPASSED
+                    message: "Accumulated Purchases Amount overpasses applicable regulation"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
+  /purchases/{purchase_id}/payment/confirm:
+    post:
+      tags:
+        - Payments
+      summary: Confirm a Payment
+      description: Confirms a Payment for a given payable
+      operationId: confirmPayment
+      security:
+        - three_legged:
+          - carrier-billing-checkout-payment-user-write
+      parameters:
+        - name: purchase_id
+          in: path
+          description: Purchase ID that was obtained from the createPurchase operation
+          required: true
+          schema:
+            $ref: "#/components/schemas/PurchaseId"
+      responses:
+        "202":
+          description: Payment Accepted
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              examples:
+                Generic403:
+                  summary: Forbidden
+                  value: 
+                    code: FORBIDDEN
+                    message: "Operation not allowed: ..."
+                RegulationAccumulatedTransactionAmountOverpassed:
+                  summary: Accumulated Purchases amount overpassed according to applicable regulation
+                  value: 
+                    code: CARRIER_BILLING_CHECKOUT.ACCUMULATED_PURCHASE_AMOUNT_OVERPASSED
+                    message: "Accumulated Purchases Amount overpasses applicable regulation"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              examples:
+                Generic409:
+                  summary: Conflict
+                  value: 
+                    code: CONFLICT
+                    message: "Another payment confirmation or cancellation has been triggered for the same purchase"
+                PaymentAlreadyReachedFinalStatus:
+                  summary: Payment already reached a final status for the purchase
+                  value: 
+                    code: CARRIER_BILLING_CHECKOUT.PAYMENT_REACHED_FINAL_STATUS
+                    message: "Payment already reached a final status. No further actions can be performed"
+        "412":
+          $ref: "#/components/responses/Generic412"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
+  /purchases/{purchase_id}/payment/cancel:
+    post:
+      tags:
+        - Payments
+      summary: Cancel a Payment
+      description: Cancels a Payment for a given payable
+      operationId: cancelPayment
+      security:
+        - three_legged:
+          - carrier-billing-checkout-payment-user-write
+      parameters:
+        - name: purchase_id
+          in: path
+          description: Purchase ID that was obtained from the createPurchase operation
+          required: true
+          schema:
+            $ref: "#/components/schemas/PurchaseId"
+      responses:
+        "202":
+          description: Payment Cancellation Accepted
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Generic403"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              examples:
+                Generic409:
+                  summary: Conflict
+                  value: 
+                    code: CONFLICT
+                    message: "Another payment confirmation or cancellation has been triggered for the same purchase"
+                PaymentAlreadyReachedFinalStatus:
+                  summary: Payment already reached a final status for the purchase
+                  value: 
+                    code: CARRIER_BILLING_CHECKOUT.PAYMENT_REACHED_FINAL_STATUS
+                    message: "Payment already reached a final status. No further actions can be performed"
+        "412":
+          $ref: "#/components/responses/Generic412"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
+components:
+  securitySchemes:
+    three_legged:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.example.com/authorize
+          tokenUrl: https://auth.example.com/token
+          scopes:
+            carrier-billing-checkout-purchase-digital-good-user-write: create purchases
+            carrier-billing-checkout-purchase-digital-good-user-read: read purchases
+            carrier-billing-checkout-payment-user-write: make payments
+  schemas:
+    CreatePurchase:
+      allOf:
+        - $ref: '#/components/schemas/PurchaseBase'
+        - additionalProperties: false
+    PurchaseCreated:
+      allOf:
+        - $ref: '#/components/schemas/PurchaseBase'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Unique Identifier of the purchase transaction
+            status:
+              type: string
+              enum:
+                - initialising
+                - ready_to_confirm
+                - processing
+                - succeeded
+                - failed
+                - cancelled
+              description: |
+                * `initialising` - Purchase process is triggered
+                * `ready_to_confirm` - PreparePayment has been successfully accomplished
+                * `processing` - ConfirmPayment has been successfully triggered
+                * `succeeded` - Purchase payment has been successfully executed
+                * `failed` - Purchase process failed at any step. New purchase needs to be triggered
+                * `cancelled` - CancelPayment has been successfully accomplished
+          required:
+            - id
+            - status
+          additionalProperties: false
+    PurchaseBase:
+      type: object
+      description: Basic Representation of a Purchase Context
+      properties:
+        payable:
+          $ref: '#/components/schemas/PolymorphicPayable'
+      required:
+        - payable
+    PolymorphicPayable:
+      type: object
+      description: Basic representation of a payable resource/entity. Please refer to the Model to see all possible instances of Payable
+      properties:
+        type:
+          type: string
+          description: Type of payable
+      required:
+        - type
+      discriminator:
+        propertyName: type
+        mapping:
+          digital_good: "#/components/schemas/DigitalGood"
+      oneOf:
+        - $ref: "#/components/schemas/DigitalGood"
+    DigitalGood:
+      description: Basic representation of a digital good, including the total sum of all amount of the items.
+      allOf:
+        - $ref: '#/components/schemas/PolymorphicPayable'
+        - $ref: '#/components/schemas/MerchantInfo'
+      example:
+        type: digital_good
+        order:
+          id: MarketOrder1
+          items:
+            - name: MarketOrderItemName1
+              amount:
+                value: 25
+                currency: EUR
+                tax_included: true
+            - name: MarketOrderItemName2
+              amount:
+                value: 40
+                currency: EUR
+                tax_included: true
+          total_amount:
+            value: 65
+            currency: EUR
+            tax_included: true
+        merchant:
+          id: MerchantId1
+          name: MerchantName1
+          fee: 15.45
+    MerchantInfo:
+      type: object
+      description: Represents a collection of goods belonging to a external merchant/provider to be paid
+      properties:
+        merchant:
+          $ref: '#/components/schemas/MarketMerchant'
+        order:
+          $ref: '#/components/schemas/MarketOrder'
+      required:
+        - merchant
+        - order
+    MarketMerchant:
+      type: object
+      description: Represents a merchant/provider from external market
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the merchant
+        name:
+          type: string
+          description: Merchant description
+        fee:
+          type: number
+          format: float
+          description: Fee percentage for the merchant/provider
+      required:
+        - id
+        - name
+        - fee
+      example:
+        id: MerchantId1
+        name: MerchantName1
+        fee: 15.45
+    MarketOrder:
+      type: object
+      description: Represents an order from external market
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the order on the merchant/provider external system
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/MarketOrderItem'
+        total_amount:
+          $ref: '#/components/schemas/MoneyAmount'
+      required:
+        - id
+        - items
+        - total_amount
+      example:
+        id: MarketOrder1
+        items:
+          - name: MarketOrderItemName1
+            amount:
+              value: 25
+              currency: EUR
+              tax_included: true
+          - name: MarketOrderItemName2
+            amount:
+              value: 40
+              currency: EUR
+              tax_included: true
+        total_amount:
+          value: 65
+          currency: EUR
+          tax_included: true
+    MarketOrderItem:
+      type: object
+      description: A item from external merchant/provider to be paid during checkout
+      properties:
+        name:
+          type: string
+          description: Item description provided by external merchant
+        amount:
+          $ref: '#/components/schemas/MoneyAmount'
+      required:
+        - name
+        - amount
+      example:
+        name: MarketOrderItemName1
+        amount:
+          value: 25
+          currency: EUR
+          tax_included: true
+    MoneyAmount:
+      type: object
+      description: Money amount
+      properties:
+        value:
+          type: number
+          format: float
+          multipleOf: 0.01
+          description: Amount value
+        currency:
+          type: string
+          description: Currency code in which the amount is expressed. ISO 4217
+        tax_included:
+          type: boolean
+          description: true if the amount includes government taxes
+          default: false
+      required:
+        - value
+        - currency
+    PurchaseId:
+      type: string
+      format: uuid
+      description: Unique Purchase identifier
+    PurchaseInfo:
+      allOf:
+        - $ref: '#/components/schemas/PurchaseBase'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Unique Identifier of the purchase transaction
+            status:
+              type: string
+              enum:
+                - initialising
+                - ready_to_confirm
+                - processing
+                - succeeded
+                - failed
+                - cancelled
+              description: |
+                * `initialising` - Purchase process is triggered
+                * `ready_to_confirm` - PreparePayment has been successfully accomplished
+                * `processing` - ConfirmPayment has been successfully triggered
+                * `succeeded` - ConfirmPayment has been successfully executed
+                * `failed` - Purchase process failed at any step. New purchase needs to be triggered
+                * `cancelled` - CancelPayment has been successfully accomplished
+          required:
+            - id
+            - status
+          additionalProperties: false
+    PreparePaymentInfo:
+      type: object
+      description: Data Type to indicate prepare payment information 
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique Identifier of the purchase transaction
+        status:
+          type: string
+          enum:
+          - initialising
+          - ready_to_confirm
+          - failed
+          description: |
+            * `initialising` - Purchase process is triggered
+            * `ready_to_confirm` - PreparePayment has been successfully accomplished
+            * `failed` - Purchase process failed at any step. New purchase needs to be triggered
+        payment_otp:
+          $ref: '#/components/schemas/PaymentOtp'
+      required:
+        - id
+        - status
+    PaymentOtp:
+      type: object
+      description: Data type to provide the necessary information in order to validate an OTP
+      properties:
+        validation_endpoint:
+          type: string
+          format: uri
+          description: URL for OTP validation
+        parameters:
+          type: object
+          description: Pairs of key/value for the parameters that have to be submitted as query parameters when calling the validation endpoint
+      required:
+        - validation_endpoint
+    ErrorInfo:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+  responses:
+    Generic400:
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: INVALID_ARGUMENT
+            message: "Schema validation failed at  ..."
+    Generic401:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: UNAUTHORIZED
+            message: "Authorization failed: ..."
+    Generic403:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: FORBIDDEN
+            message: "Operation not allowed: ..."
+    Generic404:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: NOT_FOUND
+            message: "The specified resource is not found"
+    Generic409:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: CONFLICT
+            message: "A specified resource duplicate entry found"
+    Generic412:
+      description: Request cannot be executed in the current system state
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: FAILED_PRECONDITION
+            message: "Request cannot be executed in the current system state"
+    Generic500:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: INTERNAL
+            message: "Server error"
+    Generic503:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: SERVICE_UNAVALIBLE
+            message: "Service unavailable"
+    Generic504:
+      description: Request timeout exceeded
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: TIMEOUT
+            message: "Request timeout exceeded"
