@@ -1,9 +1,8 @@
 openapi: 3.0.3
 info:
   description: Service Enabling Payments against OB Carrier Billing Systems
-  version: '0.5.0'
-
-  title: Carrier Billing Payment
+  version: '0.5'
+  title: Carrier Billing Payment API
   termsOfService: http://swagger.io/terms/
   contact:
     email: project-email@sample.com
@@ -35,13 +34,6 @@ paths:
       - one-step-payment
       summary: Create a new payment for subsequent charging to an end user’s bill
       operationId: createPayment
-      parameters:
-        - name: endUserId
-          in: path
-          description: Identifies the header that contains the external user token.
-          required: true
-          schema:
-           type: string
       requestBody:
         description: Amount transaction
         content:
@@ -232,19 +224,12 @@ paths:
       - two-steps-payment
       summary: Prepare a new payment procedure for subsequent charging to an end user’s bill
       operationId: prepare
-      parameters:
-      - name: endUserId
-        in: path
-        description: Identifies the header that contains the external user token.
-        required: true
-        schema:
-          type: string
       requestBody:
         description: Amount transaction
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BodyAmountReservationTransactionForReserve'
+              $ref: '#/components/schemas/BodyAmountReservationTransactionForReserveInput'
         required: true
       responses:
         201:
@@ -319,13 +304,6 @@ paths:
         required: true
         schema:
           type: string
-      requestBody:
-        description: Amount transaction
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BodyAmountReservationTransactionForConfirmOrCancel'
-        required: true
       responses:
         200:
           description: Payment confirmation accepted
@@ -445,7 +423,6 @@ paths:
         503:
           $ref: "#/components/responses/Generic503"
       x-codegen-request-body-name: body
-
   /notifications:
     post:
       tags:
@@ -486,6 +463,9 @@ components:
       properties:
         amountTransaction:
           $ref: '#/components/schemas/AmountTransactionInput'
+        notificationUrl:
+          type: string
+          description: Allows asynchronous delivery of purchase related events
     Payment:
       required:
       - amountTransaction
@@ -493,6 +473,9 @@ components:
       properties:
         amountTransaction:
           $ref: '#/components/schemas/AmountTransaction'
+        notificationUrl:
+          type: string
+          description: Allows asynchronous delivery of purchase related events
     AmountTransaction:
       required:
       - endUserId
@@ -518,8 +501,8 @@ components:
             request, for example, in the case of disputes.
         transactionOperationStatus:
           type: string
-          description: Specifies the payment operation required – in this case set
-            to 'Charged'.
+          description: Specifies the payment status (Processing, Denied, Reserved,
+           Succeeded, Cancelled).
         resourceURL:
           type: string
           description: URI of the created resource (same as in the Location header)
@@ -549,13 +532,6 @@ components:
           type: string
           description: Merchant generated payment reference to uniquely identify the
             request, for example, in the case of disputes.
-        resourceURL:
-          type: string
-          description: URI of the created resource (same as in the Location header)
-        serverReferenceCode:
-          type: string
-          description: Reference to the charge or refund, provided by the server,
-            and meaningful to the server’s backend system for the purpose of reconciliation.
     PaymentAmountForCharge:
       required:
       - chargingInformation
@@ -572,6 +548,19 @@ components:
       properties:
         amountTransaction:
           $ref: '#/components/schemas/AmountReservationTransactionForReserve'
+        notificationUrl:
+          type: string
+          description: Allows asynchronous delivery of purchase related events
+    BodyAmountReservationTransactionForReserveInput:
+      required:
+      - amountTransaction
+      type: object
+      properties:
+        amountTransaction:
+          $ref: '#/components/schemas/AmountReservationTransactionForReserveInput'
+        notificationUrl:
+          type: string
+          description: Allows asynchronous delivery of purchase related events
     AmountReservationTransactionForReserve:
       required:
       - endUserId
@@ -597,8 +586,8 @@ components:
             request, for example, in the case of disputes.
         transactionOperationStatus:
           type: string
-          description: Specifies the payment operation required – in this case set
-            to ‘Reserved’.
+          description: Specifies the payment status (Processing, Denied, Reserved,
+           Succeeded, Cancelled).
         resourceURL:
           type: string
           description: URI of the created resource (same as in the Location header)
@@ -606,6 +595,28 @@ components:
           type: string
           description: Reference to the charge or refund, provided by the server,
             and meaningful to the server’s backend system for the purpose of reconciliation.
+    AmountReservationTransactionForReserveInput:
+      required:
+      - endUserId
+      - paymentAmount
+      - referenceCode
+      type: object
+      properties:
+        endUserId:
+          type: string
+          description: Identifies the header that contains the external user token.
+        clientCorrelator:
+          type: string
+          description: Uniquely identifies this create charge request. If there is
+            a communication failure during the charge request, using the same clientCorrelator
+            when retrying the request allows the operator to avoid applying the same
+            charge twice. This field SHOULD be present.
+        paymentAmount:
+          $ref: '#/components/schemas/PaymentAmountForReserve'
+        referenceCode:
+          type: string
+          description: Merchant generated payment reference to uniquely identify the
+            request, for example, in the case of disputes.
     PaymentAmountForReserve:
       required:
       - chargingInformation
@@ -622,6 +633,9 @@ components:
       properties:
         amountTransaction:
           $ref: '#/components/schemas/AmountReservationTransactionForConfirmOrCancel'
+        notificationUrl:
+          type: string
+          description: Allows asynchronous delivery of purchase related events
     BodyAmountReservationTransactionCancel:
       required:
       - amountTransaction
@@ -652,8 +666,8 @@ components:
             request, for example, in the case of disputes.
         transactionOperationStatus:
           type: string
-          description: Specifies the payment operation required – in this case set
-            to ‘Charged‘ (confirmation) or ‘Released‘ (cancelation).
+          description: Specifies the payment status (Processing, Denied, Reserved,
+           Succeeded, Cancelled).
         resourceURL:
           type: string
           description: URI of the created resource (same as in the Location header)
