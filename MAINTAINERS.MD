@@ -1,10 +1,10 @@
 | Organization                    | Name                                                |
 | --------------------------------| ----------------------------------------------------|
-| GSMA | G Williams |
+| GSMA | Gareth Williams |
 | KDDI | Toshiyasu Wakayama |
 | Orange | Sylvain Morel |
 | Orange | Ludovic Robert |
-| STC | Alabajnaid |
+| STC | Albaraa A. Bajnaid |
 | Telefonica | Pedro Diez Garcia |
 | Telefónica | Diego González Martínez |
 
