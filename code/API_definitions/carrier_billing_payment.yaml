@@ -305,7 +305,7 @@ paths:
         schema:
           type: string
       responses:
-        200:
+        202:
           description: Payment confirmation accepted
         400:
           description: Invalid input
@@ -469,8 +469,12 @@ components:
     Payment:
       required:
       - amountTransaction
+      - paymentId
       type: object
       properties:
+        paymentId:
+          type: string
+          description: Unique Identifier of the payment
         amountTransaction:
           $ref: '#/components/schemas/AmountTransaction'
         notificationUrl:
@@ -544,8 +548,12 @@ components:
     BodyAmountReservationTransactionForReserve:
       required:
       - amountTransaction
+      - paymentId
       type: object
       properties:
+        paymentId:
+          type: string
+          description: Unique Identifier of the payment
         amountTransaction:
           $ref: '#/components/schemas/AmountReservationTransactionForReserve'
         notificationUrl:
@@ -893,7 +901,7 @@ components:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/AmountTransaction'
+              $ref: '#/components/schemas/Payment'
   parameters:
     Fields:
       name: fields
