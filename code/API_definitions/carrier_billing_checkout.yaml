@@ -86,7 +86,7 @@ paths:
                 Generic403:
                   summary: Forbidden
                   value: 
-                    code: FORBIDDEN
+                    code: PERMISSION_DENIED
                     message: "Operation not allowed: ..."
                 RegulationTransactionAmountOverpassed:
                   summary: Purchase amount overpassed according to applicable regulation
@@ -173,7 +173,7 @@ paths:
                 Generic403:
                   summary: Forbidden
                   value: 
-                    code: FORBIDDEN
+                    code: PERMISSION_DENIED
                     message: "Operation not allowed: ..."
                 RegulationAccumulatedTransactionAmountOverpassed:
                   summary: Accumulated Purchases amount overpassed according to applicable regulation
@@ -220,7 +220,7 @@ paths:
                 Generic403:
                   summary: Forbidden
                   value: 
-                    code: FORBIDDEN
+                    code: PERMISSION_DENIED
                     message: "Operation not allowed: ..."
                 RegulationAccumulatedTransactionAmountOverpassed:
                   summary: Accumulated Purchases amount overpassed according to applicable regulation
@@ -239,7 +239,7 @@ paths:
                 Generic409:
                   summary: Conflict
                   value: 
-                    code: CONFLICT
+                    code: ALREADY_EXISTS
                     message: "Another payment confirmation or cancellation has been triggered for the same purchase"
                 PaymentAlreadyReachedFinalStatus:
                   summary: Payment already reached a final status for the purchase
@@ -290,7 +290,7 @@ paths:
                 Generic409:
                   summary: Conflict
                   value: 
-                    code: CONFLICT
+                    code: ALREADY_EXISTS
                     message: "Another payment confirmation or cancellation has been triggered for the same purchase"
                 PaymentAlreadyReachedFinalStatus:
                   summary: Payment already reached a final status for the purchase
@@ -614,7 +614,7 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           example:
-            code: FORBIDDEN
+            code: PERMISSION_DENIED
             message: "Operation not allowed: ..."
     Generic404:
       description: Resource Not Found
@@ -632,7 +632,7 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           example:
-            code: CONFLICT
+            code: ALREADY_EXISTS
             message: "A specified resource duplicate entry found"
     Generic412:
       description: Request cannot be executed in the current system state
