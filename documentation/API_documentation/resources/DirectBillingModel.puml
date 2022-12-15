@@ -1,0 +1,56 @@
+@startuml Open Mobile Alliance transactions/amount
+hide circle
+hide methods
+hide stereotype
+show <<Enumeration>> stereotype
+skinparam class {
+   BackgroundColor<<Enumeration>> #E6F5F7
+   BackgroundColor<<Ref>> #FFFFE0
+   BackgroundColor<<Pivot>> #FFFFFFF
+   BackgroundColor #FCF2E3
+}
+
+class AmountTransaction  <<Pivot>> {
+    <b>endUserId</b>: String 
+    clientCorrelator: String
+    <b>referenceCode</b>: String
+    <b>transactionOperationStatus</b>: String
+    resourceURL: String
+    serverReferenceCode : String
+    }
+
+class TransactionOperationStatus <<Enumeration>> {
+    Charged
+    Refunded
+    Reserved
+    Released
+    Denied 
+    Refused 
+    Processing
+}
+
+class PaymentAmountForCharge {
+}
+
+class ChargingInformation {
+    <b>amount</b>: Number
+    <b>currency</b>: String
+    <b>description</b>: String
+}
+
+class ChargingMetaData {
+    onBehalfOf: String
+    purchaseCategoryCode: String
+    channel: String
+    taxAmount: Number
+    serviceId: String
+    productId: String
+}
+
+AmountTransaction --> "1,1" PaymentAmountForCharge : <b>paymentAmount</b>
+
+PaymentAmountForCharge --> "1,1" ChargingInformation : <b>chargingInformation</b>
+PaymentAmountForCharge --> "1,1" ChargingMetaData : chargingMetaData
+
+
+@enduml

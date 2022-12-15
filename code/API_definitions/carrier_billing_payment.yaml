@@ -12,12 +12,6 @@ info:
 externalDocs:
   description: Product documentation at Camara
   url: https://github.com/camaraproject/
-security:
-  - oAuth2ClientCredentials: []
-  - BasicAuth: []
-  - apiKey: []
-  - three_legged:
-    - payment
 servers:
   - url: "{apiRoot}/{basePath}"
     variables:
@@ -30,17 +24,14 @@ servers:
 paths:
   /payments:
     post:
+      security:
+        - oAuth2ClientCredentials: []
+        - three_legged:
+          - create-payment
       tags:
       - one-step-payment
       summary: Create a new payment for subsequent charging to an end user’s bill
       operationId: createPayment
-      parameters:
-        - name: endUserId
-          in: path
-          description: Identifies the header that contains the external user token.
-          required: true
-          schema:
-           type: string
       requestBody:
         description: Amount transaction
         content:
@@ -56,62 +47,76 @@ paths:
               schema:
                 $ref: '#/components/schemas/Payment'
         400:
-          description: 'List of error codes:<br/>- <b>SVC0001</b>: A service error
-            occurred<br/>- <b>SVC0002</b>: Invalid input value for message part<br/>-
-            <b>SVC0003</b>: Invalid input value for message part<br/>- <b>SVC0004</b>:
-            No valid addresses provided for message part<br/>- <b>SVC0280</b>: Message
-            too long'
+          description: Invalid input
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BodyServiceRequestError'
+                $ref: '#/components/schemas/ErrorInfo'
+              examples:
+                Generic400:
+                  summary: Schema validation failed
+                  value: 
+                    code: INVALID_INPUT
+                    message: "Schema validation failed at  ..."
+                wrongCurrency:
+                  summary: Currency is unknown or not authorized
+                  value: 
+                    code: INVALID_INPUT
+                    message: "Currency is unknown or not authorized: currency"
+                duplicateClientCorrelator:
+                  summary: clientCorrelator still exist
+                  value: 
+                    code: INVALID_INPUT
+                    message: "clientCorrelator already exist on server"
+                unauthorizedAmount:
+                  summary: unauthorized amount requested
+                  value: 
+                    code: INVALID_INPUT
+                    message: "unauthorized amount requested"
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorInfo'
         403:
-          description: 'List of error codes:<br/>- <b>POL0001</b>: A policy error
-            occurred<br/>- <b>POL0003</b>: Too many addresses specified in message
-            part<br/>- <b>POL0007</b>: Nested groups specified in message part not
-            allowed'
+          description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BodyPolicyRequestError'
-        404:
-          description: 'List of error codes:<br/>- <b>POL0010</b>: Requested information
-            unavailable as the retention time interval has expired'
+                $ref: '#/components/schemas/ErrorInfo'
+        409:
+          description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BodyPolicyRequestError'
-        406:
-          description: 'List of error codes:<br/>- <b>POL0011</b>: Media type not
-            supported'
+                $ref: '#/components/schemas/ErrorInfo'
+        500:
+          description: ServerError
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BodyPolicyRequestError'
+                $ref: '#/components/schemas/ErrorInfo'
         503:
-          description: 'List of error codes:<br/>- <b>SVC1000</b>: No resources This
-            exception is thrown if there are no server resources available to process
-            the request'
+          description: Service unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BodyServiceRequestError'
+                $ref: '#/components/schemas/ErrorInfo'
     get: 
+      security:
+        - oAuth2ClientCredentials: []
+        - three_legged:
+          - list-payment
       tags:
       - payment
       summary: retrieve payment(s) for subsequent charging to an end user’s bill
       operationId: retrievePaymentList
       description: retrieve payements based on criteria filtering.
       parameters:
-        - name: endUserId
-          in: path
-          description: Identifies the header that contains the external user token.
-          required: true
-          schema:
-           type: string
-        - $ref: '#/components/parameters/Fields'
-        - $ref: '#/components/parameters/Offset'
-        - $ref: '#/components/parameters/Limit'
+            - $ref: '#/components/parameters/Fields'
+            - $ref: '#/components/parameters/Offset'
+            - $ref: '#/components/parameters/Limit'
       responses:
         200:
             description: OK
@@ -164,6 +169,10 @@ paths:
           $ref: "#/components/responses/Generic503"
   /payments/{paymentId}:
     get: 
+      security:
+        - oAuth2ClientCredentials: []
+        - three_legged:
+          - retrieve-payment
       tags:
       - payment
       summary: retrieve a payment for subsequent charging to an end user’s bill
@@ -176,12 +185,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: endUserId
-          in: path
-          description: Identifies the header that contains the external user token.
-          required: true
-          schema:
-           type: string
       responses:
         200:
           description: OK
@@ -227,23 +230,20 @@ paths:
           $ref: "#/components/responses/Generic503"
   /payments/prepare:
     post:
+      security:
+        - oAuth2ClientCredentials: []
+        - three_legged:
+          - prepare-payment
       tags:
       - two-steps-payment
       summary: Prepare a new payment procedure for subsequent charging to an end user’s bill
       operationId: prepare
-      parameters:
-      - name: endUserId
-        in: path
-        description: Identifies the header that contains the external user token.
-        required: true
-        schema:
-          type: string
       requestBody:
         description: Amount transaction
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BodyAmountReservationTransactionForReserve'
+              $ref: '#/components/schemas/BodyAmountReservationTransactionForReserveInput'
         required: true
       responses:
         201:
@@ -298,19 +298,17 @@ paths:
                 message: "Session could not be created"
         503:
           $ref: "#/components/responses/Generic503"
-  /payments/confirm/{paymentId}:
+  /payments/{paymentId}/confirm:
     post:
+      security:
+        - oAuth2ClientCredentials: []
+        - three_legged:
+          - confirm-payment
       tags:
       - two-steps-payment
       summary: Confirm or Cancel a reservation on the user’s mobile account
       operationId: confirmOrCancel
       parameters:
-      - name: endUserId
-        in: path
-        description: Identifies the header that contains the external user token.
-        required: true
-        schema:
-          type: string
       - name: paymentId
         in: path
         description: The transaction identifier returned when the reservation was
@@ -319,14 +317,14 @@ paths:
         schema:
           type: string
       requestBody:
-        description: Amount transaction
+        description: capture UnduserId for payment operation
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BodyAmountReservationTransactionForConfirmOrCancel'
+              $ref: "#/components/schemas/EndUserId"
         required: true
       responses:
-        200:
+        202:
           description: Payment confirmation accepted
         400:
           description: Invalid input
@@ -375,25 +373,30 @@ paths:
         503:
           $ref: "#/components/responses/Generic503"
       x-codegen-request-body-name: body
-  /payments/cancel/{paymentId}:
+  /payments/{paymentId}/cancel:
     post:
+      security:
+        - oAuth2ClientCredentials: []
+        - three_legged:
+          - cancel-payment
       tags:
       - two-steps-payment
       summary: Cancel a payment preparation on the user’s mobile account
       operationId: CancelPayment
       parameters:
-      - name: endUserId
-        in: path
-        description: Identifies the user identifier
-        required: true
-        schema:
-          type: string
       - name: paymentId
         in: path
         description: The payment identifier returned when the payment preparation was created.
         required: true
         schema:
           type: string
+      requestBody:
+        description: capture UnduserId for payment operation
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EndUserId"
+        required: true
       responses:
         202:
           description: Payment Cancellation Accepted
@@ -444,7 +447,6 @@ paths:
         503:
           $ref: "#/components/responses/Generic503"
       x-codegen-request-body-name: body
-
   /notifications:
     post:
       tags:
@@ -485,13 +487,23 @@ components:
       properties:
         amountTransaction:
           $ref: '#/components/schemas/AmountTransactionInput'
+        notificationUrl:
+          type: string
+          description: Allows asynchronous delivery of purchase related events
     Payment:
       required:
       - amountTransaction
+      - paymentId
       type: object
       properties:
+        paymentId:
+          type: string
+          description: Unique Identifier of the payment
         amountTransaction:
           $ref: '#/components/schemas/AmountTransaction'
+        notificationUrl:
+          type: string
+          description: Allows asynchronous delivery of purchase related events
     AmountTransaction:
       required:
       - endUserId
@@ -517,8 +529,8 @@ components:
             request, for example, in the case of disputes.
         transactionOperationStatus:
           type: string
-          description: Specifies the payment operation required – in this case set
-            to 'Charged'.
+          description: Specifies the payment status (Processing, Denied, Reserved,
+           Succeeded, Cancelled).
         resourceURL:
           type: string
           description: URI of the created resource (same as in the Location header)
@@ -535,7 +547,7 @@ components:
       properties:
         endUserId:
           type: string
-          description: Identifies the header that contains the external user token.
+          description: Identify the mobile account to be charged - in general mobile number is provided.
         clientCorrelator:
           type: string
           description: Uniquely identifies this create charge request. If there is
@@ -548,13 +560,6 @@ components:
           type: string
           description: Merchant generated payment reference to uniquely identify the
             request, for example, in the case of disputes.
-        resourceURL:
-          type: string
-          description: URI of the created resource (same as in the Location header)
-        serverReferenceCode:
-          type: string
-          description: Reference to the charge or refund, provided by the server,
-            and meaningful to the server’s backend system for the purpose of reconciliation.
     PaymentAmountForCharge:
       required:
       - chargingInformation
@@ -564,13 +569,38 @@ components:
           $ref: '#/components/schemas/ChargingInformation'
         chargingMetaData:
           $ref: '#/components/schemas/ChargingMetaData'
+    EndUserId:
+      required: 
+      - endUserId
+      type: object
+      properties:
+        endUserId:
+          type: string
+          description: Identify the mobile account to be charged - in general mobile number is provided
     BodyAmountReservationTransactionForReserve:
+      required:
+      - amountTransaction
+      - paymentId
+      type: object
+      properties:
+        paymentId:
+          type: string
+          description: Unique Identifier of the payment
+        amountTransaction:
+          $ref: '#/components/schemas/AmountReservationTransactionForReserve'
+        notificationUrl:
+          type: string
+          description: Allows asynchronous delivery of purchase related events
+    BodyAmountReservationTransactionForReserveInput:
       required:
       - amountTransaction
       type: object
       properties:
         amountTransaction:
-          $ref: '#/components/schemas/AmountReservationTransactionForReserve'
+          $ref: '#/components/schemas/AmountReservationTransactionForReserveInput'
+        notificationUrl:
+          type: string
+          description: Allows asynchronous delivery of purchase related events
     AmountReservationTransactionForReserve:
       required:
       - endUserId
@@ -581,7 +611,7 @@ components:
       properties:
         endUserId:
           type: string
-          description: Identifies the header that contains the external user token.
+          description: Identify the mobile account to be charged - in general mobile number is provided.
         clientCorrelator:
           type: string
           description: Uniquely identifies this create charge request. If there is
@@ -596,8 +626,8 @@ components:
             request, for example, in the case of disputes.
         transactionOperationStatus:
           type: string
-          description: Specifies the payment operation required – in this case set
-            to ‘Reserved’.
+          description: Specifies the payment status (Processing, Denied, Reserved,
+           Succeeded, Cancelled).
         resourceURL:
           type: string
           description: URI of the created resource (same as in the Location header)
@@ -605,6 +635,28 @@ components:
           type: string
           description: Reference to the charge or refund, provided by the server,
             and meaningful to the server’s backend system for the purpose of reconciliation.
+    AmountReservationTransactionForReserveInput:
+      required:
+      - endUserId
+      - paymentAmount
+      - referenceCode
+      type: object
+      properties:
+        endUserId:
+          type: string
+          description: Identify the mobile account to be charged - in general mobile number is provided.
+        clientCorrelator:
+          type: string
+          description: Uniquely identifies this create charge request. If there is
+            a communication failure during the charge request, using the same clientCorrelator
+            when retrying the request allows the operator to avoid applying the same
+            charge twice. This field SHOULD be present.
+        paymentAmount:
+          $ref: '#/components/schemas/PaymentAmountForReserve'
+        referenceCode:
+          type: string
+          description: Merchant generated payment reference to uniquely identify the
+            request, for example, in the case of disputes.
     PaymentAmountForReserve:
       required:
       - chargingInformation
@@ -621,6 +673,9 @@ components:
       properties:
         amountTransaction:
           $ref: '#/components/schemas/AmountReservationTransactionForConfirmOrCancel'
+        notificationUrl:
+          type: string
+          description: Allows asynchronous delivery of purchase related events
     BodyAmountReservationTransactionCancel:
       required:
       - amountTransaction
@@ -636,7 +691,7 @@ components:
       properties:
         endUserId:
           type: string
-          description: Identifies the header that contains the external user token.
+          description: Identify the mobile account to be charged - in general mobile number is provided
         clientCorrelator:
           type: string
           description: Uniquely identifies this create charge request. If there is
@@ -651,8 +706,8 @@ components:
             request, for example, in the case of disputes.
         transactionOperationStatus:
           type: string
-          description: Specifies the payment operation required – in this case set
-            to ‘Charged‘ (confirmation) or ‘Released‘ (cancelation).
+          description: Specifies the payment status (Processing, Denied, Reserved,
+           Succeeded, Cancelled).
         resourceURL:
           type: string
           description: URI of the created resource (same as in the Location header)
@@ -714,46 +769,6 @@ components:
         productId:
           type: string
           description: Product specification code
-    BodyPolicyRequestError:
-      required:
-      - requestError
-      type: object
-      properties:
-        requestError:
-          $ref: '#/components/schemas/PolicyRequestError'
-    PolicyRequestError:
-      required:
-      - policyException
-      type: object
-      properties:
-        policyException:
-          $ref: '#/components/schemas/Exception'
-    BodyServiceRequestError:
-      required:
-      - requestError
-      type: object
-      properties:
-        requestError:
-          $ref: '#/components/schemas/ServiceRequestError'
-    ServiceRequestError:
-      required:
-      - serviceException
-      type: object
-      properties:
-        serviceException:
-          $ref: '#/components/schemas/Exception'
-    Exception:
-      type: object
-      properties:
-        messageId:
-          type: string
-          description: identifier of the exception
-        text:
-          type: string
-          description: text which describes the consistently of the exception
-        variables:
-          type: string
-          description: relates to the %1 placeholder(s) in the text property
     ErrorInfo:
       type: object
       required:
@@ -878,7 +893,7 @@ components:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/AmountTransaction'
+              $ref: '#/components/schemas/Payment'
   parameters:
     Fields:
       name: fields
