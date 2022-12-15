@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   description: Service Enabling Payments against OB Carrier Billing Systems
-  version: '0.5.0'
+  version: 0.5.0
   title: Carrier Billing Payment API
   termsOfService: http://swagger.io/terms/
   contact:
