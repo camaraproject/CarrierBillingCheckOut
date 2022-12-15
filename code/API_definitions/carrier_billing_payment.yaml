@@ -47,46 +47,62 @@ paths:
               schema:
                 $ref: '#/components/schemas/Payment'
         400:
-          description: 'List of error codes:<br/>- <b>SVC0001</b>: A service error
-            occurred<br/>- <b>SVC0002</b>: Invalid input value for message part<br/>-
-            <b>SVC0003</b>: Invalid input value for message part<br/>- <b>SVC0004</b>:
-            No valid addresses provided for message part<br/>- <b>SVC0280</b>: Message
-            too long'
+          description: Invalid input
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BodyServiceRequestError'
+                $ref: '#/components/schemas/ErrorInfo'
+              examples:
+                Generic400:
+                  summary: Schema validation failed
+                  value: 
+                    code: INVALID_INPUT
+                    message: "Schema validation failed at  ..."
+                wrongCurrency:
+                  summary: Currency is unknown or not authorized
+                  value: 
+                    code: INVALID_INPUT
+                    message: "Currency is unknown or not authorized: currency"
+                duplicateClientCorrelator:
+                  summary: clientCorrelator still exist
+                  value: 
+                    code: INVALID_INPUT
+                    message: "clientCorrelator already exist on server"
+                unauthorizedAmount:
+                  summary: unauthorized amount requested
+                  value: 
+                    code: INVALID_INPUT
+                    message: "unauthorized amount requested"
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorInfo'
         403:
-          description: 'List of error codes:<br/>- <b>POL0001</b>: A policy error
-            occurred<br/>- <b>POL0003</b>: Too many addresses specified in message
-            part<br/>- <b>POL0007</b>: Nested groups specified in message part not
-            allowed'
+          description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BodyPolicyRequestError'
-        404:
-          description: 'List of error codes:<br/>- <b>POL0010</b>: Requested information
-            unavailable as the retention time interval has expired'
+                $ref: '#/components/schemas/ErrorInfo'
+        409:
+          description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BodyPolicyRequestError'
-        406:
-          description: 'List of error codes:<br/>- <b>POL0011</b>: Media type not
-            supported'
+                $ref: '#/components/schemas/ErrorInfo'
+        500:
+          description: ServerError
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BodyPolicyRequestError'
+                $ref: '#/components/schemas/ErrorInfo'
         503:
-          description: 'List of error codes:<br/>- <b>SVC1000</b>: No resources This
-            exception is thrown if there are no server resources available to process
-            the request'
+          description: Service unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BodyServiceRequestError'
+                $ref: '#/components/schemas/ErrorInfo'
     get: 
       security:
         - oAuth2ClientCredentials: []
@@ -753,46 +769,6 @@ components:
         productId:
           type: string
           description: Product specification code
-    BodyPolicyRequestError:
-      required:
-      - requestError
-      type: object
-      properties:
-        requestError:
-          $ref: '#/components/schemas/PolicyRequestError'
-    PolicyRequestError:
-      required:
-      - policyException
-      type: object
-      properties:
-        policyException:
-          $ref: '#/components/schemas/Exception'
-    BodyServiceRequestError:
-      required:
-      - requestError
-      type: object
-      properties:
-        requestError:
-          $ref: '#/components/schemas/ServiceRequestError'
-    ServiceRequestError:
-      required:
-      - serviceException
-      type: object
-      properties:
-        serviceException:
-          $ref: '#/components/schemas/Exception'
-    Exception:
-      type: object
-      properties:
-        messageId:
-          type: string
-          description: identifier of the exception
-        text:
-          type: string
-          description: text which describes the consistently of the exception
-        variables:
-          type: string
-          description: relates to the %1 placeholder(s) in the text property
     ErrorInfo:
       type: object
       required:
