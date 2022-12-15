@@ -11,6 +11,7 @@ The API also provides functionality to check the follow-up of a purchase and its
 
 Intented for a future phase:<br>
 * Details about a list of Purchases
+* One-step payment
 * Purchase subscriptions 
 * Notification Callbacks<br/>
 
@@ -51,7 +52,7 @@ For 2-Step process:
 Identification of the mobile line to be charged is performed as part of the enforcement of the Access Token issued to the client application.
 
 **Notifications Model**
-Targetted for a future phase
+Targeted for a future phase
 
 
 Sample API invocations are presented in Section 4.6.
@@ -118,7 +119,7 @@ Following table defines API endpoints of exposed REST based for Carrier Billing 
 
 | **Create a new Purchase** |
 | -------------------------- |
-| **HTTP Request**<br> POST \<base-url>/carrier-billing-checkout/v0/purchases<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> No path parameters are defined. <br>**Request Body Parameters**<br> **payable**: polimorphic object that represents the purchase concept. Currently one defined is of type `digital_good` and it is extensible with new types in future.<br> **payable.type**: Identifies the type of payable. Current one defined is `digital_good`, to represent a digital content/good. Within this type, attributes `merchant` and `order` are required.<br> **payable.merchant**: provides information about a merchant/provider from external market, including `id` (unique merchant identifier), `name` (merchant name) and `fee` (fee percentage for the merchant).<br> **payable.order**: Represents an order from external market, including `id` (unique order identifier in the external market), `items` (array of purchased concepts with a `name` and an `amount` -comprised of `value`, `currency` and `tax_included` flag-) and `total_amount` (overall amount for this purchase, -comprised of `value`, `currency` and `tax_included` flag- as well)<br>
+| **HTTP Request**<br> POST \<base-url>/carrier-billing-checkout/v0/purchases<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> No path parameters are defined. <br>**Request Body Parameters**<br> **payable**: polymorphic object that represents the purchase concept. Currently one defined is of type `digital_good` and it is extensible with new types in future.<br> **payable.type**: Identifies the type of payable. Current one defined is `digital_good`, to represent a digital content/good. Within this type, attributes `merchant` and `order` are required.<br> **payable.merchant**: provides information about a merchant/provider from external market, including `id` (unique merchant identifier), `name` (merchant name) and `fee` (fee percentage for the merchant).<br> **payable.order**: Represents an order from external market, including `id` (unique order identifier in the external market), `items` (array of purchased concepts with a `name` and an `amount` -comprised of `value`, `currency` and `tax_included` flag-) and `total_amount` (overall amount for this purchase, -comprised of `value`, `currency` and `tax_included` flag- as well)<br>
  <br>**Response**<br> **201: Purchase created**<br> **Response body**: A complete purchase representation is provided. <br> **payable**: same payable as in request.<br> **id**: unique purchase identifier.<br> **status**: purchase status. <br> **400:** **Invalid Argument.**<br> **401:** **Unauthorized.** <br> **403:** **Permission Denied.** <br> **403:** **Purchase Amount Overpassed.**<br> **500:** **Server Error.**<br> **503:** **Service unavailable.**<br> **504:** **Request timeout exceeded.** |
 <br>
 
@@ -133,7 +134,7 @@ Following table defines API endpoints of exposed REST based for Carrier Billing 
 | **Create a new Payment** |
 | --------------------------------------- |
 | **HTTP Request**<br> POST \<base-url>/carrier-billing-checkout/v0/purchases/{purchase_id}/payment/prepare<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> `purchase_id` MUST be present in the request, to identify the purchase process involved in the payment action. <br>**Request Body Parameters**<br> No request body parameters are defined.<br>
- <br>**Response**<br> **200: Payment Triggered**<br> **Response body**: Information of triggered payment. <br> **id**: unique purchase identifier. Same value as in request path parameter.<br> **status**: purchase status.<br> **payment_otp**: provides the necessary information in order to validate an OTP, including the `validation_endpoint`. OTP code is sent offline to the user (e.g. via SMS), so end-user can input it in the endpoint provided. <br> **401:** **Unauthorized.** <br> **403:** **Permission Denied.** <br> **403:** **Accumulated Purchase Amount Overpassed.** <br> **404:** **Not Found.** <br> **409:** **Already Exists.** <br> **500:** **Server Error.**<br> **503:** **Service unavailable.** <br> **504:** **Request timeout exceeded.** |
+ <br>**Response**<br> **200: Payment Triggered**<br> **Response body**: Information of triggered payment. <br> **id**: unique purchase identifier. Same value as in request path parameter.<br> **status**: purchase status.<br> **payment_otp**: provides the necessary information in order to validate an OTP, including the `validation_endpoint`. This is an option to perform OTP validation but not unique one (e.g. other out-of-band solutions may apply, out of scope of this API). This mechanism is based on the following: along with `validation_endpoint` provided in API response, backend server also generates and sends OTP code (within a message with process context) offline to the user (e.g. via SMS), so App can request end-user to input OTP received in this `validation_endpoint` provided by the backend server. <br> **401:** **Unauthorized.** <br> **403:** **Permission Denied.** <br> **403:** **Accumulated Purchase Amount Overpassed.** <br> **404:** **Not Found.** <br> **409:** **Already Exists.** <br> **500:** **Server Error.**<br> **503:** **Service unavailable.** <br> **504:** **Request timeout exceeded.** |
 <br>
 
 
@@ -171,12 +172,11 @@ Following table provides an overview of common error names, codes, and messages 
 |10	|404 |	NOT_FOUND |	"Resource not found" |
 |11	|409 |	ALREADY_EXISTS | "The resource already exists" |
 |12	|409 |	ALREADY_EXISTS | "Purchase is already prepared or paid" |
-|13	|409 |	ALREADY_EXISTS | ""requested purchase with already existing payment" |
-|14	|409 |	CARRIER_BILLING_CHECKOUT.PAYMENT_REACHED_FINAL_STATUS |	"Payment already reached a final status. No further actions can be performed." |
-|15	|412 |	FAILED_PRECONDITION |	"Precondition failed" |
-|16	|500 |	INTERNAL |	"Server error" |
-|17	|503 |	SERVICE_UNAVAILABLE |	"Service unavailable" |
-|18	|504 |	TIMEOUT |	"Request timeout exceeded" |
+|13	|409 |	CARRIER_BILLING_CHECKOUT.PAYMENT_REACHED_FINAL_STATUS |	"Payment already reached a final status. No further actions can be performed." |
+|14	|412 |	FAILED_PRECONDITION |	"Precondition failed" |
+|15	|500 |	INTERNAL |	"Server error" |
+|16	|503 |	SERVICE_UNAVAILABLE |	"Service unavailable" |
+|17	|504 |	TIMEOUT |	"Request timeout exceeded" |
 
 ### 4.5 Policies
 
