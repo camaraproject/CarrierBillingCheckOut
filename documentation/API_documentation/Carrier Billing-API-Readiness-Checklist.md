@@ -10,4 +10,4 @@
 |  4 |User Stories                       |   Y       | Contributed            |
 |  5 |API test cases                     |   Y       | Not Contributed        |
 |  6 |Validated by at least 2 operators  |   Y       | N/A                    |
-|  7 |Security review                    |   Y       | Contributed            |
+|  7 |Security review                    |   N       | Contributed            |
