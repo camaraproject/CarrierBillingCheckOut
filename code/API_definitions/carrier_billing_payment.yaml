@@ -12,12 +12,6 @@ info:
 externalDocs:
   description: Product documentation at Camara
   url: https://github.com/camaraproject/
-security:
-  - oAuth2ClientCredentials: []
-  - BasicAuth: []
-  - apiKey: []
-  - three_legged:
-    - payment
 servers:
   - url: "{apiRoot}/{basePath}"
     variables:
@@ -30,6 +24,10 @@ servers:
 paths:
   /payments:
     post:
+      security:
+        - oAuth2ClientCredentials: []
+        - three_legged:
+          - create-payment
       tags:
       - one-step-payment
       summary: Create a new payment for subsequent charging to an end user’s bill
@@ -90,21 +88,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/BodyServiceRequestError'
     get: 
+      security:
+        - oAuth2ClientCredentials: []
+        - three_legged:
+          - list-payment
       tags:
       - payment
       summary: retrieve payment(s) for subsequent charging to an end user’s bill
       operationId: retrievePaymentList
       description: retrieve payements based on criteria filtering.
       parameters:
-        - name: endUserId
-          in: path
-          description: Identifies the header that contains the external user token.
-          required: true
-          schema:
-           type: string
-        - $ref: '#/components/parameters/Fields'
-        - $ref: '#/components/parameters/Offset'
-        - $ref: '#/components/parameters/Limit'
+            - $ref: '#/components/parameters/Fields'
+            - $ref: '#/components/parameters/Offset'
+            - $ref: '#/components/parameters/Limit'
       responses:
         200:
             description: OK
@@ -157,6 +153,10 @@ paths:
           $ref: "#/components/responses/Generic503"
   /payments/{paymentId}:
     get: 
+      security:
+        - oAuth2ClientCredentials: []
+        - three_legged:
+          - retrieve-payment
       tags:
       - payment
       summary: retrieve a payment for subsequent charging to an end user’s bill
@@ -169,12 +169,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: endUserId
-          in: path
-          description: Identifies the header that contains the external user token.
-          required: true
-          schema:
-           type: string
       responses:
         200:
           description: OK
@@ -220,6 +214,10 @@ paths:
           $ref: "#/components/responses/Generic503"
   /payments/prepare:
     post:
+      security:
+        - oAuth2ClientCredentials: []
+        - three_legged:
+          - prepare-payment
       tags:
       - two-steps-payment
       summary: Prepare a new payment procedure for subsequent charging to an end user’s bill
@@ -284,19 +282,17 @@ paths:
                 message: "Session could not be created"
         503:
           $ref: "#/components/responses/Generic503"
-  /payments/confirm/{paymentId}:
+  /payments/{paymentId}/confirm:
     post:
+      security:
+        - oAuth2ClientCredentials: []
+        - three_legged:
+          - confirm-payment
       tags:
       - two-steps-payment
       summary: Confirm or Cancel a reservation on the user’s mobile account
       operationId: confirmOrCancel
       parameters:
-      - name: endUserId
-        in: path
-        description: Identifies the header that contains the external user token.
-        required: true
-        schema:
-          type: string
       - name: paymentId
         in: path
         description: The transaction identifier returned when the reservation was
@@ -304,6 +300,13 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        description: capture UnduserId for payment operation
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EndUserId"
+        required: true
       responses:
         202:
           description: Payment confirmation accepted
@@ -354,25 +357,30 @@ paths:
         503:
           $ref: "#/components/responses/Generic503"
       x-codegen-request-body-name: body
-  /payments/cancel/{paymentId}:
+  /payments/{paymentId}/cancel:
     post:
+      security:
+        - oAuth2ClientCredentials: []
+        - three_legged:
+          - cancel-payment
       tags:
       - two-steps-payment
       summary: Cancel a payment preparation on the user’s mobile account
       operationId: CancelPayment
       parameters:
-      - name: endUserId
-        in: path
-        description: Identifies the user identifier
-        required: true
-        schema:
-          type: string
       - name: paymentId
         in: path
         description: The payment identifier returned when the payment preparation was created.
         required: true
         schema:
           type: string
+      requestBody:
+        description: capture UnduserId for payment operation
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EndUserId"
+        required: true
       responses:
         202:
           description: Payment Cancellation Accepted
@@ -523,7 +531,7 @@ components:
       properties:
         endUserId:
           type: string
-          description: Identifies the header that contains the external user token.
+          description: Identify the mobile account to be charged - in general mobile number is provided.
         clientCorrelator:
           type: string
           description: Uniquely identifies this create charge request. If there is
@@ -545,6 +553,14 @@ components:
           $ref: '#/components/schemas/ChargingInformation'
         chargingMetaData:
           $ref: '#/components/schemas/ChargingMetaData'
+    EndUserId:
+      required: 
+      - endUserId
+      type: object
+      properties:
+        endUserId:
+          type: string
+          description: Identify the mobile account to be charged - in general mobile number is provided
     BodyAmountReservationTransactionForReserve:
       required:
       - amountTransaction
@@ -579,7 +595,7 @@ components:
       properties:
         endUserId:
           type: string
-          description: Identifies the header that contains the external user token.
+          description: Identify the mobile account to be charged - in general mobile number is provided.
         clientCorrelator:
           type: string
           description: Uniquely identifies this create charge request. If there is
@@ -612,7 +628,7 @@ components:
       properties:
         endUserId:
           type: string
-          description: Identifies the header that contains the external user token.
+          description: Identify the mobile account to be charged - in general mobile number is provided.
         clientCorrelator:
           type: string
           description: Uniquely identifies this create charge request. If there is
@@ -659,7 +675,7 @@ components:
       properties:
         endUserId:
           type: string
-          description: Identifies the header that contains the external user token.
+          description: Identify the mobile account to be charged - in general mobile number is provided
         clientCorrelator:
           type: string
           description: Uniquely identifies this create charge request. If there is
