@@ -126,8 +126,8 @@ Following table defines API endpoints of exposed REST based for Carrier Billing 
 | -------- | --------- | ----------- |
 | POST<br>  \<base-url>/payment/v0/payments | **Create one step payment** | Create request for one step payment |
 | POST<br>  \<base-url>/payment/v0/payments/prepare | **Create two steps payment** | Create request for two steps payment |
-| POST<br>  \<base-url>/payment/v0/payments/confirm/{paymentId} | **Confirm a two steps payment** | Confirmation request for a prepared payment |
-| POST<br>  \<base-url>/payment/v0/payments/cancel/{paymentId} | **Cancel a two steps payment** | Cancellation request for a prepared payment |
+| POST<br>  \<base-url>/payment/v0/payments/{paymentId}/confirm | **Confirm a two steps payment** | Confirmation request for a prepared payment |
+| POST<br>  \<base-url>/payment/v0/payments/{paymentId}/cancel | **Cancel a two steps payment** | Cancellation request for a prepared payment |
 | GET<br> \<base-url>/payment/v0/payments | **Query for payment** | Querying for payment(s) with criteria |
 | GET<br> \<base-url>/payment/v0/payments/{paymentId} | **Retrieve payment** | Retrieve payment |
 <br>
@@ -139,7 +139,7 @@ Following table defines API endpoints of exposed REST based for Carrier Billing 
 | -------------------------- |
 | **HTTP Request**<br> POST \<base-url>/payment/v0/payments<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> endUserId must be provided <br>**Request Body Parameters**<br> See above table for attribute definition.<br> Following attributes are mandatory in the request: endUserId; paymentAmount.chargingInformation.amount; paymentAmount.chargingInformation.currency ; paymentAmount.chargingInformation.description ; referenceCode.<br>Following attributes are only valued on server side and not present in POST request: transactionOperationStatus; resourceURL ; serverReferenceCode.
 
- <br>**Response**<br> **201: payment created**<br>  Response body: A complete payment representation as described in above table is provided. <br> **400:** **Invalid input.**<br> **401:** **Un-authorized. <br> **403:** Forbidden.**<br> **409:** **Conflict.**<br> **500:** **Server Error.**<br> **503:** **Service temporarily unavailable.** |
+ <br>**Response**<br> **201: payment created**<br>  Response body: A complete payment representation as described in above table is provided. <br> **400:** **Invalid input.**<br> **401:** **Un-authorized. <br> **403:** Forbidden.**<br> **409:** **Conflict.**<br> **500:** **Server Error.**<br> **503:** **Service temporarily unavailable.** 
 <br>
 
 
@@ -153,14 +153,14 @@ Following table defines API endpoints of exposed REST based for Carrier Billing 
 
 | **Confirm payment task (only for two steps process)** |
 | -------------------------- |
- **HTTP Request**<br> POST \<base-url>/payment/v0/payments/confirm/{paymentId<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> endUserId and PaymentId must be provided <br>**Request Body Parameters**<br> none
+ **HTTP Request**<br> POST \<base-url>/payment/v0/payments/confirm/{paymentId<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br>  PaymentId must be provided <br>**Request Body Parameters**<br> endUserId must be provided
 
  **Response**<br> **200: payment confirmation accepted** <br>Response body: None <br><br> **400:** **Invalid input.**<br> **401:** **Un-authorized. <br> **403:** Forbidden.**<br> **409:** **Conflict.**<br> **500:** **Server Error.**<br> **503:** **Service temporarily unavailable.** 
 <br>
 
 | **Cancel payment task (only for two steps process)** |
 | -------------------------- |
- **HTTP Request**<br> POST \<base-url>/payment/v0/payments/cancel/{paymentId}<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> endUserId and PaymentId must be provided <br>**Request Body Parameters**<br> none
+ **HTTP Request**<br> POST \<base-url>/payment/v0/payments/cancel/{paymentId}<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> PaymentId must be provided <br>**Request Body Parameters**<br> endUserId must be provided
 
  **Response**<br> **202: payment cancellation accepted** <br>Response body: None <br><br> **400:** **Invalid input.**<br> **401:** **Un-authorized. <br> **403:** Forbidden.**<br> **409:** **Conflict.**<br> **500:** **Server Error.**<br> **503:** **Service temporarily unavailable.** 
 <br>
