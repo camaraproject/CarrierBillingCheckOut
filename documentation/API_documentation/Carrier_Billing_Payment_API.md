@@ -30,7 +30,8 @@ both process (query & retrieve)
 Security access keys such as OAuth 2.0 client credentials used by Client applications to invoke the Carrier Billing Payment API.
 
 **1-Step & 2-Steps**
-1-Step process is very simple: The request intent is to charge an amount to the mobile line. When the server receives the request, it will check the user account associated with this line, and, if nothing prevent it, the amount is charged and will be either bill in next invoice or removed from current line credit.
+1-Step process is very simple: The request intent is to charge an amount to the mobile line. When the server receives the request, it will check the user account associated with this line, and, if nothing prevents it, the amount is charged and will be either bill in next invoice or removed from current line credit.
+
 For 2-steps, the first call is to request a payment preparation. The amount is not charged and the server has to be ready to get a confirmation or a cancellation to perform the payment. Only when the confirmation is done, payment is charged. Depending on business rules of the Telco operator, a 'prepared' payment could expire after a defined delay.
 
 **Identifier for the mobile line to be charged**
