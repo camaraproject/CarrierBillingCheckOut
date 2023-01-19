@@ -13,7 +13,7 @@ The Carrier Billing familly features 2 APIs with **distinct business scope**:
 * 'Carrier billing checkout' : Service that provides functionality for enabling the first the purchase and then payment request, and follow up of fulfilment of goods against OB carrier billing systems.
 * 'Carrier billing payment' : Service enabling payments and payment follow-up against OB Carrier Billing Systems.
 
-Both proposal manage the payment request & processing. 'Carrier billing checkout' proposal prerequisites a 'Purchase' creation before to trigger a payment request (The payment is performed for this purchase).
+Both proposals manage the payment request & processing. 'Carrier billing checkout' proposal prerequisites a 'Purchase' creation before to trigger a payment request (The payment is performed for this purchase).
 Depending on the use case an implementation could use either one of these 2 APIs. 
 
 Reader has to be aware of this distinction because API definition as documentation are provided for both flavor.
