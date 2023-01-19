@@ -23,7 +23,7 @@ Reader has to be aware of this distinction because API definition as documentati
 * Service APIs for “CarrierBillingCheckOut” (see APIBacklog.md)  
 * It provides the customer with the ability to:  
   * purchase (only for 'carrier billing checkout' flavor),
-  * trigger carrier billing payment request(in one or two steps) 
+  * trigger carrier billing payment request (in one or two steps) 
   * follow up of payment processing using as Payment Method Carrier Billing, i.e.: the operator performs the billing of the goods.
   * follow up of fulfilment of physical/digital goods (only for 'carrier billing checkout' flavor),
 * NOTE: The scope of this API family should be limited (at least at a first stage) to 4G and 5G.
