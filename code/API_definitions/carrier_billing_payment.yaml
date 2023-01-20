@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   description: Service Enabling Payments against OB Carrier Billing Systems
-  version: 0.5.0
+  version: 0.6.0
   title: Carrier Billing Payment
   termsOfService: http://swagger.io/terms/
   contact:
@@ -57,21 +57,25 @@ paths:
                   summary: Schema validation failed
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Schema validation failed at  ..."
                 wrongCurrency:
                   summary: Currency is unknown or not authorized
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Currency is unknown or not authorized: currency"
                 duplicateClientCorrelator:
                   summary: clientCorrelator still exist
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "clientCorrelator already exist on server"
                 unauthorizedAmount:
                   summary: unauthorized amount requested
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "unauthorized amount requested"
         401:
           description: Unauthorized
@@ -132,16 +136,19 @@ paths:
                   summary: Schema validation failed
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Schema validation failed at  ..."
                 endUserIdRequired:
                   summary: end user id is required
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Expected property is missing: endUserId"
                 paymentIdRequired:
                   summary: paymentId is required
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Expected property is missing: paymentId"
         401:
           $ref: "#/components/responses/Generic401"
@@ -155,6 +162,7 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
               example:
                 code: CONFLICT
+                status: 409
                 message: "Another session is created for the same UE"
         500:
           description: Server error
@@ -164,6 +172,7 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
               example:
                 code: INTERNAL
+                status: 500
                 message: "Session could not be created"
         503:
           $ref: "#/components/responses/Generic503"
@@ -203,16 +212,19 @@ paths:
                   summary: Schema validation failed
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Schema validation failed at  ..."
                 endUserIdRequired:
                   summary: end user id is required
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Expected property is missing: endUserId"
                 paymentIdRequired:
                   summary: paymentId is required
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Expected property is missing: paymentId"
         401:
           $ref: "#/components/responses/Generic401"
@@ -263,16 +275,19 @@ paths:
                   summary: Schema validation failed
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Schema validation failed at  ..."
                 endUserIdRequired:
                   summary: end user id is required
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Expected property is missing: endUserId"
                 paymentIdRequired:
                   summary: paymentId is required
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Expected property is missing: paymentId"
         401:
           $ref: "#/components/responses/Generic401"
@@ -286,6 +301,7 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
               example:
                 code: CONFLICT
+                status: 409
                 message: "Another session is created for the same UE"
         500:
           description: Server error
@@ -295,6 +311,7 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
               example:
                 code: INTERNAL
+                status: 500
                 message: "Session could not be created"
         503:
           $ref: "#/components/responses/Generic503"
@@ -337,16 +354,19 @@ paths:
                   summary: Schema validation failed
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Schema validation failed at  ..."
                 endUserIdRequired:
                   summary: end user id is required
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Expected property is missing: endUserId"
                 paymentIdRequired:
                   summary: paymentId is required
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Expected property is missing: paymentId"
         401:
           $ref: "#/components/responses/Generic401"
@@ -360,6 +380,7 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
               example:
                 code: CONFLICT
+                status: 409
                 message: "Another session is created for the same UE"
         500:
           description: Server error
@@ -369,6 +390,7 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
               example:
                 code: INTERNAL
+                status: 500
                 message: "Session could not be created"
         503:
           $ref: "#/components/responses/Generic503"
@@ -411,16 +433,19 @@ paths:
                   summary: Schema validation failed
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Schema validation failed at  ..."
                 endUserIdRequired:
                   summary: end user id is required
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Expected property is missing: endUserId"
                 paymentIdRequired:
                   summary: paymentId is required
                   value: 
                     code: INVALID_INPUT
+                    status: 400
                     message: "Expected property is missing: paymentId"
         401:
           $ref: "#/components/responses/Generic401"
@@ -434,6 +459,7 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
               example:
                 code: CONFLICT
+                status: 409
                 message: "Another session is created for the same UE"
         500:
           description: Server error
@@ -443,6 +469,7 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
               example:
                 code: INTERNAL
+                status: 500
                 message: "Session could not be created"
         503:
           $ref: "#/components/responses/Generic503"
@@ -490,6 +517,10 @@ components:
         notificationUrl:
           type: string
           description: Allows asynchronous delivery of purchase related events
+        notificationAuthToken:
+          type: string
+          example: "c8974e592c2fa383d4a3960714"
+          description: Authentification token for callback API
     Payment:
       required:
       - amountTransaction
@@ -504,6 +535,10 @@ components:
         notificationUrl:
           type: string
           description: Allows asynchronous delivery of purchase related events
+        notificationAuthToken:
+          type: string
+          example: "c8974e592c2fa383d4a3960714"
+          description: Authentification token for callback API
     AmountTransaction:
       required:
       - endUserId
@@ -591,6 +626,10 @@ components:
         notificationUrl:
           type: string
           description: Allows asynchronous delivery of purchase related events
+        notificationAuthToken:
+          type: string
+          example: "c8974e592c2fa383d4a3960714"
+          description: Authentification token for callback API
     BodyAmountReservationTransactionForReserveInput:
       required:
       - amountTransaction
@@ -601,6 +640,10 @@ components:
         notificationUrl:
           type: string
           description: Allows asynchronous delivery of purchase related events
+        notificationAuthToken:
+          type: string
+          example: "c8974e592c2fa383d4a3960714"
+          description: Authentification token for callback API
     AmountReservationTransactionForReserve:
       required:
       - endUserId
@@ -774,10 +817,15 @@ components:
       required:
         - code
         - message
+        - status
       properties:
         code:
           type: string
           description: Code given to this error
+        status:
+          type: string
+          pattern: '^[1-5][0-9][0-9]$'
+          description: HTTP response status code
         message:
           type: string
           description: Detailed error description
@@ -826,6 +874,7 @@ components:
             $ref: "#/components/schemas/ErrorInfo"
           example:
             code: INVALID_INPUT
+            status: 400
             message: "Schema validation failed at  ..."
     Generic401:
       description: Unauthorized
@@ -835,6 +884,7 @@ components:
             $ref: "#/components/schemas/ErrorInfo"
           example:
             code: UNAUTHORIZED
+            status : 401
             message: "Authorization failed: ..."
     Generic403:
       description: Forbidden
@@ -844,6 +894,7 @@ components:
             $ref: "#/components/schemas/ErrorInfo"
           example:
             code: FORBIDDEN
+            status: 403
             message: "Operation not allowed: ..."
     Generic404:
       description: Resource Not Found
@@ -853,6 +904,7 @@ components:
             $ref: "#/components/schemas/ErrorInfo"
           example:
             code: NOT_FOUND
+            status : 404
             message: "The specified resource is not found"
     Generic500:
       description: Server error
@@ -862,6 +914,7 @@ components:
             $ref: "#/components/schemas/ErrorInfo"
           example:
             code: SERVER_ERROR
+            status: 500
             message: "Server Error"
     Generic503:
       description: Service unavailable
@@ -871,6 +924,7 @@ components:
             $ref: "#/components/schemas/ErrorInfo"
           example:
             code: SERVICE_UNAVAILABLE
+            status: 503
             message: "Service unavailable"
     Generic504:
       description: Request timeout exceeded
@@ -880,6 +934,7 @@ components:
             $ref: "#/components/schemas/ErrorInfo"
           example:
             code: REQUEST_TIMEOUT_EXCEEDED
+            status: 504
             message: "Request timeout exceeded"
     200PaymentArray:
       description: A list of payment(s)
