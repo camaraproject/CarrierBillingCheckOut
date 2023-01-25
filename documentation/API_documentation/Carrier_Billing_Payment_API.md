@@ -15,31 +15,31 @@ The carrier billing Payment API is driven from Open Mobile Alliance standard.
 
 ## 2\. Quick Start
 
-The usage of the API is based on Payment resource, which can be created (in 1 or 2 steps), confirmed (for 2-steps process), cancelled (for 2-steps process), queried and retrieved.
+The usage of the API is based on Payment resource, which can be created (in 1 or 2 steps process), confirmed (for 2-steps process), cancelled (for 2-steps process), queried and retrieved.
 
 
 Before starting to use the API, the developer needs to know about the below specified details:
 
-**payment service endpoint**
+**Payment service endpoint**
 The URL pointing to the RESTful resource of the payment API.
 As we manage 1-step and 2-steps process we have defined 2 separate tags to explicitly
-distinct them in the swagger. A third tage 'payment' is defined for common operations for
+distinct them in the swagger. A third tag 'payment' is defined for common operation for
 both process (query & retrieve)
 
 **Authentication**
 Security access keys such as OAuth 2.0 client credentials used by Client applications to invoke the Carrier Billing Payment API.
 
 **1-Step & 2-Steps**
-1-Step process is very simple: The request intent is to charge an amount to the mobile line. When the server receives the request, it will check account associated with this line and if nothing prevents it, the amount is charged and will be billed in next invoice or removed from line credit.
+1-Step process is very simple: The request intent is to charge an amount to the mobile line. When the server receives the request, it will check the user account associated with this line, and, if nothing prevents it, the amount is charged and will be either bill in next invoice or removed from current line credit.
 
-For 2-steps, the first call is to request a payment preparation. The amount is not charged and the server has to be ready to get a confirmation or a cancellation to perform the payment. Only when the confirmation is done, payment is charged. Depending on business rules of the Telco operator, a 'prepared' payment could expire after n days.
+For 2-steps, the first call is to request a payment preparation. The amount is not charged and the server has to be ready to get a confirmation or a cancellation to perform the payment. Only when the confirmation is done, payment is charged. Depending on business rules of the Telco operator, a 'prepared' payment could expire after a defined delay.
 
-**Identifier for the the mobile line to be charged**
-In order to identify the mobile line to be chaged an identifer must be provided. This identifies is mapped to the endUserId attribute.
+**Identifier for the mobile line to be charged**
+To identify the mobile line to be charged an identifier **must** be provided. This identifier is mapped to the endUserId attribute.
 
 
 **Notification URL**
-Developers may provide a callback URL on which status change notifications regarding the payment can be received from the service provider. This is an optional parameter.
+Developers may provide a callback URL on which status change notifications, regarding the payment, can be received from the service provider. This is an optional parameter.
 
 
 
@@ -61,7 +61,7 @@ In this method the API invoker client is registered as a confidential client wit
 
 #### 4.2.1 API sequencing
 
-As described above, the API accomodates 2 distinc processes: one step process (direct request to charge) and two steps process (which requires an intermediate step to confirm/cancel a payment request)
+As described above, the API accommodates 2 distinct processes: one step process (direct request to charge) and two steps process (which requires an intermediate step to confirm/cancel a payment request)
 
 Following diagram shows the API resources operation sequencing
 
@@ -116,7 +116,7 @@ ChargingMetaData
 
 Follow schema provides information about the payment state engine (state description & transition)
 
-<img src="./resources/Carrier_Billing_Payment_State_Engine.jpg" alt="PaymentState" title="Carrier Billing Payment API state engine">
+<img src="./resources/Carrier_Billing_Payment_State_Engine.JPG" alt="PaymentState" title="Carrier Billing Payment API state engine">
 
 
 ### 4.3 Endpoint Definitions
@@ -126,10 +126,10 @@ Following table defines API endpoints of exposed REST based for Carrier Billing 
 | **Endpoint** | **Operation** | **Description** |
 | -------- | --------- | ----------- |
 | POST<br>  \<base-url>/payment/v0/payments | **Create one step payment** | Create request for one step payment |
-| POST<br>  \<base-url>/payment/v0/payments/prepare | **Create two steps payment** | Create request for two step payment |
-| POST<br>  \<base-url>/payment/v0/payments/confirm/{paymentId} | **Confirm a two steps payment** | Confirmation request for a prepared payment |
-| POST<br>  \<base-url>/payment/v0/payments/cancel/{paymentId} | **Cancel a two steps payment** | Cancellation request for a prepared payment |
-| GET<br> \<base-url>/payment/v0/payments | **Query for payment** | Querying for payment with criteria |
+| POST<br>  \<base-url>/payment/v0/payments/prepare | **Create two steps payment** | Create request for two steps payment |
+| POST<br>  \<base-url>/payment/v0/payments/{paymentId}/confirm | **Confirm a two steps payment** | Confirmation request for a prepared payment |
+| POST<br>  \<base-url>/payment/v0/payments/{paymentId}/cancel | **Cancel a two steps payment** | Cancellation request for a prepared payment |
+| GET<br> \<base-url>/payment/v0/payments | **Query for payment** | Querying for payment(s) with criteria |
 | GET<br> \<base-url>/payment/v0/payments/{paymentId} | **Retrieve payment** | Retrieve payment |
 <br>
 
@@ -140,7 +140,7 @@ Following table defines API endpoints of exposed REST based for Carrier Billing 
 | -------------------------- |
 | **HTTP Request**<br> POST \<base-url>/payment/v0/payments<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> endUserId must be provided <br>**Request Body Parameters**<br> See above table for attribute definition.<br> Following attributes are mandatory in the request: endUserId; paymentAmount.chargingInformation.amount; paymentAmount.chargingInformation.currency ; paymentAmount.chargingInformation.description ; referenceCode.<br>Following attributes are only valued on server side and not present in POST request: transactionOperationStatus; resourceURL ; serverReferenceCode.
 
- <br>**Response**<br> **201: payment created**<br>  Response body: A complete payment representation as described in above table is provided. <br> **400:** **Invalid input.**<br> **401:** **Un-authorized. <br> **403:** Forbidden.**<br> **409:** **Conflict.**<br> **500:** **Server Error.**<br> **503:** **Service temporarily unavailable.** |
+ <br>**Response**<br> **201: payment created**<br>  Response body: A complete payment representation as described in above table is provided. <br> **400:** **Invalid input.**<br> **401:** **Un-authorized. <br> **403:** Forbidden.**<br> **409:** **Conflict.**<br> **500:** **Server Error.**<br> **503:** **Service temporarily unavailable.** 
 <br>
 
 
@@ -154,14 +154,14 @@ Following table defines API endpoints of exposed REST based for Carrier Billing 
 
 | **Confirm payment task (only for two steps process)** |
 | -------------------------- |
- **HTTP Request**<br> POST \<base-url>/payment/v0/payments/confirm/{paymentId<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> endUserId and PaymentId must be provided <br>**Request Body Parameters**<br> none
+**HTTP Request**<br> POST \<base-url>/payment/v0/payments/confirm/{paymentId<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> PaymentId must be provided <br>**Request Body Parameters**<br> endUserId must be provided
 
  **Response**<br> **200: payment confirmation accepted** <br>Response body: None <br><br> **400:** **Invalid input.**<br> **401:** **Un-authorized. <br> **403:** Forbidden.**<br> **409:** **Conflict.**<br> **500:** **Server Error.**<br> **503:** **Service temporarily unavailable.** 
 <br>
 
 | **Cancel payment task (only for two steps process)** |
 | -------------------------- |
- **HTTP Request**<br> POST \<base-url>/payment/v0/payments/cancel/{paymentId}<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> endUserId and PaymentId must be provided <br>**Request Body Parameters**<br> none
+ **HTTP Request**<br> POST \<base-url>/payment/v0/payments/cancel/{paymentId}<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> endUserId and PaymentId must be provided <br>**Request Body Parameters**<br> endUserId must be provided
 
  **Response**<br> **202: payment cancellation accepted** <br>Response body: None <br><br> **400:** **Invalid input.**<br> **401:** **Un-authorized. <br> **403:** Forbidden.**<br> **409:** **Conflict.**<br> **500:** **Server Error.**<br> **503:** **Service temporarily unavailable.** 
 <br>
@@ -177,7 +177,7 @@ Following table defines API endpoints of exposed REST based for Carrier Billing 
 
 | **Quering payment Resource /list information** |
 | --------------------------------------- |
-| **HTTP Request**<br> GET\<base-url>/payment/v0/payments/{paymentId}<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> endUserId: Identify the mobile account  charged - in general mobile number is provided<br> fields: Comma-separated attributes to be provided in response <br> offset: Requested index for start of resources to be provided in response <br> limit: Requested number of resources to be provided in response <br>**Request Body Parameters**<br> No request body parameters are defined.<br>**Response**<br><br> **200: a list of payment(s).**<br>  Response body:<br> An array of payment representation (could be a subset of a complete representation depending on fields filtering). <br>Note: . It could be empty list if no payment match search criteria.<br><br> **401:** Un-authorized. <br> **403:** Forbidden. <br> <br> **503:** Service temporarily unavailable. |
+| **HTTP Request**<br> GET\<base-url>/payment/v0/payments/{paymentId}<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> endUserId: Identify the mobile account  charged - in general mobile number is provided<br> fields: Comma-separated attributes to be provided in response <br> offset: Requested index for start of resources to be provided in response <br> limit: Requested number of resources to be provided in response <br>**Request Body Parameters**<br> No request body parameters are defined.<br>**Response**<br><br> **200: a list of payment(s).**<br>  Response body:<br> An array of payment representation (could be a subset of a complete representation depending on fields filtering). <br>Note: It could be empty list if no payment match search criteria.<br><br> **401:** Un-authorized. <br> **403:** Forbidden. <br> <br> **503:** Service temporarily unavailable. |
 <br>
 
 ### 4.4 Errors
@@ -187,7 +187,7 @@ Since CAMARA Carrier Billing Payment API is based on REST design principles and 
 Details of HTTP based error/exception codes for the Carrier Billing Payment API are described in Section 4.3 of each API REST based method.
 Following table provides an overview of common error names, codes, and messages applicable to Carrier Billing Payment API.
 
-| No | Error Status | Error Code | Error Message |
+| No | Error Name | Error Code | Error Message |
 | --- | ---------- | ---------- | ------------- |
 |1	|400 |	INVALID_INPUT |	"Expected property is missing: endUserId" |
 |2	|400 |	INVALID_INPUT |	"Expected property is missing: referenceCode" |
@@ -219,8 +219,8 @@ Please note, the credentials for API authentication purposes need to be adjusted
 
 | Snippet 1. Create Payment resource  |
 | ----------------------------------------------- |
-| curl -X 'POST' `https://sample-base-url/payment/v0/payments`   <br>    -H 'accept: application/json' <br>    -H 'Content-Type: application/json'<br>    -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbG...."<br>    -d '{ "amountTransaction": { "endUserId": "+33068741256+d", "paymentAmount": { "chargingInformation": { "amount": 2.99, "currency": "EUR", "description": "VOD charge" }, "chargingMetaData": { "onBehalfOf": "VOD Service", "purchaseCategoryCode": "Purchase Movie", "channel": "TV", "taxAmount": 0.84, "serviceId": "N/A", "productId": "vod-47" } }, "referenceCode": "vod081220225698", "clientCorrelator": "78g9-dfg6-fgtr6" }, "notificationUrl": "https://callback...", "notificationAuthToken": "c8974e59...fa383d4a3960714" }  |
-| response will be: <br> 201 <br>   -d '{ "amountTransaction": { "endUserId": "+33068741256+d", "paymentAmount": { "chargingInformation": { "amount": 2.99, "currency": "EUR", "description": "VOD charge" }, "chargingMetaData": { "onBehalfOf": "VOD Service", "purchaseCategoryCode": "Purchase Movie", "channel": "TV", "taxAmount": 0.84, "serviceId": "N/A", "productId": "vod-47" } }, "referenceCode": "vod081220225698", "clientCorrelator": "78g9-dfg6-fgtr6", "transactionOperationStatus": "succeeded", "resourceURL": "https://localhost:9091/payment/v0/payments/7896321", "serverReferenceCode": "7896321" }, "notificationUrl": "https://callback...", "notificationAuthToken": "c8974e59...fa383d4a3960714" }'|
+| curl -X 'POST' `https://sample-base-url/payment/v0/payments`   <br>    -H 'accept: application/json' <br>    -H 'Content-Type: application/json'<br>    -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbG...."<br>    -d '{<br> "amountTransaction": { <br> "endUserId": "+33068741256+d", <br>"paymentAmount": { "chargingInformation": { "amount": 2.99, "currency": "EUR", "description": "VOD charge" }, <br> "chargingMetaData": { <br> "onBehalfOf":"VOD Service", <br>    "purchaseCategoryCode": "Purchase Movie", <br>  "channel": "TV", <br> "taxAmount": 0.84, <br> "serviceId": "N/A", <br> "productId": "vod-47" } <br> }, <br>"referenceCode": "vod081220225698", <br>"clientCorrelator": "78g9-dfg6-fgtr6" }, <br>"notificationUrl": "https://callback..."  |
+| response will be: <br> 201 <br>   -d '{<br> "amountTransaction": { <br> "endUserId": "+33068741256+d", <br> "paymentAmount": { "chargingInformation": { "amount": 2.99, "currency": "EUR", "description": "VOD charge" }, <br>"chargingMetaData": { <br>"onBehalfOf":"VOD Service", <br> "purchaseCategoryCode": "Purchase Movie", <br>    "channel": "TV", <br> "taxAmount": 0.84,<br>"serviceId": "N/A", <br>"productId": "vod-47" }<br>}, <br>"referenceCode": "vod081220225698", <br>"clientCorrelator": "78g9-dfg6-fgtr6", <br>"transactionOperationStatus": "succeeded", <br>"resourceURL": "https://localhost:9091/payment/v0/payments/7896321", <br>"serverReferenceCode": "7896321" }, <br>"notificationUrl": "https://callback..." }'|
 <br>
 
 
