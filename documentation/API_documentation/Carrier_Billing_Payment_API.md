@@ -22,7 +22,7 @@ Before starting to use the API, the developer needs to know about the below spec
 
 **payment service endpoint**
 The URL pointing to the RESTful resource of the payment API.
-As we manage 1-step and 2-steps process we have defined 2 separate tags to explicilty
+As we manage 1-step and 2-steps process we have defined 2 separate tags to explicitly
 distinct them in the swagger. A third tage 'payment' is defined for common operations for
 both process (query & retrieve)
 
@@ -82,9 +82,9 @@ Attribute definition
 | clientCorrelator | Provided by the requester - Uniquely identifies this create charge request | Optionally valued by requester |
 | paymentAmount | See PaymentAmount class table description| Mandatory attribute in POST request |
 | referenceCode | Merchant generated payment reference to uniquely identify the request, for example the purchase or order identifier | Mandatory attribute in POST request |
-| transactionOperationStatus | Specifies the payment status (example: Processing, Denied, Reserved, Succeeded, Cancelled) | Must be valued by server side (not is POST request) |
-| resourceURL | URI of the created resource (same as in the Location header) | Only valued (optionally) by server side (not is POST request) |
-| serverReferenceCode | Reference to the charge or refund, provided by the server, and meaningful to the server’s backend system for the purpose of reconciliation | Only valued (optionally) by server side (not is POST request) |
+| transactionOperationStatus | Specifies the payment status (example: Processing, Denied, Reserved, Succeeded, Cancelled) | Must be valued by server side (not in POST request) |
+| resourceURL | URI of the created resource (same as in the Location header) | Only valued (optionally) by server side (not in POST request) |
+| serverReferenceCode | Reference to the charge or refund, provided by the server, and meaningful to the server’s backend system for the purpose of reconciliation | Only valued (optionally) by server side (not in POST request) |
 | notificationUrl | Allows asynchronous delivery of purchase related events | Optionally valued by requester - if used, customer needs to have a notification endpoint |
 | notificationAuthToken | Authentification token for callback API (if provided) | Optionally valued by requester  |
 
@@ -106,9 +106,9 @@ ChargingMetaData
  **Name** | **Description** | **Comment** |
 | -------- | --------- | ----------- |
 | onBehalfOf | Allows aggregators/partners to specify the actual payee | Optionally valued by requester |
-| purchaseCategoryCode | Allows aggregators/partners to specify the actual payee | Optionaly valued by requester |
+| purchaseCategoryCode | Allows aggregators/partners to specify the actual payee | Optionally valued by requester |
 | channel | Channel where the order occurred | Optionally valued by requester |
-| taxAmount | The tax amount charged by the merchant if the charge has tax already included (number). This also provides an indicator to the downstream billing system | Optionaly valued by requester |
+| taxAmount | The tax amount charged by the merchant if the charge has tax already included (number). This also provides an indicator to the downstream billing system | Optionally valued by requester |
 | serviceId | Identifier of service related to the payment | Optionally valued by requester |
 | productId | Identifier of product related to the payment | Optionally valued by requester |
 
@@ -177,7 +177,7 @@ Following table defines API endpoints of exposed REST based for Carrier Billing 
 
 | **Quering payment Resource /list information** |
 | --------------------------------------- |
-| **HTTP Request**<br> GET\<base-url>/payment/v0/payments/{paymentId}<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> endUserId: Identify the mobile account  charged - in general mobile number is provided<br> fields: Comma-separated pattributes to be provided in response <br> offset: Requested index for start of resources to be provided in response <br> limit: Requested number of resources to be provided in response <br>**Request Body Parameters**<br> No request body parameters are defined.<br>**Response**<br><br> **200: a list of payment(s).**<br>  Response body:<br> An array of payment representation. It could be empty if no payment match search criteria.<br><br> **401:** Un-authorized. <br> **403:** Forbidden. <br> <br> **503:** Service temporarily unavailable. |
+| **HTTP Request**<br> GET\<base-url>/payment/v0/payments/{paymentId}<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> endUserId: Identify the mobile account  charged - in general mobile number is provided<br> fields: Comma-separated attributes to be provided in response <br> offset: Requested index for start of resources to be provided in response <br> limit: Requested number of resources to be provided in response <br>**Request Body Parameters**<br> No request body parameters are defined.<br>**Response**<br><br> **200: a list of payment(s).**<br>  Response body:<br> An array of payment representation (could be a subset of a complete representation depending on fields filtering). <br>Note: . It could be empty list if no payment match search criteria.<br><br> **401:** Un-authorized. <br> **403:** Forbidden. <br> <br> **503:** Service temporarily unavailable. |
 <br>
 
 ### 4.4 Errors
@@ -236,7 +236,7 @@ N/A
 
 0.6 Release note
 * Added status attribute in Error
-* Atted attribute notificationAuthToken
+* Added attribute notificationAuthToken
 
 ## References
 
