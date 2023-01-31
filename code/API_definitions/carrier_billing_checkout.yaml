@@ -412,6 +412,11 @@ components:
       properties:
         payable:
           $ref: '#/components/schemas/PolymorphicPayable'
+        notification_url:
+          type: string
+          pattern: '^https:\/\/.+$'
+          description: Callback URL where service is going to be notified about any event. The received body definition is indicated in _Purchase notifications_ endpoint.
+          example: https://notifications-service.com/purchases/
       required:
         - payable
     PolymorphicPayable:
