@@ -471,7 +471,6 @@ components:
         order:
           $ref: '#/components/schemas/MarketOrder'
       required:
-        - merchant
         - order
     MarketMerchant:
       type: object
@@ -489,8 +488,6 @@ components:
           description: Fee percentage for the merchant/provider
       required:
         - id
-        - name
-        - fee
       example:
         id: MerchantId1
         name: MerchantName1
@@ -501,7 +498,7 @@ components:
       properties:
         id:
           type: string
-          description: Unique identifier of the order on the merchant/provider external system
+          description: Unique identifier of the order on the merchant/provider external system. Only provided when relevant from the API client point of view.
         items:
           type: array
           minItems: 1
@@ -510,7 +507,6 @@ components:
         total_amount:
           $ref: '#/components/schemas/MoneyAmount'
       required:
-        - id
         - items
         - total_amount
       example:
@@ -687,7 +683,7 @@ components:
           type: string
           description: Detailed error description
         status:
-          type: string
+          type: integer
           pattern: '^[4-5][0-9]{2}$'
           description: HTTP response status code
   responses:
