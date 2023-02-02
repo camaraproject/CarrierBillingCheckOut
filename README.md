@@ -9,7 +9,7 @@
 Repository to describe, develop, document and test the CarrierBillingCheckOut API family
 
 ## Notice for the reader
-The Carrier Billing familly features 2 APIs with **distinct business scope**:
+The Carrier Billing family features 2 APIs with **distinct business scope**:
 * 'Carrier billing checkout' : Service that provides functionality for enabling the first the purchase and then payment request, and follow up of fulfilment of goods against OB Carrier Billing Systems.
 * 'Carrier billing payment' : Service enabling payments and payment follow-up against OB Carrier Billing Systems.
 
@@ -26,10 +26,10 @@ Reader has to be aware of this distinction because API definition as documentati
   * trigger carrier billing payment request (in one or two steps) 
   * follow up of payment processing using as Payment Method Carrier Billing, i.e.: the operator performs the billing of the goods.
   * follow up of fulfilment of physical/digital goods (only for 'carrier billing checkout' flavor),
-* NOTE: The scope of this API family should be limited (at least at a first stage) to 4G and 5G.
+  * NOTE: The scope of this API family should be limited (at least at a first stage) to 4G and 5G.
 * Describe, develop, document and test the APIs (with 1-2 Telcos)  
-* Started: October 2022
-* Location: virtually  
+  * Started: October 2022
+  * Location: virtually  
 
 ## Meetings
 * Meetings are held virtually
