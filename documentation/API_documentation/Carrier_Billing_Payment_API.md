@@ -55,7 +55,7 @@ In this method the API invoker client is registered as a confidential client wit
 
 ### 4.1 API Version
 
-0.5.0
+0.6.0
 
 ### 4.2 Details
 
@@ -82,10 +82,11 @@ Attribute definition
 | clientCorrelator | Provided by the requester - Uniquely identifies this create charge request | Optionally valued by requester |
 | paymentAmount | See PaymentAmount class table description| Mandatory attribute in POST request |
 | referenceCode | Merchant generated payment reference to uniquely identify the request, for example the purchase or order identifier | Mandatory attribute in POST request |
-| transactionOperationStatus | Specifies the payment status (example: Processing, Denied, Reserved, Succeeded, Cancelled) | Must be valued by server side (not is POST request) |
+| transactionOperationStatus | Specifies the payment status (example: Processing, Denied, Reserved, Succeeded, Cancelled) | Must be valued by server side (not in POST request) |
 | resourceURL | URI of the created resource (same as in the Location header) | Only valued (optionally) by server side (not in POST request) |
-| serverReferenceCode | Reference to the charge or refund, provided by the server, and meaningful to the server’s backend system for the purpose of reconciliation | Only valued (optionally) by server side (not is POST request) |
+| serverReferenceCode | Reference to the charge or refund, provided by the server, and meaningful to the server’s backend system for the purpose of reconciliation | Only valued (optionally) by server side (not in POST request) |
 | notificationUrl | Allows asynchronous delivery of purchase related events | Optionally valued by requester - if used, customer needs to have a notification endpoint |
+| notificationAuthToken | Authentification token for callback API (if provided) | Optionally valued by requester  |
 
 **PaymentAccount class description:**
 
@@ -153,14 +154,14 @@ Following table defines API endpoints of exposed REST based for Carrier Billing 
 
 | **Confirm payment task (only for two steps process)** |
 | -------------------------- |
- **HTTP Request**<br> POST \<base-url>/payment/v0/payments/confirm/{paymentId<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br>  PaymentId must be provided <br>**Request Body Parameters**<br> endUserId must be provided
+**HTTP Request**<br> POST \<base-url>/payment/v0/payments/confirm/{paymentId<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> PaymentId must be provided <br>**Request Body Parameters**<br> endUserId must be provided
 
  **Response**<br> **200: payment confirmation accepted** <br>Response body: None <br><br> **400:** **Invalid input.**<br> **401:** **Un-authorized. <br> **403:** Forbidden.**<br> **409:** **Conflict.**<br> **500:** **Server Error.**<br> **503:** **Service temporarily unavailable.** 
 <br>
 
 | **Cancel payment task (only for two steps process)** |
 | -------------------------- |
- **HTTP Request**<br> POST \<base-url>/payment/v0/payments/cancel/{paymentId}<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> PaymentId must be provided <br>**Request Body Parameters**<br> endUserId must be provided
+ **HTTP Request**<br> POST \<base-url>/payment/v0/payments/cancel/{paymentId}<br>**Query Parameters**<br> No query parameters are defined.<br>**Path Parameters**<br> endUserId and PaymentId must be provided <br>**Request Body Parameters**<br> endUserId must be provided
 
  **Response**<br> **202: payment cancellation accepted** <br>Response body: None <br><br> **400:** **Invalid input.**<br> **401:** **Un-authorized. <br> **403:** Forbidden.**<br> **409:** **Conflict.**<br> **500:** **Server Error.**<br> **503:** **Service temporarily unavailable.** 
 <br>
@@ -233,7 +234,9 @@ N/A
 
 ### 4.9 Release Notes
 
-N/A
+0.6 Release note
+* Added status attribute in Error
+* Added attribute notificationAuthToken
 
 ## References
 
