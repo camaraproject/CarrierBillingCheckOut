@@ -2,18 +2,17 @@ openapi: 3.0.3
 info:
   title: Carrier Billing Checkout
   description: |-
-    Service that provides functionality for enabling the purchase, payment and follow up of fulfilment of goods against OB carrier billing systems.
+    Service that provides functionality for enabling the purchase and payment of goods against OB carrier billing systems.
 
     # Relevant Definitions and concepts
 
     - **Purchase**: The action of acquiring a good, service or product.
     - **Payment**: The act or process of paying for that good, service or product.
-    - **Fulfillment**: The dispatch of a customer's order.
     - **Payable**: The concept, service or good a client is paying for.
 
     # API functionality
 
-    This API allows to create, pay and follow up purchases of several Payables. Initial scope is focused in the purchase of digital goods via OB carrier billing systems.
+    This API allows to create and pay purchases of several Payables. Initial scope is focused in the purchase of digital goods via OB carrier billing systems.
 
     # Resources and Operations overview
 
@@ -23,13 +22,15 @@ info:
 
     - **Payments** is the second one and it exposes three operations to request the payment of a specific purchase via OB carrier billing systems (payment preparation, payment confirmation or payment cancellation):
       - **Carrier Billing:** It means that the operator will perform the billing, accordingly to the user's configuration in the OB; usually this implies that the purchase will be included in the user invoice and then charged to the user, but actually other options may eventually happen, like charge against user prepay balance or other. Notice that this option do not explicitly define the actual payment method, but means that the carrier will be doing the charge based on configuration out of scope of this API.
+      
+      - The last resource is **Purchase Notifications**. This resource has one operation to send events to the `notification_url`, when provided by the API client in the purchase creation.
   termsOfService: http://swagger.io/terms/
   contact:
     email: project-email@sample.com
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  version: 0.5.0
+  version: 0.6.0
 externalDocs:
   description: Product documentation at Camara
   url: https://github.com/camaraproject/
@@ -38,6 +39,7 @@ security:
     - carrier-billing-checkout-purchase-digital-good-user-write
     - carrier-billing-checkout-purchase-digital-good-user-read
     - carrier-billing-checkout-payment-user-write
+    - carrier-billing-checkout-user-notifications
 servers:
   - url: "{apiRoot}/{basePath}"
     variables:
@@ -65,6 +67,10 @@ paths:
             schema:
               $ref: "#/components/schemas/CreatePurchase"
         required: true
+      callbacks:
+        notifications:
+          "{$request.body#/notificationUrl}/notifications":
+            $ref: "#/paths/~1notifications"
       responses:
         "201":
           description: Purchase created
@@ -86,11 +92,13 @@ paths:
                 Generic403:
                   summary: Forbidden
                   value: 
+                    status: 403
                     code: PERMISSION_DENIED
                     message: "Operation not allowed: ..."
                 RegulationTransactionAmountOverpassed:
                   summary: Purchase amount overpassed according to applicable regulation
                   value: 
+                    status: 403
                     code: CARRIER_BILLING_CHECKOUT.PURCHASE_AMOUNT_OVERPASSED
                     message: "Purchase amount overpasses applicable regulation"
         "500":
@@ -173,11 +181,13 @@ paths:
                 Generic403:
                   summary: Forbidden
                   value: 
+                    status: 403
                     code: PERMISSION_DENIED
                     message: "Operation not allowed: ..."
                 RegulationAccumulatedTransactionAmountOverpassed:
                   summary: Accumulated Purchases amount overpassed according to applicable regulation
                   value: 
+                    status: 403
                     code: CARRIER_BILLING_CHECKOUT.ACCUMULATED_PURCHASE_AMOUNT_OVERPASSED
                     message: "Accumulated Purchases Amount overpasses applicable regulation"
         "404":
@@ -220,11 +230,13 @@ paths:
                 Generic403:
                   summary: Forbidden
                   value: 
+                    status: 403
                     code: PERMISSION_DENIED
                     message: "Operation not allowed: ..."
                 RegulationAccumulatedTransactionAmountOverpassed:
                   summary: Accumulated Purchases amount overpassed according to applicable regulation
                   value: 
+                    status: 403
                     code: CARRIER_BILLING_CHECKOUT.ACCUMULATED_PURCHASE_AMOUNT_OVERPASSED
                     message: "Accumulated Purchases Amount overpasses applicable regulation"
         "404":
@@ -239,11 +251,13 @@ paths:
                 Generic409:
                   summary: Conflict
                   value: 
+                    status: 409
                     code: ALREADY_EXISTS
                     message: "Another payment confirmation or cancellation has been triggered for the same purchase"
                 PaymentAlreadyReachedFinalStatus:
                   summary: Payment already reached a final status for the purchase
                   value: 
+                    status: 409
                     code: CARRIER_BILLING_CHECKOUT.PAYMENT_REACHED_FINAL_STATUS
                     message: "Payment already reached a final status. No further actions can be performed"
         "412":
@@ -290,11 +304,13 @@ paths:
                 Generic409:
                   summary: Conflict
                   value: 
+                    status: 409
                     code: ALREADY_EXISTS
                     message: "Another payment confirmation or cancellation has been triggered for the same purchase"
                 PaymentAlreadyReachedFinalStatus:
                   summary: Payment already reached a final status for the purchase
                   value: 
+                    status: 409
                     code: CARRIER_BILLING_CHECKOUT.PAYMENT_REACHED_FINAL_STATUS
                     message: "Payment already reached a final status. No further actions can be performed"
         "412":
@@ -305,6 +321,39 @@ paths:
           $ref: "#/components/responses/Generic503"
         "504":
           $ref: "#/components/responses/Generic504"
+  /notifications:
+    post:
+      tags:
+        - Purchase Notifications
+      summary: "Purchase notifications"
+      description: |
+        Important: this endpoint is to be implemented by the API consumer.
+        The Carrier Billing Checkout server will call this endpoint whenever any purchase related event occurs.
+      operationId: purchaseNotification
+      requestBody:
+        description: Creates a new purchase Notification
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Notification"
+        required: true
+      responses:
+        "204":
+          description: Successful notification
+        "400":
+          $ref: "#/components/responses/Generic400"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Generic403"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
+      security:
+        - apiKey: []
 components:
   securitySchemes:
     three_legged:
@@ -317,6 +366,12 @@ components:
             carrier-billing-checkout-purchase-digital-good-user-write: create purchases
             carrier-billing-checkout-purchase-digital-good-user-read: read purchases
             carrier-billing-checkout-payment-user-write: make payments
+            carrier-billing-checkout-user-notifications: read notifications
+    apiKey:
+      type: apiKey
+      description: API key to authorize requests
+      name: apikey
+      in: query
   schemas:
     CreatePurchase:
       allOf:
@@ -357,6 +412,11 @@ components:
       properties:
         payable:
           $ref: '#/components/schemas/PolymorphicPayable'
+        notification_url:
+          type: string
+          pattern: '^https:\/\/.+$'
+          description: Callback URL where service is going to be notified about any event. The received body definition is indicated in _Purchase notifications_ endpoint.
+          example: https://notifications-service.com/purchases/
       required:
         - payable
     PolymorphicPayable:
@@ -411,7 +471,6 @@ components:
         order:
           $ref: '#/components/schemas/MarketOrder'
       required:
-        - merchant
         - order
     MarketMerchant:
       type: object
@@ -429,8 +488,6 @@ components:
           description: Fee percentage for the merchant/provider
       required:
         - id
-        - name
-        - fee
       example:
         id: MerchantId1
         name: MerchantName1
@@ -441,7 +498,7 @@ components:
       properties:
         id:
           type: string
-          description: Unique identifier of the order on the merchant/provider external system
+          description: Unique identifier of the order on the merchant/provider external system. Only provided when relevant from the API client point of view.
         items:
           type: array
           minItems: 1
@@ -450,7 +507,6 @@ components:
         total_amount:
           $ref: '#/components/schemas/MoneyAmount'
       required:
-        - id
         - items
         - total_amount
       example:
@@ -576,11 +632,49 @@ components:
           description: Pairs of key/value for the parameters that have to be submitted as query parameters when calling the validation endpoint
       required:
         - validation_endpoint
+    Notification:
+      type: object
+      description: Data type with attributes required for generating a Purchase notification
+      properties:
+        purchase_id:
+          type: string
+          description: Unique Identifier of the purchase transaction
+        action:
+          type: string
+          enum:
+            - prepare_payment
+            - confirm_payment
+            - cancel_payment
+          description: |
+            Indication of the action notified by the event.
+            * `prepare_payment`: Notification about preparePayment procedure
+            * `confirm_payment`: Notification about confirmPayment procedure
+            * `cancel_payment`: Notificacion about cancelPayment procedure
+        status:
+          type: string
+          enum:
+            - succeeded
+            - failed
+          description: | 
+            Status of the procedure. Possible status are:
+            * `succeeded`: procedure was accomplished 
+            * `failed`: procedure failed.
+            
+            NOTE: Under reception of a notification with failed status, new purchase procedure shall be initiated by API Client, if required.
+        description:
+          type: string
+          description: Description of the notification, both used when process was `succeeded` or `failed` indicating in the latter case human understable reason about why process failed.
+      required:
+        - purchase_id
+        - action
+        - status
+        - description
     ErrorInfo:
       type: object
       required:
         - code
         - message
+        - status
       properties:
         code:
           type: string
@@ -588,6 +682,10 @@ components:
         message:
           type: string
           description: Detailed error description
+        status:
+          type: integer
+          pattern: '^[4-5][0-9]{2}$'
+          description: HTTP response status code
   responses:
     Generic400:
       description: Invalid input
@@ -596,6 +694,7 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           example:
+            status: 400
             code: INVALID_ARGUMENT
             message: "Schema validation failed at  ..."
     Generic401:
@@ -605,6 +704,7 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           example:
+            status: 401
             code: UNAUTHORIZED
             message: "Authorization failed: ..."
     Generic403:
@@ -614,6 +714,7 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           example:
+            status: 403
             code: PERMISSION_DENIED
             message: "Operation not allowed: ..."
     Generic404:
@@ -623,6 +724,7 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           example:
+            status: 404
             code: NOT_FOUND
             message: "The specified resource is not found"
     Generic409:
@@ -632,6 +734,7 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           example:
+            status: 409
             code: ALREADY_EXISTS
             message: "A specified resource duplicate entry found"
     Generic412:
@@ -641,6 +744,7 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           example:
+            status: 412
             code: FAILED_PRECONDITION
             message: "Request cannot be executed in the current system state"
     Generic500:
@@ -650,6 +754,7 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           example:
+            status: 500
             code: INTERNAL
             message: "Server error"
     Generic503:
@@ -659,6 +764,7 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           example:
+            status: 503
             code: SERVICE_UNAVALIBLE
             message: "Service unavailable"
     Generic504:
@@ -668,5 +774,6 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           example:
+            status: 504
             code: TIMEOUT
             message: "Request timeout exceeded"

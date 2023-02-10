@@ -13,7 +13,7 @@ Intented for a future phase:<br>
 * Details about a list of Purchases
 * One-step payment
 * Purchase subscriptions 
-* Notification Callbacks<br/>
+* Notification Callbacks, covered since v0.6<br/>
 
 
 ## 2\. Quick Start
@@ -52,7 +52,7 @@ For 2-Step process:
 Identification of the mobile line to be charged is performed as part of the enforcement of the Access Token issued to the client application.
 
 **Notifications Model**
-Targeted for a future phase
+Developers may provide a *Notification URL* on which status change notifications regarding the process can be received from the service provider. This is an optional parameter.
 
 
 Sample API invocations are presented in Section 4.6.
@@ -65,7 +65,7 @@ The Carrier Billing Checkout API makes use of the OAUTH 2.0 auth_code grant whic
 
 ### 4.1 API Version
 
-0.5.0
+0.6.0
 
 ### 4.2 Details
 
@@ -233,7 +233,9 @@ N/A
 
 ### 4.9 Release Notes
 
-N/A
+0.6 Release note
+* Added status attribute in Error Model
+* Added Notifications Model
 
 ## References
 
