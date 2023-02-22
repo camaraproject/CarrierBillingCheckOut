@@ -541,7 +541,7 @@ components:
           description: Authentification token for callback API
         paymentCreationDate:
           type: string
-          description: Date when the payment is created in server data base. This is a technically information
+          description: Date when the payment is created in server data base. This is a technical information
           format: date-time
         paymentDate:
           type: string
