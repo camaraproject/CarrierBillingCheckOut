@@ -811,7 +811,8 @@ components:
           description: Billing policy
         isTaxIncluded:
           type: boolean
-          description: if true, the amount is tax included, if false the amount is provided without tax. In bothe case, taxAmount could be valued to provide tax amount.
+          description: if true, the amount is tax included, if false the amount is provided without tax. In both cases, taxAmount could be valued to provide tax amount.
+
         taxAmount:
           type: number
           description: The tax amount charged by the merchant. This also provides an indicator to the downstream billing
