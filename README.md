@@ -10,7 +10,7 @@ Repository to describe, develop, document and test the CarrierBillingCheckOut AP
 
 ## Notice for the reader
 The Carrier Billing family features 2 APIs with **distinct business scope**:
-* 'Carrier billing checkout' : Service that provides functionality for enabling the first the purchase and then payment request, and follow up of fulfilment of goods against OB Carrier Billing Systems.
+* 'Carrier billing checkout' : Service that provides functionality for enabling first the purchase and then the payment request, and follow up of fulfilment of goods against OB Carrier Billing Systems.
 * 'Carrier billing payment' : Service enabling payments and payment follow-up against OB Carrier Billing Systems.
 
 Both proposals manage the payment request & processing. 'Carrier billing checkout' proposal prerequisites a 'Purchase' creation before to trigger a payment request (The payment is performed for this purchase).
