@@ -835,7 +835,6 @@ components:
           description: Code given to this error
         status:
           type: string
-          pattern: '^[4-5][0-9]{2}$'
           description: HTTP response status code
         message:
           type: string
