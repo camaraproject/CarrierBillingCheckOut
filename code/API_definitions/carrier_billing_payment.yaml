@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   description: Service Enabling Payments against OB Carrier Billing Systems
-  version: 0.6.0
+  version: 0.7.0
   title: Carrier Billing Payment
   termsOfService: http://swagger.io/terms/
   contact:
@@ -539,6 +539,14 @@ components:
           type: string
           example: "c8974e592c2fa383d4a3960714"
           description: Authentification token for callback API
+        paymentCreationDate:
+          type: string
+          description: Date when the payment is created in server data base. This is a technical information
+          format: date-time
+        paymentDate:
+          type: string
+          description: Date when the payment is effectively performed. This is a business information.
+          format: date-time
     AmountTransaction:
       required:
       - endUserId
@@ -801,10 +809,13 @@ components:
         channel:
           type: string
           description: Billing policy
+        isTaxIncluded:
+          type: boolean
+          description: if true, the amount is tax included, if false the amount is provided without tax. In both cases, taxAmount could be valued to provide tax amount.
+
         taxAmount:
           type: number
-          description: The tax amount charged by the merchant if the charge has tax
-            already included. This also provides an indicator to the downstream billing
+          description: The tax amount charged by the merchant. This also provides an indicator to the downstream billing
             system.
         serviceId:
           type: string
@@ -824,7 +835,6 @@ components:
           description: Code given to this error
         status:
           type: string
-          pattern: '^[4-5][0-9]{2}$'
           description: HTTP response status code
         message:
           type: string
@@ -860,6 +870,10 @@ components:
         description:
           type: string
           description: Description of the notification, both used when process was `succeeded` or `failed` indicating in the latter case human understable reason about why process failed.
+        paymentDate:
+          type: string
+          description: Date when the payment is effectively performed. This is a business information.
+          format: date-time
       required:
         - paymentId
         - action
