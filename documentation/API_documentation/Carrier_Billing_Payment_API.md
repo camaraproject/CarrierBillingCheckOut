@@ -55,7 +55,7 @@ In this method the API invoker client is registered as a confidential client wit
 
 ### 4.1 API Version
 
-0.6.0
+0.7.0
 
 ### 4.2 Details
 
@@ -85,6 +85,8 @@ Attribute definition
 | transactionOperationStatus | Specifies the payment status (example: Processing, Denied, Reserved, Succeeded, Cancelled) | Must be valued by server side (not in POST request) |
 | resourceURL | URI of the created resource (same as in the Location header) | Only valued (optionally) by server side (not in POST request) |
 | serverReferenceCode | Reference to the charge or refund, provided by the server, and meaningful to the server’s backend system for the purpose of reconciliation | Only valued (optionally) by server side (not in POST request) |
+| paymentCreationDate | Date when the payment is created in server data base. This is a technically information | Only valued (optionally) by server side (not in POST request) |
+| paymentDate | Date when the payment is effectively performed. This is a business information. | Only valued (optionally) by server side (not in POST request) |
 | notificationUrl | Allows asynchronous delivery of purchase related events | Optionally valued by requester - if used, customer needs to have a notification endpoint |
 | notificationAuthToken | Authentification token for callback API (if provided) | Optionally valued by requester  |
 
@@ -108,6 +110,7 @@ ChargingMetaData
 | onBehalfOf | Allows aggregators/partners to specify the actual payee | Optionally valued by requester |
 | purchaseCategoryCode | Allows aggregators/partners to specify the actual payee | Optionally valued by requester |
 | channel | Channel where the order occurred | Optionally valued by requester |
+| isTaxIncluded | if true, the amount is tax included, if false the amount is provided without tax. In both case, taxAmount could be valued to provide tax amount.| Optionally valued by requester |
 | taxAmount | The tax amount charged by the merchant if the charge has tax already included (number). This also provides an indicator to the downstream billing system | Optionally valued by requester |
 | serviceId | Identifier of service related to the payment | Optionally valued by requester |
 | productId | Identifier of product related to the payment | Optionally valued by requester |
@@ -219,8 +222,8 @@ Please note, the credentials for API authentication purposes need to be adjusted
 
 | Snippet 1. Create Payment resource  |
 | ----------------------------------------------- |
-| curl -X 'POST' `https://sample-base-url/payment/v0/payments`   <br>    -H 'accept: application/json' <br>    -H 'Content-Type: application/json'<br>    -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbG...."<br>    -d '{<br> "amountTransaction": { <br> "endUserId": "+33068741256+d", <br>"paymentAmount": { "chargingInformation": { "amount": 2.99, "currency": "EUR", "description": "VOD charge" }, <br> "chargingMetaData": { <br> "onBehalfOf":"VOD Service", <br>    "purchaseCategoryCode": "Purchase Movie", <br>  "channel": "TV", <br> "taxAmount": 0.84, <br> "serviceId": "N/A", <br> "productId": "vod-47" } <br> }, <br>"referenceCode": "vod081220225698", <br>"clientCorrelator": "78g9-dfg6-fgtr6" }, <br>"notificationUrl": "https://callback..."  |
-| response will be: <br> 201 <br>   -d '{<br> "amountTransaction": { <br> "endUserId": "+33068741256+d", <br> "paymentAmount": { "chargingInformation": { "amount": 2.99, "currency": "EUR", "description": "VOD charge" }, <br>"chargingMetaData": { <br>"onBehalfOf":"VOD Service", <br> "purchaseCategoryCode": "Purchase Movie", <br>    "channel": "TV", <br> "taxAmount": 0.84,<br>"serviceId": "N/A", <br>"productId": "vod-47" }<br>}, <br>"referenceCode": "vod081220225698", <br>"clientCorrelator": "78g9-dfg6-fgtr6", <br>"transactionOperationStatus": "succeeded", <br>"resourceURL": "https://localhost:9091/payment/v0/payments/7896321", <br>"serverReferenceCode": "7896321" }, <br>"notificationUrl": "https://callback..." }'|
+| curl -X 'POST' `https://sample-base-url/payment/v0/payments`   <br>    -H 'accept: application/json' <br>    -H 'Content-Type: application/json'<br>    -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbG...."<br>    -d '{<br> "amountTransaction": { <br> "endUserId": "+33068741256+d", <br>"paymentAmount": { "chargingInformation": { "amount": 2.99, "currency": "EUR", "description": "VOD charge" }, <br> "chargingMetaData": { <br> "onBehalfOf":"VOD Service", <br>    "purchaseCategoryCode": "Purchase Movie", <br>  "channel": "TV", <br> "taxAmount": 0.84, <br> "isTaxIncluded": true, <br> "serviceId": "N/A", <br> "productId": "vod-47" } <br> }, <br>"referenceCode": "vod081220225698", <br>"clientCorrelator": "78g9-dfg6-fgtr6" }, <br>"notificationUrl": "https://callback..."  |
+| response will be: <br> 201 <br>   -d '{<br> "amountTransaction": { <br> "endUserId": "+33068741256+d", <br> "paymentAmount": { "chargingInformation": { "amount": 2.99, "currency": "EUR", "description": "VOD charge" }, <br>"chargingMetaData": { <br>"onBehalfOf":"VOD Service", <br> "purchaseCategoryCode": "Purchase Movie", <br>    "channel": "TV", <br> "taxAmount": 0.84,<br> "isTaxIncluded": true, <br>"serviceId": "N/A", <br>"productId": "vod-47" }<br>}, <br>"referenceCode": "vod081220225698", <br>"clientCorrelator": "78g9-dfg6-fgtr6", <br>"transactionOperationStatus": "succeeded", <br>"resourceURL": "https://localhost:9091/payment/v0/payments/7896321", <br>"serverReferenceCode": "7896321" }, <br> "paymentCreationDate" : "2023-03-10T15:30:58.139Z", <br> "paymentDate" : "2023-03-10T15:31:04.139Z", <br>"notificationUrl": "https://callback..." }'|
 <br>
 
 
@@ -238,6 +241,9 @@ N/A
 * Added status attribute in Error
 * Added attribute notificationAuthToken
 
+0.7 Release note
+* Added paymentCreationDate & PaymentDate
+* Added isTaxIncluded flag
 ## References
 
 
