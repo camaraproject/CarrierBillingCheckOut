@@ -60,6 +60,8 @@ paths:
       security:
         - three_legged:
           - carrier-billing-checkout-purchase-digital-good-user-write
+      parameters:
+        - $ref: '#/components/parameters/x-correlator'
       requestBody:
         description: Creates a new purchase
         content:
@@ -73,6 +75,9 @@ paths:
             $ref: "#/paths/~1notifications"
       responses:
         "201":
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator'
           description: Purchase created
           content:
             application/json:
@@ -111,13 +116,25 @@ paths:
       tags:
         - Purchases
       summary: Retrieve a list of purchases
-      description: Obtain the list of purchases performed
+      description: Obtain the list of purchases performed. If no pagination is indicated, list of purchases performed in the last 24 hours are returned.
       operationId: getPurchases
       security:
         - three_legged:
           - carrier-billing-checkout-purchase-digital-good-user-read
+      parameters:
+        - $ref: '#/components/parameters/x-correlator'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Seek'
       responses:
         "200":
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator'
+            Content-Last-Key:
+              $ref: '#/components/headers/Content-Last-Key'
+            X-Total-Count:
+              $ref: '#/components/headers/X-Total-Count'
           description: Contains information about a list of purchases
           content:
             application/json:
@@ -135,7 +152,7 @@ paths:
           $ref: "#/components/responses/Generic503"
         "504":
           $ref: "#/components/responses/Generic504"
-  /purchases/{purchase_id}:
+  /purchases/{purchaseId}:
     get:
       tags:
         - Purchases
@@ -146,7 +163,8 @@ paths:
         - three_legged:
           - carrier-billing-checkout-purchase-digital-good-user-read
       parameters:
-        - name: purchase_id
+        - $ref: '#/components/parameters/x-correlator'
+        - name: purchaseId
           in: path
           description: Purchase ID that was obtained from the createPurchase operation
           required: true
@@ -154,6 +172,9 @@ paths:
             $ref: "#/components/schemas/PurchaseId"
       responses:
         "200":
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator'
           description: Contains information about a given purchase
           content:
             application/json:
@@ -171,18 +192,19 @@ paths:
           $ref: "#/components/responses/Generic503"
         "504":
           $ref: "#/components/responses/Generic504"
-  /purchases/{purchase_id}/payment:
+  /purchases/{purchaseId}/payment:
     post:
       tags:
         - Payments
       summary: Creates a new Payment for a given payable in one-step
-      description: Creates a new Payment Procedure for a given payable. Once this operation is successful, payment process is triggered and no further action is required, that is, no other payment attempt must be done over the same purchase_id (error code 409 will be triggered). In case a payment attempt over a specific purchase_id ends with error, a new one attempt is allowed with the same conditions.
+      description: Creates a new Payment Procedure for a given payable. Once this operation is successful, payment process is triggered and no further action is required, that is, no other payment attempt must be done over the same purchaseId (error code 409 will be triggered). In case a payment attempt over a specific purchaseId ends with error, a new one attempt is allowed with the same conditions.
       operationId: createPayment
       security:
         - three_legged:
           - carrier-billing-checkout-payment-user-write
       parameters:
-        - name: purchase_id
+        - $ref: '#/components/parameters/x-correlator'
+        - name: purchaseId
           in: path
           description: Purchase ID that was obtained from the createPurchase operation
           required: true
@@ -197,6 +219,9 @@ paths:
         required: true
       responses:
         "200":
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator'
           description: Payment Performed
           content:
             application/json:
@@ -225,6 +250,12 @@ paths:
                     status: 403
                     code: CARRIER_BILLING_CHECKOUT.PHONE_NUMBER_REQUIRED
                     message: "Phone Number is required"
+                PhoneNumberMismatch:
+                  summary: Phone Number provided not matching Authorization context
+                  value: 
+                    status: 403
+                    code: CARRIER_BILLING_CHECKOUT.INVALID_TOKEN_CONTEXT
+                    message: "Phone Number does not match with Authorization context"
                 RegulationAccumulatedTransactionAmountOverpassed:
                   summary: Accumulated Purchases amount overpassed according to applicable regulation
                   value: 
@@ -241,7 +272,7 @@ paths:
           $ref: "#/components/responses/Generic503"
         "504":
           $ref: "#/components/responses/Generic504"
-  /purchases/{purchase_id}/payment/prepare:
+  /purchases/{purchaseId}/payment/prepare:
     post:
       tags:
         - Payments
@@ -252,7 +283,8 @@ paths:
         - three_legged:
           - carrier-billing-checkout-payment-user-write
       parameters:
-        - name: purchase_id
+        - $ref: '#/components/parameters/x-correlator'
+        - name: purchaseId
           in: path
           description: Purchase ID that was obtained from the createPurchase operation
           required: true
@@ -267,6 +299,9 @@ paths:
         required: true
       responses:
         "200":
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator'
           description: Payment Triggered
           content:
             application/json:
@@ -295,6 +330,12 @@ paths:
                     status: 403
                     code: CARRIER_BILLING_CHECKOUT.PHONE_NUMBER_REQUIRED
                     message: "Phone Number is required"
+                PhoneNumberMismatch:
+                  summary: Phone Number provided not matching Authorization context
+                  value: 
+                    status: 403
+                    code: CARRIER_BILLING_CHECKOUT.INVALID_TOKEN_CONTEXT
+                    message: "Phone Number does not match with Authorization context"
                 RegulationAccumulatedTransactionAmountOverpassed:
                   summary: Accumulated Purchases amount overpassed according to applicable regulation
                   value: 
@@ -309,7 +350,7 @@ paths:
           $ref: "#/components/responses/Generic503"
         "504":
           $ref: "#/components/responses/Generic504"
-  /purchases/{purchase_id}/payment/confirm:
+  /purchases/{purchaseId}/payment/confirm:
     post:
       tags:
         - Payments
@@ -320,7 +361,8 @@ paths:
         - three_legged:
           - carrier-billing-checkout-payment-user-write
       parameters:
-        - name: purchase_id
+        - $ref: '#/components/parameters/x-correlator'
+        - name: purchaseId
           in: path
           description: Purchase ID that was obtained from the createPurchase operation
           required: true
@@ -328,6 +370,9 @@ paths:
             $ref: "#/components/schemas/PurchaseId"
       responses:
         "202":
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator'
           description: Payment Accepted
         "401":
           $ref: "#/components/responses/Generic401"
@@ -379,7 +424,7 @@ paths:
           $ref: "#/components/responses/Generic503"
         "504":
           $ref: "#/components/responses/Generic504"
-  /purchases/{purchase_id}/payment/cancel:
+  /purchases/{purchaseId}/payment/cancel:
     post:
       tags:
         - Payments
@@ -390,7 +435,8 @@ paths:
         - three_legged:
           - carrier-billing-checkout-payment-user-write
       parameters:
-        - name: purchase_id
+        - $ref: '#/components/parameters/x-correlator'
+        - name: purchaseId
           in: path
           description: Purchase ID that was obtained from the createPurchase operation
           required: true
@@ -398,6 +444,9 @@ paths:
             $ref: "#/components/schemas/PurchaseId"
       responses:
         "202":
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator'
           description: Payment Cancellation Accepted
         "401":
           $ref: "#/components/responses/Generic401"
@@ -441,6 +490,8 @@ paths:
         Important: this endpoint is to be implemented by the API consumer.
         The Carrier Billing Checkout server will call this endpoint whenever any purchase related event occurs.
       operationId: purchaseNotification
+      parameters:
+        - $ref: '#/components/parameters/x-correlator'
       requestBody:
         description: Creates a new purchase Notification
         content:
@@ -450,6 +501,9 @@ paths:
         required: true
       responses:
         "204":
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator'
           description: Successful notification
         "400":
           $ref: "#/components/responses/Generic400"
@@ -487,6 +541,12 @@ components:
     CreatePurchase:
       allOf:
         - $ref: '#/components/schemas/PurchaseBase'
+        - type: object
+          properties:
+            notificationAuthToken:
+              type: string
+              example: "18dfdf79-e29b-41d4-a716-446655440000"
+              description: Authentication token for callback API endpoint
         - additionalProperties: false
     PurchaseCreated:
       allOf:
@@ -513,6 +573,10 @@ components:
                 * `succeeded` - Purchase payment has been successfully executed
                 * `failed` - Purchase process failed at any step. New purchase needs to be triggered
                 * `cancelled` - CancelPayment has been successfully accomplished
+            notificationAuthToken:
+              type: string
+              example: "18dfdf79-e29b-41d4-a716-446655440000"
+              description: Authentication token for callback API endpoint
           required:
             - id
             - status
@@ -523,7 +587,7 @@ components:
       properties:
         payable:
           $ref: '#/components/schemas/PolymorphicPayable'
-        notification_url:
+        notificationUrl:
           type: string
           pattern: '^https:\/\/.+$'
           description: Callback URL where service is going to be notified about any event. The received body definition is indicated in _Purchase notifications_ endpoint.
@@ -559,16 +623,16 @@ components:
               amount:
                 value: 25
                 currency: EUR
-                tax_included: true
+                taxIncluded: true
             - name: MarketOrderItemName2
               amount:
                 value: 40
                 currency: EUR
-                tax_included: true
-          total_amount:
+                taxIncluded: true
+          totalAmount:
             value: 65
             currency: EUR
-            tax_included: true
+            taxIncluded: true
         merchant:
           id: MerchantId1
           name: MerchantName1
@@ -615,11 +679,11 @@ components:
           minItems: 1
           items:
             $ref: '#/components/schemas/MarketOrderItem'
-        total_amount:
+        totalAmount:
           $ref: '#/components/schemas/MoneyAmount'
       required:
         - items
-        - total_amount
+        - totalAmount
       example:
         id: MarketOrder1
         items:
@@ -627,16 +691,16 @@ components:
             amount:
               value: 25
               currency: EUR
-              tax_included: true
+              taxIncluded: true
           - name: MarketOrderItemName2
             amount:
               value: 40
               currency: EUR
-              tax_included: true
-        total_amount:
+              taxIncluded: true
+        totalAmount:
           value: 65
           currency: EUR
-          tax_included: true
+          taxIncluded: true
     MarketOrderItem:
       type: object
       description: A item from external merchant/provider to be paid during checkout
@@ -654,7 +718,7 @@ components:
         amount:
           value: 25
           currency: EUR
-          tax_included: true
+          taxIncluded: true
     MoneyAmount:
       type: object
       description: Money amount
@@ -667,7 +731,7 @@ components:
         currency:
           type: string
           description: Currency code in which the amount is expressed. ISO 4217
-        tax_included:
+        taxIncluded:
           type: boolean
           description: true if the amount includes government taxes
           default: false
@@ -703,11 +767,11 @@ components:
                 * `succeeded` - ConfirmPayment has been successfully executed
                 * `failed` - Purchase process failed at any step. New purchase needs to be triggered
                 * `cancelled` - CancelPayment has been successfully accomplished
-            payment_creation_date:
+            paymentCreationDate:
               type: string
               format: date-time
               description: Date, in ISO-8601 extended local date format, when the payment is created in server database. This is a technical information. Time-offset from UTC may be used to match local OB time.
-            payment_date:
+            paymentDate:
               type: string
               format: date-time
               description: Date, in ISO-8601 extended local date format, when the payment is effectively performed. This is a business information. Time-offset from UTC may be used to match local OB time.
@@ -723,11 +787,11 @@ components:
       type: object
       description: Data Type to indicate in payment request, either 1-step or 2-step.
       properties:
-        phone_number:
+        phoneNumber:
           type: string
           description: The MSISDN on which the payment will be performed, in E.164 with `+` format. If no indicated, MSISDN has to be obtained from authorization context (i.e. Authorization header), otherwise exception will be raised.
       example:
-        phone_number: '+34699999999'
+        phoneNumber: '+34699999999'
     PaymentInfo:
       type: object
       description: Data Type to indicate payment information
@@ -765,7 +829,7 @@ components:
             * `initialising` - Purchase process is triggered
             * `ready_to_confirm` - PreparePayment has been successfully accomplished
             * `failed` - Purchase process failed at any step. New purchase needs to be triggered
-        payment_otp:
+        paymentOtp:
           $ref: '#/components/schemas/PaymentOtp'
       required:
         - id
@@ -774,7 +838,7 @@ components:
       type: object
       description: Data type to provide the necessary information in order to validate an OTP
       properties:
-        validation_endpoint:
+        validationEndpoint:
           type: string
           format: uri
           description: URL for OTP validation
@@ -782,12 +846,12 @@ components:
           type: object
           description: Pairs of key/value for the parameters that have to be submitted as query parameters when calling the validation endpoint
       required:
-        - validation_endpoint
+        - validationEndpoint
     Notification:
       type: object
       description: Data type with attributes required for generating a Purchase notification
       properties:
-        purchase_id:
+        purchaseId:
           type: string
           description: Unique Identifier of the purchase transaction
         action:
@@ -815,12 +879,12 @@ components:
         description:
           type: string
           description: Description of the notification, both used when process was `succeeded` or `failed` indicating in the latter case human understable reason about why process failed.
-        payment_date:
+        paymentDate:
           type: string
           format: date-time
           description: Date, in ISO-8601 extended local date format, when the payment is effectively performed. This is a business information. Time-offset from UTC may be used to match local OB time.
       required:
-        - purchase_id
+        - purchaseId
         - action
         - status
         - description
@@ -840,8 +904,49 @@ components:
         status:
           type: integer
           description: HTTP response status code
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
+    Page:
+      name: page
+      in: query
+      description: Requested index to indicate the start of the resources to be provided in the response
+      schema:
+        type: integer
+    PerPage:
+      name: perPage
+      in: query
+      description: Requested number of resources to be provided in response
+      schema:
+        type: integer
+    Seek:
+      name: seek
+      in: query
+      description: Index of last result read to create the next/previous number of results. This query parameter is used for pagination in systems with more than 1000 records
+      schema:
+        type: integer
+  headers:
+    x-correlator:
+      description: Correlation id for the different services
+      schema:
+        type: string
+    Content-Last-Key:
+      description: Indicates the index of the last result provided in the response
+      schema:
+        type: integer
+    X-Total-Count:
+      description: Indicates the total number of items in the collection (i.e. total purchases performed)
+      schema:
+        type: integer
   responses:
     Generic400:
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
       description: Invalid input
       content:
         application/json:
@@ -852,6 +957,9 @@ components:
             code: INVALID_ARGUMENT
             message: "Schema validation failed at  ..."
     Generic401:
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
       description: Unauthorized
       content:
         application/json:
@@ -862,6 +970,9 @@ components:
             code: UNAUTHORIZED
             message: "Authorization failed: ..."
     Generic403:
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
       description: Forbidden
       content:
         application/json:
@@ -872,6 +983,9 @@ components:
             code: PERMISSION_DENIED
             message: "Operation not allowed: ..."
     Generic404:
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
       description: Resource Not Found
       content:
         application/json:
@@ -882,6 +996,9 @@ components:
             code: NOT_FOUND
             message: "The specified resource is not found"
     Generic409:
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
       description: Conflict
       content:
         application/json:
@@ -892,6 +1009,9 @@ components:
             code: ALREADY_EXISTS
             message: "A specified resource duplicate entry found"
     Generic412:
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
       description: Request cannot be executed in the current system state
       content:
         application/json:
@@ -902,6 +1022,9 @@ components:
             code: FAILED_PRECONDITION
             message: "Request cannot be executed in the current system state"
     Generic500:
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
       description: Server error
       content:
         application/json:
@@ -912,6 +1035,9 @@ components:
             code: INTERNAL
             message: "Server error"
     Generic503:
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
       description: Service unavailable
       content:
         application/json:
@@ -922,6 +1048,9 @@ components:
             code: SERVICE_UNAVALIBLE
             message: "Service unavailable"
     Generic504:
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
       description: Request timeout exceeded
       content:
         application/json:
