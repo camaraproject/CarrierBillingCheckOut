@@ -24,6 +24,8 @@ info:
       - **Carrier Billing:** It means that the operator will perform the billing, accordingly to the user's configuration in the OB; usually this implies that the purchase will be included in the user invoice and then charged to the user, but actually other options may eventually happen, like charge against user prepay balance or other. Notice that this option do not explicitly define the actual payment method, but means that the carrier will be doing the charge based on configuration out of scope of this API.
       
       - The last resource is **Purchase Notifications**. This resource has one operation to send events to the `notification_url`, when provided by the API client in the purchase creation.
+    
+    Sequence Diagram: ![Sequence Diagram](https://github.com/camaraproject/CarrierBillingCheckOut/blob/main/documentation/API_documentation/resources/Carrier_Billing_Checkout_sequence_diagram.png)
   termsOfService: http://swagger.io/terms/
   contact:
     email: project-email@sample.com
