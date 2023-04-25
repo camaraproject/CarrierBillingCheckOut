@@ -25,7 +25,7 @@ info:
       
       - The last resource is **Purchase Notifications**. This resource has one operation to send events to the `notification_url`, when provided by the API client in the purchase creation.
     
-    Sequence Diagram: <p><img src="https://github.com/camaraproject/CarrierBillingCheckOut/blob/2974b27e36387b98b0b7bfeeee5657a73c85f26a/documentation/API_documentation/resources/Sequence_diagram.jpg" alt="Sequence Diagram" /></p>
+    ![Sequence Diagram](https://github.com/camaraproject/CarrierBillingCheckOut/blob/main/documentation/API_documentation/resources/Carrier_Billing_Checkout_sequence_diagram.png?raw=true)
   termsOfService: http://swagger.io/terms/
   contact:
     email: project-email@sample.com
