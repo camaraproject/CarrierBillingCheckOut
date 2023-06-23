@@ -1,6 +1,5 @@
 | Organization | Name                    |
 |--------------|-------------------------|
-| Huawei       | Shuting Qing            |
 | GSMA         | Gareth Williams         |
 | KDDI         | Toshiyasu Wakayama      |
 | Orange       | Sylvain Morel           |
