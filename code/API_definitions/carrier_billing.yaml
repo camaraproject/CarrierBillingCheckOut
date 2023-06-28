@@ -110,19 +110,19 @@ paths:
                 Generic400:
                   summary: Schema validation failed
                   value: 
-                    code: INVALID_INPUT
+                    code: INVALID_ARGUMENT
                     status: 400
                     message: "Schema validation failed at  ..."
                 WrongCurrency:
                   summary: Currency is unknown or not authorized
                   value: 
-                    code: INVALID_INPUT
+                    code: INVALID_ARGUMENT
                     status: 400
                     message: "Currency is unknown or not authorized: currency"
                 DuplicateClientCorrelator:
                   summary: clientCorrelator still exist
                   value: 
-                    code: INVALID_INPUT
+                    code: INVALID_ARGUMENT
                     status: 400
                     message: "clientCorrelator already exist on server"
         401:
@@ -201,12 +201,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaymentArray'
-        401:
-          $ref: "#/components/responses/Generic401"
-        403:
-          $ref: "#/components/responses/Generic403"
-        404:
-          description: Not Found
+        400:
+          description: Invalid input
           content:
             application/json:
               schema:
@@ -215,9 +211,13 @@ paths:
                 OutOfRange:
                   summary: Request out of range
                   value: 
-                    status: 404
+                    status: 400
                     code: OUT_OF_RANGE
                     message: "Client specified an invalid range"
+        401:
+          $ref: "#/components/responses/Generic401"
+        403:
+          $ref: "#/components/responses/Generic403"
         500:
           $ref: "#/components/responses/Generic500"
         503:
@@ -309,19 +309,19 @@ paths:
                 Generic400:
                   summary: Schema validation failed
                   value: 
-                    code: INVALID_INPUT
+                    code: INVALID_ARGUMENT
                     status: 400
                     message: "Schema validation failed at  ..."
                 phoneNumberRequired:
                   summary: end user id is required
                   value: 
-                    code: INVALID_INPUT
+                    code: INVALID_ARGUMENT
                     status: 400
                     message: "Expected property is missing: phoneNumber"
                 paymentIdRequired:
                   summary: paymentId is required
                   value: 
-                    code: INVALID_INPUT
+                    code: INVALID_ARGUMENT
                     status: 400
                     message: "Expected property is missing: paymentId"
         401:
@@ -420,19 +420,19 @@ paths:
                 Generic400:
                   summary: Schema validation failed
                   value: 
-                    code: INVALID_INPUT
+                    code: INVALID_ARGUMENT
                     status: 400
                     message: "Schema validation failed at  ..."
                 phoneNumberRequired:
                   summary: end user id is required
                   value: 
-                    code: INVALID_INPUT
+                    code: INVALID_ARGUMENT
                     status: 400
                     message: "Expected property is missing: phoneNumber"
                 paymentIdRequired:
                   summary: paymentId is required
                   value: 
-                    code: INVALID_INPUT
+                    code: INVALID_ARGUMENT
                     status: 400
                     message: "Expected property is missing: paymentId"
         401:
@@ -512,19 +512,19 @@ paths:
                 Generic400:
                   summary: Schema validation failed
                   value: 
-                    code: INVALID_INPUT
+                    code: INVALID_ARGUMENT
                     status: 400
                     message: "Schema validation failed at  ..."
                 phoneNumberRequired:
                   summary: end user id is required
                   value: 
-                    code: INVALID_INPUT
+                    code: INVALID_ARGUMENT
                     status: 400
                     message: "Expected property is missing: phoneNumber"
                 paymentIdRequired:
                   summary: paymentId is required
                   value: 
-                    code: INVALID_INPUT
+                    code: INVALID_ARGUMENT
                     status: 400
                     message: "Expected property is missing: paymentId"
         401:
@@ -997,7 +997,7 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           example:
-            code: INVALID_INPUT
+            code: INVALID_ARGUMENT
             status: 400
             message: "Schema validation failed at  ..."
     Generic401:
