@@ -99,7 +99,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Payment'
+                $ref: '#/components/schemas/PaymentCreated'
         400:
           description: Invalid input
           content:
@@ -603,7 +603,7 @@ components:
           $ref: '#/components/schemas/AmountTransactionInput'
         webhook:  
           $ref: '#/components/schemas/Webhook'
-    Payment:
+    PaymentCreated:
       type: object
       required:
       - amountTransaction
@@ -625,6 +625,30 @@ components:
         validationUrl:
           type: string
           description: Backend generated URL to trigger otp validation. Only needed when business case requires it. Sending of OTP is outside the scope of this specification.
+        webhook:  
+          $ref: '#/components/schemas/Webhook'
+    Payment:
+      type: object
+      required:
+      - amountTransaction
+      - paymentId
+      properties:
+        paymentId:
+          type: string
+          description: Unique Identifier of the payment
+        amountTransaction:
+          $ref: '#/components/schemas/AmountTransaction'
+        paymentCreationDate:
+          type: string
+          format: date-time
+          description: Date time, in ISO-8601 extended local date format, when the payment is created in server database. This is a technical information. Time-offset from UTC may be used to match local OB time.
+        paymentDate:
+          type: string
+          format: date-time
+          description: Date time, in ISO-8601 extended local date format, when the payment is effectively performed. This is a business information. Time-offset from UTC may be used to match local OB time.
+#        validationUrl:
+#          type: string
+#          description: Backend generated URL to trigger otp validation. Only needed when business case requires it. Sending of OTP is outside the scope of this specification.
         webhook:  
           $ref: '#/components/schemas/Webhook'
     Webhook:
