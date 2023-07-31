@@ -36,7 +36,7 @@ info:
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
-  version: 0.1.0
+  version: 0.2.0-wip
   title: Carrier Billing
   termsOfService: http://swagger.io/terms/
   contact:
@@ -92,7 +92,7 @@ paths:
             $ref: "#/paths/~1eventNotifications"
       responses:
         201:
-          description: <b>Created</b>
+          description: Created
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
@@ -181,12 +181,25 @@ paths:
         - Payment
       summary: Get a list of payments
       operationId: retrievePayments
-      description: Retrieve a list of payments and their details based on some filtering criteria.
+      description: | 
+        Retrieve a list of payments and their details based on some filtering criteria.
+        Regardless the payment criteria provided, response MUST be always limited to payments performed by the API client (i.e same oAuth credentials) triggering this request.
+        This is to guarantee no API client can check payments performed by other, therefore avoiding any legal or privacy topic.
+
+        Considerations regarding `startDate`, `endDate`: 
+        - If both included, return payments in that date range
+        - If no one included, no filtering by date range is applied
+        - If only settled `startDate`, `endDate` is considered current date-time
+        - If only settled `endDate`, `startDate` is considered one hour before
       parameters:
         - $ref: "#/components/parameters/x-correlator"
         - $ref: "#/components/parameters/Page"
         - $ref: "#/components/parameters/PerPage"
-        - $ref: "#/components/parameters/Seek"
+        - $ref: "#/components/parameters/StartDate"
+        - $ref: "#/components/parameters/EndDate"
+        - $ref: "#/components/parameters/Order"
+        - $ref: "#/components/parameters/TransactionOperationStatus"
+        - $ref: "#/components/parameters/MerchantIdentifier"
       responses:
         200:
           description: OK
@@ -208,6 +221,12 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorInfo"
               examples:
+                InvalidDateRange:
+                  summary: Inconsistent startDate and endDate values
+                  value:
+                    status: 400
+                    code: CARRIER_BILLING.INVALID_DATE_RANGE
+                    message: "Client specified an invalid date range"
                 OutOfRange:
                   summary: Request out of range
                   value:
@@ -291,7 +310,7 @@ paths:
             $ref: "#/paths/~1eventNotifications"
       responses:
         201:
-          description: <b>Created</b>
+          description: Created
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
@@ -1142,12 +1161,55 @@ components:
       description: Requested number of resources to be provided in response
       schema:
         type: integer
-    Seek:
-      name: seek
+    StartDate:
+      description: Initial `paymentCreationDate` for running the query, in ISO-8601 extended local date format. Time-offset from UTC may be used to match local OB time
       in: query
-      description: Index of last result read to create the next/previous number of results. This query parameter is used for pagination in systems with more than 1000 records. `seek` parameter offers finer control than `page` and could be used one or another as an alternative. If both are used in combination (not recommended) `seek` would mark the index starting from the page number specified by `page` and `perPage` [index = (page * perPage) + seek].
+      name: startDate
+      required: false
       schema:
-        type: integer
+        format: date-time
+        type: string
+    EndDate:
+      description: End `paymentCreationDate` for running the query, in ISO-8601 extended local date format. Time-offset from UTC may be used to match local OB time
+      in: query
+      name: endDate
+      required: false
+      schema:
+        format: date-time
+        type: string
+    Order:
+      description: Used to return the sorted results in descending (default) or ascending order, based on `paymentCreationDate` property
+      in: query
+      name: order
+      required: false
+      schema:
+        default: desc
+        enum:
+          - desc
+          - asc
+        type: string
+    TransactionOperationStatus: 
+      description: List of payment status to be considered for the query
+      in: query
+      name: transactionOperationStatus
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum: 
+            - processing
+            - defined
+            - reserved
+            - succeeded
+            - cancelled
+    MerchantIdentifier: 
+      description: Merchant identifier to filter the results
+      in: query
+      name: merchantIdentifier
+      required: false
+      schema:
+        type: string
   headers:
     x-correlator:
       description: Correlation id for the different services
