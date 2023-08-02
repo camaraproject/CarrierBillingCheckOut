@@ -116,12 +116,6 @@ paths:
                     code: INVALID_ARGUMENT
                     status: 400
                     message: "Schema validation failed at  ..."
-                PhoneNumberRequired:
-                  summary: Phone Number is required
-                  value:
-                    code: INVALID_ARGUMENT
-                    status: 400
-                    message: "Expected property is missing: phoneNumber"
                 WrongCurrency:
                   summary: Currency is unknown or not authorized
                   value:
@@ -349,12 +343,6 @@ paths:
                     code: INVALID_ARGUMENT
                     status: 400
                     message: "Schema validation failed at  ..."
-                PhoneNumberRequired:
-                  summary: Phone Number is required
-                  value:
-                    code: INVALID_ARGUMENT
-                    status: 400
-                    message: "Expected property is missing: phoneNumber"
                 WrongCurrency:
                   summary: Currency is unknown or not authorized
                   value:
@@ -476,7 +464,7 @@ paths:
                     status: 400
                     message: "Schema validation failed at  ..."
                 phoneNumberRequired:
-                  summary: end user id is required
+                  summary: Phone Number is required
                   value:
                     code: INVALID_ARGUMENT
                     status: 400
@@ -574,7 +562,7 @@ paths:
                     status: 400
                     message: "Schema validation failed at  ..."
                 phoneNumberRequired:
-                  summary: end user id is required
+                  summary: Phone Number is required
                   value:
                     code: INVALID_ARGUMENT
                     status: 400
@@ -611,6 +599,12 @@ paths:
                     code: CARRIER_BILLING.PAYMENT_CONFIRMED
                     status: 409
                     message: "Payment has been confirmed"
+                AlreadyCancelled:
+                  summary: paymentId is already cancelled
+                  value:
+                    code: CARRIER_BILLING.PAYMENT_CANCELLED
+                    status: 409
+                    message: "Payment has been cancelled"
         500:
           $ref: "#/components/responses/Generic500"
         503:
