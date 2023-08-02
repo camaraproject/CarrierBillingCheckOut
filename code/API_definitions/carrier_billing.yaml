@@ -102,6 +102,9 @@ paths:
                 $ref: "#/components/schemas/PaymentCreated"
         400:
           description: Invalid input
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -113,12 +116,18 @@ paths:
                     code: INVALID_ARGUMENT
                     status: 400
                     message: "Schema validation failed at  ..."
+                PhoneNumberRequired:
+                  summary: Phone Number is required
+                  value:
+                    code: INVALID_ARGUMENT
+                    status: 400
+                    message: "Expected property is missing: phoneNumber"
                 WrongCurrency:
                   summary: Currency is unknown or not authorized
                   value:
                     code: INVALID_ARGUMENT
                     status: 400
-                    message: "Currency is unknown or not authorized: currency"
+                    message: "Currency is unknown or not authorized"
                 DuplicateClientCorrelator:
                   summary: clientCorrelator still exist
                   value:
@@ -129,6 +138,9 @@ paths:
           $ref: "#/components/responses/Generic401"
         403:
           description: Forbidden
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -216,6 +228,9 @@ paths:
                 $ref: "#/components/schemas/PaymentArray"
         400:
           description: Invalid input
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -320,6 +335,9 @@ paths:
                 $ref: "#/components/schemas/BodyAmountReservationTransactionForReserve"
         400:
           description: Invalid input
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -331,22 +349,31 @@ paths:
                     code: INVALID_ARGUMENT
                     status: 400
                     message: "Schema validation failed at  ..."
-                phoneNumberRequired:
-                  summary: end user id is required
+                PhoneNumberRequired:
+                  summary: Phone Number is required
                   value:
                     code: INVALID_ARGUMENT
                     status: 400
                     message: "Expected property is missing: phoneNumber"
-                paymentIdRequired:
-                  summary: paymentId is required
+                WrongCurrency:
+                  summary: Currency is unknown or not authorized
                   value:
                     code: INVALID_ARGUMENT
                     status: 400
-                    message: "Expected property is missing: paymentId"
+                    message: "Currency is unknown or not authorized"
+                DuplicateClientCorrelator:
+                  summary: clientCorrelator still exist
+                  value:
+                    code: INVALID_ARGUMENT
+                    status: 400
+                    message: "clientCorrelator already exist on server"
         401:
           $ref: "#/components/responses/Generic401"
         403:
           description: Forbidden
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -384,6 +411,9 @@ paths:
                     message: "Unathorized payment request. Accumulated user mobile payments overpass account amount threshold"
         409:
           description: Conflict
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -431,6 +461,9 @@ paths:
               $ref: "#/components/headers/x-correlator"
         400:
           description: Invalid input
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -460,6 +493,9 @@ paths:
           $ref: "#/components/responses/Generic403"
         409:
           description: Conflict
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -523,6 +559,9 @@ paths:
               $ref: "#/components/headers/x-correlator"
         400:
           description: Invalid input
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -552,6 +591,9 @@ paths:
           $ref: "#/components/responses/Generic403"
         409:
           description: Conflict
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
