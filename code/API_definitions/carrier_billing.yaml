@@ -1010,7 +1010,7 @@ components:
       required:
         - event
       properties:
-        eventSubscriptionid:
+        eventSubscriptionId:
           type: string
           description: subscription identifier
         event:
@@ -1023,7 +1023,7 @@ components:
         - eventTime
         - eventDetail
       properties:
-        eventid:
+        eventId:
           type: string
           format: uuid
           description: Identifier of the event from the server where the event was reported
