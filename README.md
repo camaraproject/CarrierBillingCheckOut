@@ -6,26 +6,13 @@
 <a href="https://github.com/camaraproject/CarrierBillingCheckOut/blob/main/LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=plastic"></a>
 
 # CarrierBillingCheckOut
-Repository to describe, develop, document and test the CarrierBillingCheckOut API family
-
-## Notice for the reader
-The Carrier Billing family features 2 APIs with **distinct business scope**:
-* 'Carrier billing checkout' : Service that provides functionality for enabling first the purchase and then the payment request against OB Carrier Billing Systems.
-* 'Carrier billing payment' : Service enabling payments and payment follow-up against OB Carrier Billing Systems.
-
-Both proposals manage the payment request & processing. 'Carrier billing checkout' proposal prerequisites a 'Purchase' creation before to trigger a payment request (The payment is performed for this purchase).
-Depending on the use case an implementation could use either one of these 2 APIs. 
-
-Reader has to be aware of this distinction because API definition as documentation are provided for both flavor.
-
+Repository to describe, develop, document and test the CarrierBilling API family
 
 ## Scope
 * Service APIs for “CarrierBillingCheckOut” (see APIBacklog.md)  
-* It provides the customer with the ability to:  
-  * purchase (only for 'carrier billing checkout' flavor),
+* It provides the customer with the ability to: 
   * trigger carrier billing payment request (in one or two steps) 
   * follow up of payment processing using as Payment Method Carrier Billing, i.e.: the operator performs the billing of the goods.
-  * follow up of fulfilment of physical/digital goods (only for 'carrier billing checkout' flavor),
   * NOTE: The scope of this API family should be limited (at least at a first stage) to 4G and 5G.
 * Describe, develop, document and test the APIs (with 1-2 Telcos)  
   * Started: October 2022
