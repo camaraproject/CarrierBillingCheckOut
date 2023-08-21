@@ -196,7 +196,7 @@ paths:
         - If both included, return payments in that date range
         - If no one included, no filtering by date range is applied
         - If only settled `startDate`, `endDate` is considered current date-time
-        - If only settled `endDate`, `startDate` is considered one hour before
+        - If only settled `endDate`, every payment existing in the Operator billing system until such date is returned  
       parameters:
         - $ref: "#/components/parameters/x-correlator"
         - $ref: "#/components/parameters/Page"
