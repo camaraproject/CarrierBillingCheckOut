@@ -201,8 +201,8 @@ paths:
         - $ref: "#/components/parameters/x-correlator"
         - $ref: "#/components/parameters/Page"
         - $ref: "#/components/parameters/PerPage"
-        - $ref: "#/components/parameters/StartDate"
-        - $ref: "#/components/parameters/EndDate"
+        - $ref: "#/components/parameters/StartPaymentCreationDate"
+        - $ref: "#/components/parameters/EndPaymentCreationDate"
         - $ref: "#/components/parameters/Order"
         - $ref: "#/components/parameters/TransactionOperationStatus"
         - $ref: "#/components/parameters/MerchantIdentifier"
@@ -663,6 +663,7 @@ components:
       required:
         - amountTransaction
         - paymentId
+        - paymentCreationDate
       properties:
         paymentId:
           type: string
@@ -672,11 +673,11 @@ components:
         paymentCreationDate:
           type: string
           format: date-time
-          description: Date time, in ISO-8601 extended local date format, when the payment is created in server database. This is a technical information. Time-offset from UTC may be used to match local OB time.
+          description: Date time when the payment is created in server database. This is a technical information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
         paymentDate:
           type: string
           format: date-time
-          description: Date time, in ISO-8601 extended local date format, when the payment is effectively performed. This is a business information. Time-offset from UTC may be used to match local OB time.
+          description: Date time when the payment is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
         validationUrl:
           type: string
           description: Backend generated URL to trigger otp validation. Only needed when business case requires it. Sending of OTP is outside the scope of this specification.
@@ -687,6 +688,7 @@ components:
       required:
         - amountTransaction
         - paymentId
+        - paymentCreationDate
       properties:
         paymentId:
           type: string
@@ -696,11 +698,11 @@ components:
         paymentCreationDate:
           type: string
           format: date-time
-          description: Date time, in ISO-8601 extended local date format, when the payment is created in server database. This is a technical information. Time-offset from UTC may be used to match local OB time.
+          description: Date time when the payment is created in server database. This is a technical information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
         paymentDate:
           type: string
           format: date-time
-          description: Date time, in ISO-8601 extended local date format, when the payment is effectively performed. This is a business information. Time-offset from UTC may be used to match local OB time.
+          description: Date time when the payment is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
         webhook:
           $ref: "#/components/schemas/Webhook"
     Webhook:
@@ -801,6 +803,7 @@ components:
       required:
         - amountTransaction
         - paymentId
+        - paymentCreationDate
       type: object
       properties:
         paymentId:
@@ -811,7 +814,7 @@ components:
         paymentCreationDate:
           type: string
           format: date-time
-          description: Date time, in ISO-8601 extended local date format, when the payment is created in server database. This is a technical information. Time-offset from UTC may be used to match local OB time.
+          description: Date time when the payment is created in server database. This is a technical information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
         validationUrl:
           type: string
           description: Backend generated URL to trigger otp validation. Only needed when business case requires it. Sending of OTP is outside the scope of this specification.
@@ -1197,18 +1200,18 @@ components:
       description: Requested number of resources to be provided in response
       schema:
         type: integer
-    StartDate:
-      description: Initial `paymentCreationDate` for running the query, in ISO-8601 extended local date format. Time-offset from UTC may be used to match local OB time
+    StartPaymentCreationDate:
+      description: Initial `paymentCreationDate` for running the query. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
       in: query
-      name: startDate
+      name: paymentCreationDate.gte
       required: false
       schema:
         format: date-time
         type: string
-    EndDate:
-      description: End `paymentCreationDate` for running the query, in ISO-8601 extended local date format. Time-offset from UTC may be used to match local OB time
+    EndPaymentCreationDate:
+      description: End `paymentCreationDate` for running the query. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
       in: query
-      name: endDate
+      name: paymentCreationDate.lte
       required: false
       schema:
         format: date-time
