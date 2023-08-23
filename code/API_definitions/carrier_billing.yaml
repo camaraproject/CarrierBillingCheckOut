@@ -192,11 +192,11 @@ paths:
         Regardless the payment criteria provided, response MUST be always limited to payments performed by the API client (i.e same oAuth credentials) triggering this request.
         This is to guarantee no API client can check payments performed by other, therefore avoiding any legal or privacy topic.
 
-        Considerations regarding `startDate`, `endDate`: 
+        Considerations regarding `paymentCreationDate.gte`, `paymentCreationDate.lte`: 
         - If both included, return payments in that date range
         - If no one included, no filtering by date range is applied
-        - If only settled `startDate`, `endDate` is considered current date-time
-        - If only settled `endDate`, every payment existing in the Operator billing system until such date is returned  
+        - If only settled `paymentCreationDate.gte`, `paymentCreationDate.lte` is considered current date-time
+        - If only settled `paymentCreationDate.lte`, every payment existing in the Operator billing system until such date is returned  
       parameters:
         - $ref: "#/components/parameters/x-correlator"
         - $ref: "#/components/parameters/Page"
