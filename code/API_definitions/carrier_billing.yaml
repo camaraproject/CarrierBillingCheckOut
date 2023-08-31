@@ -36,7 +36,7 @@ info:
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
-  version: 0.1.0
+  version: 0.2.0-wip
   title: Carrier Billing
   termsOfService: http://swagger.io/terms/
   contact:
@@ -92,7 +92,7 @@ paths:
             $ref: "#/paths/~1eventNotifications"
       responses:
         201:
-          description: <b>Created</b>
+          description: Created
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
@@ -102,6 +102,9 @@ paths:
                 $ref: "#/components/schemas/PaymentCreated"
         400:
           description: Invalid input
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -118,7 +121,7 @@ paths:
                   value:
                     code: INVALID_ARGUMENT
                     status: 400
-                    message: "Currency is unknown or not authorized: currency"
+                    message: "Currency is unknown or not authorized"
                 DuplicateClientCorrelator:
                   summary: clientCorrelator still exist
                   value:
@@ -129,6 +132,9 @@ paths:
           $ref: "#/components/responses/Generic401"
         403:
           description: Forbidden
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -181,12 +187,25 @@ paths:
         - Payment
       summary: Get a list of payments
       operationId: retrievePayments
-      description: Retrieve a list of payments and their details based on some filtering criteria.
+      description: | 
+        Retrieve a list of payments and their details based on some filtering criteria.
+        Regardless the payment criteria provided, response MUST be always limited to payments performed by the API client (i.e same oAuth credentials) triggering this request.
+        This is to guarantee no API client can check payments performed by other, therefore avoiding any legal or privacy topic.
+
+        Considerations regarding `paymentCreationDate.gte`, `paymentCreationDate.lte`: 
+        - If both included, return payments in that date range
+        - If no one included, no filtering by date range is applied
+        - If only settled `paymentCreationDate.gte`, `paymentCreationDate.lte` is considered current date-time
+        - If only settled `paymentCreationDate.lte`, every payment existing in the Operator billing system until such date is returned  
       parameters:
         - $ref: "#/components/parameters/x-correlator"
         - $ref: "#/components/parameters/Page"
         - $ref: "#/components/parameters/PerPage"
-        - $ref: "#/components/parameters/Seek"
+        - $ref: "#/components/parameters/StartPaymentCreationDate"
+        - $ref: "#/components/parameters/EndPaymentCreationDate"
+        - $ref: "#/components/parameters/Order"
+        - $ref: "#/components/parameters/TransactionOperationStatus"
+        - $ref: "#/components/parameters/MerchantIdentifier"
       responses:
         200:
           description: OK
@@ -203,11 +222,20 @@ paths:
                 $ref: "#/components/schemas/PaymentArray"
         400:
           description: Invalid input
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorInfo"
               examples:
+                InvalidDateRange:
+                  summary: Inconsistent startDate and endDate values
+                  value:
+                    status: 400
+                    code: CARRIER_BILLING.INVALID_DATE_RANGE
+                    message: "Client specified an invalid date range"
                 OutOfRange:
                   summary: Request out of range
                   value:
@@ -291,7 +319,7 @@ paths:
             $ref: "#/paths/~1eventNotifications"
       responses:
         201:
-          description: <b>Created</b>
+          description: Created
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
@@ -301,6 +329,9 @@ paths:
                 $ref: "#/components/schemas/BodyAmountReservationTransactionForReserve"
         400:
           description: Invalid input
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -312,22 +343,25 @@ paths:
                     code: INVALID_ARGUMENT
                     status: 400
                     message: "Schema validation failed at  ..."
-                phoneNumberRequired:
-                  summary: end user id is required
+                WrongCurrency:
+                  summary: Currency is unknown or not authorized
                   value:
                     code: INVALID_ARGUMENT
                     status: 400
-                    message: "Expected property is missing: phoneNumber"
-                paymentIdRequired:
-                  summary: paymentId is required
+                    message: "Currency is unknown or not authorized"
+                DuplicateClientCorrelator:
+                  summary: clientCorrelator still exist
                   value:
                     code: INVALID_ARGUMENT
                     status: 400
-                    message: "Expected property is missing: paymentId"
+                    message: "clientCorrelator already exist on server"
         401:
           $ref: "#/components/responses/Generic401"
         403:
           description: Forbidden
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -365,6 +399,9 @@ paths:
                     message: "Unathorized payment request. Accumulated user mobile payments overpass account amount threshold"
         409:
           description: Conflict
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -412,6 +449,9 @@ paths:
               $ref: "#/components/headers/x-correlator"
         400:
           description: Invalid input
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -424,7 +464,7 @@ paths:
                     status: 400
                     message: "Schema validation failed at  ..."
                 phoneNumberRequired:
-                  summary: end user id is required
+                  summary: Phone Number is required
                   value:
                     code: INVALID_ARGUMENT
                     status: 400
@@ -441,6 +481,9 @@ paths:
           $ref: "#/components/responses/Generic403"
         409:
           description: Conflict
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -504,6 +547,9 @@ paths:
               $ref: "#/components/headers/x-correlator"
         400:
           description: Invalid input
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -516,7 +562,7 @@ paths:
                     status: 400
                     message: "Schema validation failed at  ..."
                 phoneNumberRequired:
-                  summary: end user id is required
+                  summary: Phone Number is required
                   value:
                     code: INVALID_ARGUMENT
                     status: 400
@@ -533,6 +579,9 @@ paths:
           $ref: "#/components/responses/Generic403"
         409:
           description: Conflict
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -550,6 +599,12 @@ paths:
                     code: CARRIER_BILLING.PAYMENT_CONFIRMED
                     status: 409
                     message: "Payment has been confirmed"
+                AlreadyCancelled:
+                  summary: paymentId is already cancelled
+                  value:
+                    code: CARRIER_BILLING.PAYMENT_CANCELLED
+                    status: 409
+                    message: "Payment has been cancelled"
         500:
           $ref: "#/components/responses/Generic500"
         503:
@@ -608,6 +663,7 @@ components:
       required:
         - amountTransaction
         - paymentId
+        - paymentCreationDate
       properties:
         paymentId:
           type: string
@@ -617,11 +673,11 @@ components:
         paymentCreationDate:
           type: string
           format: date-time
-          description: Date time, in ISO-8601 extended local date format, when the payment is created in server database. This is a technical information. Time-offset from UTC may be used to match local OB time.
+          description: Date time when the payment is created in server database. This is a technical information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
         paymentDate:
           type: string
           format: date-time
-          description: Date time, in ISO-8601 extended local date format, when the payment is effectively performed. This is a business information. Time-offset from UTC may be used to match local OB time.
+          description: Date time when the payment is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
         validationUrl:
           type: string
           description: Backend generated URL to trigger otp validation. Only needed when business case requires it. Sending of OTP is outside the scope of this specification.
@@ -632,6 +688,7 @@ components:
       required:
         - amountTransaction
         - paymentId
+        - paymentCreationDate
       properties:
         paymentId:
           type: string
@@ -641,11 +698,11 @@ components:
         paymentCreationDate:
           type: string
           format: date-time
-          description: Date time, in ISO-8601 extended local date format, when the payment is created in server database. This is a technical information. Time-offset from UTC may be used to match local OB time.
+          description: Date time when the payment is created in server database. This is a technical information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
         paymentDate:
           type: string
           format: date-time
-          description: Date time, in ISO-8601 extended local date format, when the payment is effectively performed. This is a business information. Time-offset from UTC may be used to match local OB time.
+          description: Date time when the payment is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
         webhook:
           $ref: "#/components/schemas/Webhook"
     Webhook:
@@ -746,6 +803,7 @@ components:
       required:
         - amountTransaction
         - paymentId
+        - paymentCreationDate
       type: object
       properties:
         paymentId:
@@ -756,7 +814,7 @@ components:
         paymentCreationDate:
           type: string
           format: date-time
-          description: Date time, in ISO-8601 extended local date format, when the payment is created in server database. This is a technical information. Time-offset from UTC may be used to match local OB time.
+          description: Date time when the payment is created in server database. This is a technical information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
         validationUrl:
           type: string
           description: Backend generated URL to trigger otp validation. Only needed when business case requires it. Sending of OTP is outside the scope of this specification.
@@ -955,7 +1013,7 @@ components:
       required:
         - event
       properties:
-        eventSubscriptionid:
+        eventSubscriptionId:
           type: string
           description: subscription identifier
         event:
@@ -968,7 +1026,7 @@ components:
         - eventTime
         - eventDetail
       properties:
-        eventid:
+        eventId:
           type: string
           format: uuid
           description: Identifier of the event from the server where the event was reported
@@ -1142,12 +1200,55 @@ components:
       description: Requested number of resources to be provided in response
       schema:
         type: integer
-    Seek:
-      name: seek
+    StartPaymentCreationDate:
+      description: Initial `paymentCreationDate` for running the query. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
       in: query
-      description: Index of last result read to create the next/previous number of results. This query parameter is used for pagination in systems with more than 1000 records. `seek` parameter offers finer control than `page` and could be used one or another as an alternative. If both are used in combination (not recommended) `seek` would mark the index starting from the page number specified by `page` and `perPage` [index = (page * perPage) + seek].
+      name: paymentCreationDate.gte
+      required: false
       schema:
-        type: integer
+        format: date-time
+        type: string
+    EndPaymentCreationDate:
+      description: End `paymentCreationDate` for running the query. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
+      in: query
+      name: paymentCreationDate.lte
+      required: false
+      schema:
+        format: date-time
+        type: string
+    Order:
+      description: Used to return the sorted results in descending (default) or ascending order, based on `paymentCreationDate` property
+      in: query
+      name: order
+      required: false
+      schema:
+        default: desc
+        enum:
+          - desc
+          - asc
+        type: string
+    TransactionOperationStatus: 
+      description: List of payment status to be considered for the query
+      in: query
+      name: transactionOperationStatus
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum: 
+            - processing
+            - defined
+            - reserved
+            - succeeded
+            - cancelled
+    MerchantIdentifier: 
+      description: Merchant identifier to filter the results
+      in: query
+      name: merchantIdentifier
+      required: false
+      schema:
+        type: string
   headers:
     x-correlator:
       description: Correlation id for the different services
