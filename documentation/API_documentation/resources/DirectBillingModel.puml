@@ -10,14 +10,22 @@ skinparam class {
    BackgroundColor #FCF2E3
 }
 
-class AmountTransaction  <<Pivot>> {
-    <b>endUserId</b>: String 
+class Payment <<Pivot>> {
+    <b>paymentId</b>: String
+    <b>paymentCreationDate</b>: Datetime
+    paymentDate: Datetime
+}
+
+class AmountTransaction  {
+    <b>phoneNumber</b>: String 
     clientCorrelator: String
     <b>referenceCode</b>: String
     <b>transactionOperationStatus</b>: String
     resourceURL: String
     serverReferenceCode : String
     }
+
+Payment --> "1,1" AmountTransaction: amountTransaction
 
 class TransactionOperationStatus <<Enumeration>> {
     Charged
@@ -29,6 +37,14 @@ class TransactionOperationStatus <<Enumeration>> {
     Processing
 }
 
+class Webhook {
+    <b>notificationUrl</b>: String
+    notificationAuthToken : String
+}
+
+Payment --> "0,1" Webhook: webhook
+
+
 class PaymentAmountForCharge {
 }
 
@@ -36,21 +52,43 @@ class ChargingInformation {
     <b>amount</b>: Number
     <b>currency</b>: String
     <b>description</b>: String
+    isTaxIncluded: Boolean
+    TaxAmount: Number
+
 }
 
 class ChargingMetaData {
-    onBehalfOf: String
+    merchantName: String
+    merchantIdentifier: String
+    fee: number
     purchaseCategoryCode: String
     channel: String
-    taxAmount: Number
     serviceId: String
     productId: String
 }
 
+
+class PaymentDetails {
+}
+
+class PaymentItem {
+    <b>amount</b>: Number
+    <b>currency</b>: String
+    <b>description</b>: String
+    isTaxIncluded: Boolean
+    TaxAmount: Number
+}
+
+PaymentDetails --> "1,*" PaymentItem : paymentItem
+
 AmountTransaction --> "1,1" PaymentAmountForCharge : <b>paymentAmount</b>
 
 PaymentAmountForCharge --> "1,1" ChargingInformation : <b>chargingInformation</b>
-PaymentAmountForCharge --> "1,1" ChargingMetaData : chargingMetaData
+PaymentAmountForCharge --> "0,1" ChargingMetaData : chargingMetaData
 
+
+PaymentAmountForCharge --> "0,1" PaymentDetails: paymentDetails
+
+AmountTransaction .left. TransactionOperationStatus
 
 @enduml
