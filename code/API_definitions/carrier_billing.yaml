@@ -69,9 +69,8 @@ paths:
   /payments:
     post:
       security:
-        - oAuth2ClientCredentials: []
-        - three_legged:
-            - carrier-billing-payments-create
+        - openId:
+          - carrier-billing-payments:create
       tags:
         - One Step Payment
       summary: Create a new Payment
@@ -180,9 +179,8 @@ paths:
           $ref: "#/components/responses/Generic504"
     get:
       security:
-        - oAuth2ClientCredentials: []
-        - three_legged:
-            - carrier-billing-payments-read
+        - openId:
+          - carrier-billing-payments:read
       tags:
         - Payment
       summary: Get a list of payments
@@ -255,9 +253,8 @@ paths:
   /payments/{paymentId}:
     get:
       security:
-        - oAuth2ClientCredentials: []
-        - three_legged:
-            - carrier-billing-payments-read
+        - openId:
+          - carrier-billing-payments:read
       tags:
         - Payment
       summary: Get payment details
@@ -296,9 +293,8 @@ paths:
   /payments/prepare:
     post:
       security:
-        - oAuth2ClientCredentials: []
-        - three_legged:
-            - carrier-billing-payments-prepare
+        - openId:
+          - carrier-billing-payments:create
       tags:
         - Two Step Payment
       summary: Prepare (reserve) a payment
@@ -419,9 +415,8 @@ paths:
   /payments/{paymentId}/confirm:
     post:
       security:
-        - oAuth2ClientCredentials: []
-        - three_legged:
-            - carrier-billing-payments-confirm
+        - openId:
+          - carrier-billing-payments:write
       tags:
         - Two Step Payment
       summary: Confirm a payment
@@ -479,6 +474,8 @@ paths:
           $ref: "#/components/responses/Generic401"
         403:
           $ref: "#/components/responses/Generic403"
+        404:
+          $ref: "#/components/responses/Generic404"
         409:
           description: Conflict
           headers:
@@ -516,9 +513,8 @@ paths:
   /payments/{paymentId}/cancel:
     post:
       security:
-        - oAuth2ClientCredentials: []
-        - three_legged:
-            - carrier-billing-payments-cancel
+        - openId:
+          - carrier-billing-payments:write
       tags:
         - Two Step Payment
       summary: Cancel a payment
@@ -577,6 +573,8 @@ paths:
           $ref: "#/components/responses/Generic401"
         403:
           $ref: "#/components/responses/Generic403"
+        404:
+          $ref: "#/components/responses/Generic404"
         409:
           description: Conflict
           headers:
@@ -648,6 +646,10 @@ paths:
         "504":
           $ref: "#/components/responses/Generic504"
 components:
+  securitySchemes:
+    openId:
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
   schemas:
     CreatePayment:
       type: object
@@ -1262,22 +1264,3 @@ components:
       description: Total number of items matching criteria
       schema:
         type: integer
-  securitySchemes:
-    oAuth2ClientCredentials:
-      type: oauth2
-      flows:
-        clientCredentials:
-          tokenUrl: "{tokenUrl}"
-          scopes: {}
-    three_legged:
-      type: oauth2
-      flows:
-        authorizationCode:
-          authorizationUrl: https://auth.example.com/authorize
-          tokenUrl: https://auth.example.com/token
-          scopes:
-            carrier-billing-payments-create: perform payment (1-step)
-            carrier-billing-payments-prepare: reserve a payment (2-step)
-            carrier-billing-payments-confirm: confirm a payment (2-step)
-            carrier-billing-payments-cancel: cancel a payment (2-step)
-            carrier-billing-payments-read: retrieve payment(s) information
