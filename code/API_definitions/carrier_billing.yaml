@@ -86,9 +86,46 @@ paths:
               $ref: "#/components/schemas/CreatePayment"
         required: true
       callbacks:
-        eventNotifications:
-          "{$request.body#/webhook.notificationUrl}/eventNotifications":
-            $ref: "#/paths/~1eventNotifications"
+        notifications:
+          "{$request.body#/webhook/notificationUrl}":
+            post:
+              security:
+                - {}
+                - notificationsBearerAuth: []
+              tags:
+                - Payment Notifications
+              summary: Carrier Billing payment notifications
+              operationId: paymentNotification
+              description: |
+                Important: This endpoint is exposed by the API client, accepting requests in the defined format.
+                The Carrier Billing server will call this endpoint whenever any carrier billing related event occurs.
+              parameters:
+                - $ref: "#/components/parameters/x-correlator"
+              requestBody:
+                description: Creates a new carrier billing payment notification
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/CloudEvent"
+                required: true
+              responses:
+                "204":
+                  description: Successful notification
+                  headers:
+                    x-correlator:
+                      $ref: "#/components/headers/x-correlator"
+                "400":
+                  $ref: "#/components/responses/Generic400"
+                "401":
+                  $ref: "#/components/responses/Generic401"
+                "403":
+                  $ref: "#/components/responses/Generic403"
+                "500":
+                  $ref: "#/components/responses/Generic500"
+                "503":
+                  $ref: "#/components/responses/Generic503"
+                "504":
+                  $ref: "#/components/responses/Generic504"
       responses:
         201:
           description: Created
@@ -310,9 +347,46 @@ paths:
               $ref: "#/components/schemas/BodyAmountReservationTransactionForReserveInput"
         required: true
       callbacks:
-        eventNotifications:
-          "{$request.body#/webhook.notificationUrl}/eventNotifications":
-            $ref: "#/paths/~1eventNotifications"
+        notifications:
+          "{$request.body#/webhook/notificationUrl}":
+            post:
+              security:
+                - {}
+                - notificationsBearerAuth: []
+              tags:
+                - Payment Notifications
+              summary: Carrier Billing payment notifications
+              operationId: paymentNotification
+              description: |
+                Important: This endpoint is exposed by the API client, accepting requests in the defined format.
+                The Carrier Billing server will call this endpoint whenever any carrier billing related event occurs.
+              parameters:
+                - $ref: "#/components/parameters/x-correlator"
+              requestBody:
+                description: Creates a new carrier billing payment notification
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/CloudEvent"
+                required: true
+              responses:
+                "204":
+                  description: Successful notification
+                  headers:
+                    x-correlator:
+                      $ref: "#/components/headers/x-correlator"
+                "400":
+                  $ref: "#/components/responses/Generic400"
+                "401":
+                  $ref: "#/components/responses/Generic401"
+                "403":
+                  $ref: "#/components/responses/Generic403"
+                "500":
+                  $ref: "#/components/responses/Generic500"
+                "503":
+                  $ref: "#/components/responses/Generic503"
+                "504":
+                  $ref: "#/components/responses/Generic504"
       responses:
         201:
           description: Created
@@ -625,7 +699,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/EventNotification"
+              $ref: "#/components/schemas/CloudEvent"
         required: true
       responses:
         "204":
@@ -650,6 +724,10 @@ components:
     openId:
       type: openIdConnect
       openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    notificationsBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: "{$request.body#/webhook/notificationAuthToken}"
   schemas:
     CreatePayment:
       type: object
@@ -685,6 +763,12 @@ components:
           description: Backend generated URL to trigger otp validation. Only needed when business case requires it. Sending of OTP is outside the scope of this specification.
         webhook:
           $ref: "#/components/schemas/Webhook"
+    PaymentArray:
+      description: A list of payment(s)
+      type: array
+      minItems: 0
+      items:
+        $ref: "#/components/schemas/Payment"
     Payment:
       type: object
       required:
@@ -993,6 +1077,131 @@ components:
         productId:
           type: string
           description: The product identifier to be combined with the `serviceId` to uniquely identify the product being purchased. For example if the `serviceId` relates to a VOD service, the `productId` can specify the movie rented
+    CloudEvent:
+      description: The notification format
+      required:
+        - id
+        - source
+        - specversion
+        - type
+        - time
+      properties:
+        id:
+          type: string
+          description: Identifier of this event, that must be unique in the source context.
+          example: sd5e-uy52-88t4-za66
+        source:
+          $ref: "#/components/schemas/Source"
+        type:
+          type: string
+          description: Type of event as defined in each CAMARA API
+          example: org.camaraproject.carrier-billing.v0.payment-reserved
+        specversion:
+          type: string
+          description: Version of the specification to which this event conforms (must be 1.0 if it conforms to cloudevents 1.0.2 version)
+          example: 1.0
+        datacontenttype:
+          type: string
+          description: 'media-type that describes the event payload encoding, must be "application/json" for CAMARA APIs'
+          example: application/json
+        data:
+          type: object
+          description: Event details payload described in each CAMARA API and referenced by its type
+        time:
+          $ref: "#/components/schemas/DateTime"
+      discriminator:
+        propertyName: "type"
+        mapping:
+          org.camaraproject.carrier-billing.v0.payment-reserved: "#/components/schemas/EventPaymentReserved"
+          org.camaraproject.carrier-billing.v0.payment-completed: "#/components/schemas/EventPaymentCompleted"
+          org.camaraproject.carrier-billing.v0.payment-cancelled: "#/components/schemas/EventPaymentCancelled"
+    Source:
+      type: string
+      format: uri-reference
+      minLength: 1
+      description: Identifies the context in which an event happened in the specific Provider Implementation.
+      example:
+        - https://github.com/cloudevents
+        - mailto:cncf-wg-serverless@lists.cncf.io
+        - urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66
+        - cloudevents/spec/pull/123
+        - /sensors/tn-1234567/alerts
+        - 1-555-123-4567
+    DateTime:
+      type: string
+      format: date-time
+      description: Timestamp when the occurrence happened. Must adhere to RFC 3339.
+      example: "2023-11-03T12:27:10Z"
+    EventPaymentReserved:
+      description: Event structure for payment reserved
+      allOf:
+        - $ref: "#/components/schemas/CloudEvent"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/PaymentReserved"
+    EventPaymentCompleted:
+      description: Event structure for payment completed
+      allOf:
+        - $ref: "#/components/schemas/CloudEvent"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/PaymentCompleted"
+    EventPaymentCancelled:
+      description: Event structure for payment cancelled
+      allOf:
+        - $ref: "#/components/schemas/CloudEvent"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/PaymentCancelled"
+    PaymentReserved:
+      allOf:
+        - description: Event detail structure for org.camaraproject.carrier-billing.v0.payment-reserved event
+        - $ref: "#/components/schemas/BasicEvent"
+    PaymentCompleted:
+      allOf:
+        - description: Event detail structure for org.camaraproject.carrier-billing.v0.payment-completed event
+        - $ref: "#/components/schemas/BasicEvent"
+        - type: object
+          required:
+            - paymentDate
+          properties:
+            paymentDate:
+              type: string
+              description: Date when the payment is effectively performed, both in 1-step and 2-step scenarios. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+              format: date-time
+              example: "2023-11-03T12:27:08.312Z"
+    PaymentCancelled:
+      allOf:
+        - description: Event detail structure for org.camaraproject.carrier-billing.v0.payment-cancelled event
+        - $ref: "#/components/schemas/BasicEvent"
+    BasicEvent:
+      type: object
+      description: Data type to provide basic payment event information
+      required:
+        - paymentId
+        - status
+        - description
+      properties:
+        paymentId:
+          type: string
+          description: Unique Identifier of the payment
+          example: "238r62efh289gt4g2794tg"
+        status:
+          type: string
+          enum:
+            - succeeded
+            - failed
+          description: |
+            Status of the procedure. Possible status are:
+            * `succeeded`: procedure was accomplished 
+            * `failed`: procedure failed.
+        description:
+          type: string
+          description: Description of the notification, both used when process was `succeeded` or `failed` indicating in the latter case human understable reason about why process failed.
+          example: "Payment Notification"
     ErrorInfo:
       type: object
       required:
@@ -1009,75 +1218,6 @@ components:
         message:
           type: string
           description: Detailed error description
-    EventNotification:
-      type: object
-      description: Generic CAMARA data type for event notification structure
-      required:
-        - event
-      properties:
-        eventSubscriptionId:
-          type: string
-          description: subscription identifier
-        event:
-          $ref: "#/components/schemas/Event"
-    Event:
-      type: object
-      description: Generic CAMARA data type for event  structure
-      required:
-        - eventType
-        - eventTime
-        - eventDetail
-      properties:
-        eventId:
-          type: string
-          format: uuid
-          description: Identifier of the event from the server where the event was reported
-        eventType:
-          type: string
-          description: |
-            Type of event. Different types considered so far:
-            - `PAYMENT_COMPLETED`: Notification indication about payment completion, both in 1-step and 2-step scenarios.
-            - `PAYMENT_RESERVED`: Notification about payment reservation, in 2-step scenario.
-            - `PAYMENT_CANCELLED`: Notification about payment cancellation, in 2-step scenario.
-        eventTime:
-          type: string
-          format: date-time
-          description: Date time, in ISO-8601 extended local date format, when the event occurred. Time-offset from UTC may be used to match local OB time.
-        eventDetail:
-          $ref: "#/components/schemas/EventDetail"
-    EventDetail:
-      type: object
-      description: Data type to provide event detail information
-      properties:
-        paymentId:
-          type: string
-          description: Unique Identifier of the payment
-        status:
-          type: string
-          enum:
-            - succeeded
-            - failed
-          description: |
-            Status of the procedure, according to `eventType` param. Possible status are:
-            * `succeeded`: procedure was accomplished 
-            * `failed`: procedure failed.
-        description:
-          type: string
-          description: Description of the notification, both used when process was `succeeded` or `failed` indicating in the latter case human understable reason about why process failed.
-        paymentDate:
-          type: string
-          description: Date when the payment is effectively performed, both in 1-step and 2-step scenarios. This is a business information.
-          format: date-time
-      required:
-        - paymentId
-        - status
-        - description
-    PaymentArray:
-      description: A list of payment(s)
-      type: array
-      minItems: 0
-      items:
-        $ref: "#/components/schemas/Payment"
   responses:
     Generic400:
       description: Invalid input
