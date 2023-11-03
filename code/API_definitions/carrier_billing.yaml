@@ -190,27 +190,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/PaymentArray"
         400:
-          description: Invalid input
-          headers:
-            x-correlator:
-              $ref: "#/components/headers/x-correlator"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorInfo"
-              examples:
-                InvalidDateRange:
-                  summary: Inconsistent startDate and endDate values
-                  value:
-                    status: 400
-                    code: CARRIER_BILLING.INVALID_DATE_RANGE
-                    message: "Client specified an invalid date range"
-                OutOfRange:
-                  summary: Request out of range
-                  value:
-                    status: 400
-                    code: OUT_OF_RANGE
-                    message: "Client specified an invalid range"
+          $ref: "#/components/responses/GetPaymentsInvalid400"
         401:
           $ref: "#/components/responses/Generic401"
         403:
@@ -387,33 +367,7 @@ paths:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
         400:
-          description: Invalid input
-          headers:
-            x-correlator:
-              $ref: "#/components/headers/x-correlator"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorInfo"
-              examples:
-                Generic400:
-                  summary: Schema validation failed
-                  value:
-                    code: INVALID_ARGUMENT
-                    status: 400
-                    message: "Schema validation failed at  ..."
-                phoneNumberRequired:
-                  summary: Phone Number is required
-                  value:
-                    code: INVALID_ARGUMENT
-                    status: 400
-                    message: "Expected property is missing: phoneNumber"
-                paymentIdRequired:
-                  summary: paymentId is required
-                  value:
-                    code: INVALID_ARGUMENT
-                    status: 400
-                    message: "Expected property is missing: paymentId"
+          $ref: "#/components/responses/Payment2StepInvalid400"
         401:
           $ref: "#/components/responses/Generic401"
         403:
@@ -421,33 +375,7 @@ paths:
         404:
           $ref: "#/components/responses/Generic404"
         409:
-          description: Conflict
-          headers:
-            x-correlator:
-              $ref: "#/components/headers/x-correlator"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorInfo"
-              examples:
-                Generic409:
-                  summary: Conflict
-                  value:
-                    code: ALREADY_EXISTS
-                    status: 409
-                    message: "Payment confirmation in progress"
-                AlreadyConfirmed:
-                  summary: paymentId is already confirmed
-                  value:
-                    code: CARRIER_BILLING.PAYMENT_CONFIRMED
-                    status: 409
-                    message: "Payment has been confirmed"
-                AlreadyCancelled:
-                  summary: paymentId is already cancelled
-                  value:
-                    code: CARRIER_BILLING.PAYMENT_CANCELLED
-                    status: 409
-                    message: "Payment has been cancelled"
+          $ref: "#/components/responses/PaymentConfirmConflict409"
         500:
           $ref: "#/components/responses/Generic500"
         503:
@@ -486,33 +414,7 @@ paths:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
         400:
-          description: Invalid input
-          headers:
-            x-correlator:
-              $ref: "#/components/headers/x-correlator"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorInfo"
-              examples:
-                Generic400:
-                  summary: Schema validation failed
-                  value:
-                    code: INVALID_ARGUMENT
-                    status: 400
-                    message: "Schema validation failed at  ..."
-                phoneNumberRequired:
-                  summary: Phone Number is required
-                  value:
-                    code: INVALID_ARGUMENT
-                    status: 400
-                    message: "Expected property is missing: phoneNumber"
-                paymentIdRequired:
-                  summary: paymentId is required
-                  value:
-                    code: INVALID_ARGUMENT
-                    status: 400
-                    message: "Expected property is missing: paymentId"
+          $ref: "#/components/responses/Payment2StepInvalid400"
         401:
           $ref: "#/components/responses/Generic401"
         403:
@@ -520,33 +422,7 @@ paths:
         404:
           $ref: "#/components/responses/Generic404"
         409:
-          description: Conflict
-          headers:
-            x-correlator:
-              $ref: "#/components/headers/x-correlator"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorInfo"
-              examples:
-                Generic409:
-                  summary: Conflict
-                  value:
-                    code: ALREADY_EXISTS
-                    status: 409
-                    message: "Payment cancellation in progress"
-                AlreadyConfirmed:
-                  summary: paymentId is already confirmed
-                  value:
-                    code: CARRIER_BILLING.PAYMENT_CONFIRMED
-                    status: 409
-                    message: "Payment has been confirmed"
-                AlreadyCancelled:
-                  summary: paymentId is already cancelled
-                  value:
-                    code: CARRIER_BILLING.PAYMENT_CANCELLED
-                    status: 409
-                    message: "Payment has been cancelled"
+          $ref: "#/components/responses/PaymentCancelConflict409"
         500:
           $ref: "#/components/responses/Generic500"
         503:
@@ -1066,6 +942,37 @@ components:
             code: INVALID_ARGUMENT
             status: 400
             message: "Schema validation failed at  ..."
+    GetPaymentsInvalid400:
+      description: |-
+        Invalid input. In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:
+          - Inconsistent startDate and endDate values ("code": "CARRIER_BILLING.INVALID_DATE_RANGE","message": "Client specified an invalid date range").
+          - Request out of range ("code": "OUT_OF_RANGE","message": "Client specified an invalid range").
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            Generic400:
+              summary: Invalid Argument
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: "Invalid Argument ..."
+            InvalidDateRange:
+              summary: Inconsistent startDate and endDate values
+              value:
+                status: 400
+                code: CARRIER_BILLING.INVALID_DATE_RANGE
+                message: "Client specified an invalid date range"
+            OutOfRange:
+              summary: Request out of range
+              value:
+                status: 400
+                code: OUT_OF_RANGE
+                message: "Client specified an invalid range"
     PaymentInvalid400:
       description: |-
         Invalid input.
@@ -1099,6 +1006,39 @@ components:
                 code: INVALID_ARGUMENT
                 status: 400
                 message: "clientCorrelator already exist on server"
+    Payment2StepInvalid400:
+      description: |-
+        Invalid input.
+        Common INVALID_ARGUMENT scenarios usually are:
+          - Schema validation failed ("code": "INVALID_ARGUMENT","message": "Schema validation failed at ...").
+          - Phone Number is required ("code": "INVALID_ARGUMENT","message": "Expected property is missing: phoneNumber").
+          - paymentId is required ("code": "INVALID_ARGUMENT","message": "Expected property is missing: paymentId").
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            Generic400:
+              summary: Schema validation failed
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: "Schema validation failed at  ..."
+            phoneNumberRequired:
+              summary: Phone Number is required
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: "Expected property is missing: phoneNumber"
+            paymentIdRequired:
+              summary: paymentId is required
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: "Expected property is missing: paymentId"
     Generic401:
       description: Unauthorized
       headers:
@@ -1197,6 +1137,68 @@ components:
             status: 409
             code: ALREADY_EXISTS
             message: "A specified resource duplicate entry found"
+    PaymentConfirmConflict409:
+      description: |-
+        Conflict. In addition of regular ALREADY_EXISTS scenario other scenarios may exist:
+          - paymentId is already confirmed ("code": "CARRIER_BILLING.PAYMENT_CONFIRMED","message": "Payment has been confirmed").
+          - paymentId is already cancelled ("code": "CARRIER_BILLING.PAYMENT_CANCELLED","message": "Payment has been cancelled").
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            Generic409:
+              summary: Conflict
+              value:
+                code: ALREADY_EXISTS
+                status: 409
+                message: "Payment confirmation in progress"
+            AlreadyConfirmed:
+              summary: paymentId is already confirmed
+              value:
+                code: CARRIER_BILLING.PAYMENT_CONFIRMED
+                status: 409
+                message: "Payment has been confirmed"
+            AlreadyCancelled:
+              summary: paymentId is already cancelled
+              value:
+                code: CARRIER_BILLING.PAYMENT_CANCELLED
+                status: 409
+                message: "Payment has been cancelled"
+    PaymentCancelConflict409:
+      description: |-
+        Conflict. In addition of regular ALREADY_EXISTS scenario other scenarios may exist:
+          - paymentId is already confirmed ("code": "CARRIER_BILLING.PAYMENT_CONFIRMED","message": "Payment has been confirmed").
+          - paymentId is already cancelled ("code": "CARRIER_BILLING.PAYMENT_CANCELLED","message": "Payment has been cancelled").
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            Generic409:
+              summary: Conflict
+              value:
+                code: ALREADY_EXISTS
+                status: 409
+                message: "Payment cancellation in progress"
+            AlreadyConfirmed:
+              summary: paymentId is already confirmed
+              value:
+                code: CARRIER_BILLING.PAYMENT_CONFIRMED
+                status: 409
+                message: "Payment has been confirmed"
+            AlreadyCancelled:
+              summary: paymentId is already cancelled
+              value:
+                code: CARRIER_BILLING.PAYMENT_CANCELLED
+                status: 409
+                message: "Payment has been cancelled"
     Generic500:
       description: Server error
       headers:
