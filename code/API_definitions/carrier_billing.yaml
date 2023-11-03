@@ -63,8 +63,6 @@ tags:
     description: Operations to manage Two Step Payment procedure
   - name: Payment
     description: Operations to obtain information about payments
-  - name: Payment Notifications
-    description: Operations to handle payment notifications
 paths:
   /payments:
     post:
@@ -682,42 +680,6 @@ paths:
         503:
           $ref: "#/components/responses/Generic503"
         504:
-          $ref: "#/components/responses/Generic504"
-  /eventNotifications:
-    post:
-      tags:
-        - Payment Notifications
-      summary: Carrier Billing payment notifications
-      operationId: paymentNotification
-      description: |
-        Important: this endpoint is to be exposed by the API client, accepting requests in the defined format.
-        The Carrier Billing server will call this endpoint whenever any carrier billing related event occurs.
-      parameters:
-        - $ref: "#/components/parameters/x-correlator"
-      requestBody:
-        description: Creates a new carrier billing payment notification
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CloudEvent"
-        required: true
-      responses:
-        "204":
-          description: Successful notification
-          headers:
-            x-correlator:
-              $ref: "#/components/headers/x-correlator"
-        "400":
-          $ref: "#/components/responses/Generic400"
-        "401":
-          $ref: "#/components/responses/Generic401"
-        "403":
-          $ref: "#/components/responses/Generic403"
-        "500":
-          $ref: "#/components/responses/Generic500"
-        "503":
-          $ref: "#/components/responses/Generic503"
-        "504":
           $ref: "#/components/responses/Generic504"
 components:
   securitySchemes:
