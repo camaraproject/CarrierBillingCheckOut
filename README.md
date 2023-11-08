@@ -21,8 +21,8 @@ Repository to describe, develop, document and test the CarrierBilling API family
 ## Meetings
 * Meetings are held virtually
 * Schedule:
-  * Bi-Weekly, Wednesdays 16:00 - 17:00 CET
-* Meeting link: [Link](https://teams.microsoft.com/l/meetup-join/19%3ameeting_MjlhNzg3NTctYjAyYS00ZjM0LTlmZDEtYjE2NGFmNjYyZmM5%40thread.v2/0?context=%7b%22Tid%22%3a%229744600e-3e04-492e-baa1-25ec245c6f10%22%2c%22Oid%22%3a%2219764050-b5d5-4991-9f15-d10905a94c08%22%7d)
+  * Bi-Weekly, Wednesdays 16:00 - 17:00 CET/CEST
+* Meeting link: [Link](https://teams.microsoft.com/l/meetup-join/19%3ameeting_M2UzOTNhOWItMmNkNC00NDVjLWIzYjAtYzgxNDBkOGY2MjFi%40thread.v2/0?context=%7b%22Tid%22%3a%229744600e-3e04-492e-baa1-25ec245c6f10%22%2c%22Oid%22%3a%2219764050-b5d5-4991-9f15-d10905a94c08%22%7d)
 
 ## Results
 * Sub Project is in progress
