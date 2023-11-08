@@ -150,7 +150,7 @@ paths:
               requestBody:
                 description: Creates a new carrier billing payment notification
                 content:
-                  application/json:
+                  application/cloudevents+json:
                     schema:
                       $ref: "#/components/schemas/CloudEvent"
                 required: true
@@ -327,7 +327,7 @@ paths:
               requestBody:
                 description: Creates a new carrier billing payment notification
                 content:
-                  application/json:
+                  application/cloudevents+json:
                     schema:
                       $ref: "#/components/schemas/CloudEvent"
                 required: true
@@ -557,10 +557,11 @@ components:
         notificationUrl:
           type: string
           description: Callback URL to allow asynchronous delivery of payment related events
+          example: "https://myservice.com/payment/events"
         notificationAuthToken:
           type: string
-          example: "c8974e592c2fa383d4a3960714"
           description: Authentification token for callback endpoint
+          example: "c8974e592c2fa383d4a3960714"
     AmountTransaction:
       required:
         - phoneNumber
@@ -847,21 +848,21 @@ components:
         id:
           type: string
           description: Identifier of this event, that must be unique in the source context.
-          example: sd5e-uy52-88t4-za66
+          example: "sd5e-uy52-88t4-za66"
         source:
           $ref: "#/components/schemas/Source"
         type:
           type: string
           description: Type of event as defined in each CAMARA API
-          example: org.camaraproject.carrier-billing.v0.payment-reserved
+          example: "org.camaraproject.carrier-billing.v0.payment-reserved"
         specversion:
           type: string
           description: Version of the specification to which this event conforms (must be 1.0 if it conforms to cloudevents 1.0.2 version)
-          example: '1.0'
+          example: "1.0"
         datacontenttype:
           type: string
           description: 'media-type that describes the event payload encoding, must be "application/json" for CAMARA APIs'
-          example: application/json
+          example: "application/json"
         data:
           type: object
           description: Event details payload described in each CAMARA API and referenced by its type
@@ -878,7 +879,7 @@ components:
       format: uri-reference
       minLength: 1
       description: Identifies the context in which an event happened in the specific Provider Implementation.
-example: https://notificationSendServer12.supertelco.com)
+      example: "https://notificationSendServer12.supertelco.com"
     DateTime:
       type: string
       format: date-time
