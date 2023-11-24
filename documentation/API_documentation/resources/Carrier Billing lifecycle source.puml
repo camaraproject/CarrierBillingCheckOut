@@ -1,45 +1,40 @@
 @startuml Payment lifecycle
 
-State fork <<fork>>
+state fork <<fork>>
 state choice <<choice>>
-state end3    <<end>>
+state end <<end>>
 
 [*] --> choice
-choice --> Processing : async
-
-
-choice --> fork : sync
-
 note left of choice: Business response is provided\nsynchronously or asynchronously
 
+choice --> Processing : (1S)/(2S) Async
+Processing: Payment request\nis initialised
 
+choice --> fork : (1S)/(2S) Sync
 Processing --> fork
-
-note right of fork: distinction between 1 step(1S)\nor 2 steps (2S) payment
-
-Processing: Payment request\n is initialised
-
-fork --> Succeeded : (1S) payment\nsuccessfully executed
-fork -left-> Denied : (1S)/(2S) Payment request\ndenied by carrier
-fork --> Reserved : (2S) payment reserved\nsuccessfully executed
-
-Succeeded --> [*]
-
-
-Reserved -down-> Cancelled : (2S) Request to cancel payment\nsuccessfully executed\nor payment reservation expired
-Reserved -> Succeeded : (2S) Payment confirmation\nsuccessfully executed
-Reserved -> Denied : (2S)  confirmation\nrequest denied by carrier
-
-Denied -up-> end3
-
-Succeeded: Amount has been charged\non customer line
-Reserved: Payment is prepared &\nready to be confirmed.\nAmount is reserved
-Cancelled: Payment is cancelled\nAmount is released
-Denied: Payment request is denied\nby back-end payment server
-
-Cancelled --> [*]
-
+note right of fork: Distinction between 1 step (1S)\nor 2 steps (2S) payment
 fork: separation between one or stwo steps payment
 
+fork -right-> Succeeded : (1S) Payment\nsuccessfully executed
+fork -left-> Denied : (1S)/(2S) Payment request\ndenied by carrier
+
+fork --> Pending_Validation : (2S) [Optional] Payment\n validation required
+fork --> Reserved : (2S) Payment reserved\nsuccessfully executed
+Pending_Validation -> Reserved: (2S) Payment validated
+Pending_Validation -> Denied: (2S) Payment not validated
+
+Reserved -down-> Cancelled : (2S) Request to cancel payment\nsuccessfully executed\nor payment reservation expired
+Reserved -right-> Succeeded : (2S) Payment confirmation\nsuccessfully executed
+Reserved -left-> Denied : (2S) Confirmation request\ndenied by carrier
+
+Succeeded --> [*]
+Cancelled --> [*]
+Denied -up-> end
+
+Pending_Validation: Perform payment validation
+Reserved: Payment is prepared &\nready to be confirmed.\nAmount is reserved
+Denied: Payment request is denied\nby back-end payment server
+Succeeded: Amount has been charged\non customer line
+Cancelled: Payment is cancelled\nAmount is released
 
 @enduml
