@@ -56,24 +56,40 @@ info:
     **1-STEP Payment**
 
     If `createPayment` is a **SYNC** process:
-    - Response contains `paymentId` and status=`succeeded`. In case of any error scenario `paymentId` is not created.
+    - Response contains `paymentId` and status=`succeeded`.
+    - In case of any error scenario `paymentId` is not created.
 
     If `createPayment` is an **ASYNC** process:
     - Response contains `paymentId` and status=`processing`. After completion:
       - When payment is successfully completed then status=`succeeded`.
       - When payment is not successfully performed then status=`denied`.
+    - In case of any error scenario `paymentId` is not created.
 
     **2-STEP Payment**
 
     FIRST STEP
 
     If `preparePayment` is a **SYNC** process:
-    - Response contains `paymentId` and status=`reserved`. In case of any error scenario `paymentId` is not created.
-
+    - **Case A** - `validationInfo` is NOT provided in response.
+      - Response contains `paymentId` and status=`reserved`.
+    - **Case B** - `validationInfo` is provided in response.
+      - Response contains `paymentId` and status=`pending_validation`.
+    - In case of any error scenario `paymentId` is not created.
+    
     If `preparePayment` is an **ASYNC** process:
-    - Response contains `paymentId` and status=`processing`. After completion:
-      - When payment preparation is successfully completed then status=`reserved`.
-      - When payment preparation is not successfully performed then status=`denied`.
+    - **Case A** - `validationInfo` is NOT provided in response.
+      - Response contains `paymentId` and status=`processing`. After completion:
+        - When payment preparation is successfully completed then status=`reserved`.
+        - When payment preparation is not successfully performed then status=`denied`.
+    - **Case B** - `validationInfo` is provided in response.
+      - Response contains `paymentId` and status=`processing`. After completion:
+        - When payment preparation is successfully completed then status=`pending_validation`. [1]
+        - When payment preparation is not successfully performed then status=`denied`.
+    - In case of any error scenario `paymentId` is not created.
+
+    [OPTIONAL] VALIDATE STEP [1]
+
+    After `validatePayment`, status=`reserved` OR `denied`, depending whether it was successful or not.
 
     SECOND STEP
 
@@ -116,7 +132,7 @@ paths:
     post:
       security:
         - openId:
-          - carrier-billing-payments:create
+          - carrier-billing:payments:create
       tags:
         - One Step Payment
       summary: Create a new Payment
@@ -199,15 +215,17 @@ paths:
     get:
       security:
         - openId:
-          - carrier-billing-payments:read
+          - carrier-billing:payments:read
       tags:
         - Payment
       summary: Get a list of payments
       operationId: retrievePayments
-      description: | 
+      description: |- 
         Retrieve a list of payments and their details based on some filtering criteria.
         Regardless the payment criteria provided, response MUST be always limited to payments performed by the API client (i.e same oAuth credentials) triggering this request.
         This is to guarantee no API client can check payments performed by other, therefore avoiding any legal or privacy topic.
+
+        When Access Token is issued for a given user phone number, the list of payments returned would be only the ones associated to that user phone number and API client. When Access Token is not associated to a user phone number, therefore only associated to API client the list of payments returned would be all the ones managed by that API client.
 
         Considerations regarding `paymentCreationDate.gte`, `paymentCreationDate.lte`: 
         - If both included, return payments in that date range
@@ -242,7 +260,7 @@ paths:
         401:
           $ref: "#/components/responses/Generic401"
         403:
-          $ref: "#/components/responses/Generic403"
+          $ref: "#/components/responses/PaymentReadPermissionDenied403"
         500:
           $ref: "#/components/responses/Generic500"
         503:
@@ -253,12 +271,15 @@ paths:
     get:
       security:
         - openId:
-          - carrier-billing-payments:read
+          - carrier-billing:payments:read
       tags:
         - Payment
       summary: Get payment details
       operationId: retrievePayment
-      description: Retrieve payment details for a given payment.
+      description: |-
+        Retrieve payment details for a given payment.
+
+        When Access Token is issued for a given user phone number, the payment details would be returned in case the `paymentId` is associated to that user phone number and API client, otherwise `404 NOT_FOUND` will be returned. When Access Token is not associated to a user phone number, the payment details are returned in case the API client managed that payment.
       parameters:
         - name: paymentId
           in: path
@@ -280,7 +301,7 @@ paths:
         401:
           $ref: "#/components/responses/Generic401"
         403:
-          $ref: "#/components/responses/Generic403"
+          $ref: "#/components/responses/PaymentReadPermissionDenied403"
         404:
           $ref: "#/components/responses/Generic404"
         500:
@@ -293,7 +314,7 @@ paths:
     post:
       security:
         - openId:
-          - carrier-billing-payments:create
+          - carrier-billing:payments:create
       tags:
         - Two Step Payment
       summary: Prepare (reserve) a payment
@@ -384,11 +405,67 @@ paths:
           $ref: "#/components/responses/Generic503"
         504:
           $ref: "#/components/responses/Generic504"
+  /payments/{paymentId}/validate:
+    post:
+      security:
+        - openId:
+          - carrier-billing:payments:write
+      tags:
+        - Two Step Payment
+      summary: Validate a payment
+      operationId: validatePayment
+      description: Validate a given payment with a code, identified by its paymentId. This process is applicable for 2-STEP, when optionally required by business case.
+      parameters:
+        - name: paymentId
+          in: path
+          description: The payment identifier returned when the payment preparation was created.
+          schema:
+            type: string
+          required: true
+        - $ref: "#/components/parameters/x-correlator"
+      requestBody:
+        description: Payment Validation
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ValidatePayment"
+        required: true
+      responses:
+        204:
+          description: Validation Succeeded
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
+        400:
+          $ref: "#/components/responses/ValidatePaymentInvalid400"
+        401:
+          $ref: "#/components/responses/Generic401"
+        403:
+          $ref: "#/components/responses/Generic403"
+        409:
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              examples:
+                Generic409:
+                  summary: Conflict
+                  value:
+                    code: ALREADY_EXISTS
+                    status: 409
+                    message: "Payment already validated"
+        500:
+          $ref: "#/components/responses/Generic500"
+        503:
+          $ref: "#/components/responses/Generic503"
+        504:
+          $ref: "#/components/responses/Generic504"
   /payments/{paymentId}/confirm:
     post:
       security:
         - openId:
-          - carrier-billing-payments:write
+          - carrier-billing:payments:write
       tags:
         - Two Step Payment
       summary: Confirm a payment
@@ -419,7 +496,7 @@ paths:
         401:
           $ref: "#/components/responses/Generic401"
         403:
-          $ref: "#/components/responses/Generic403"
+          $ref: "#/components/responses/PaymentConfirmPermissionDenied403"
         404:
           $ref: "#/components/responses/Generic404"
         409:
@@ -434,7 +511,7 @@ paths:
     post:
       security:
         - openId:
-          - carrier-billing-payments:write
+          - carrier-billing:payments:write
       tags:
         - Two Step Payment
       summary: Cancel a payment
@@ -495,7 +572,9 @@ components:
         amountTransaction:
           $ref: "#/components/schemas/AmountTransactionInput"
         webhook:
-          $ref: "#/components/schemas/Webhook"
+          allOf:
+            - $ref: "#/components/schemas/Webhook"
+            - description: Information to manage payment notifications
     PaymentCreated:
       type: object
       required:
@@ -506,6 +585,7 @@ components:
         paymentId:
           type: string
           description: Unique Identifier of the payment
+          example: "AK234rfweSBuWGFUEWFGWEVWRV"
         amountTransaction:
           $ref: "#/components/schemas/AmountTransaction"
         paymentCreationDate:
@@ -516,11 +596,10 @@ components:
           type: string
           format: date-time
           description: Date time when the payment is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
-        validationUrl:
-          type: string
-          description: Backend generated URL to trigger otp validation. Only needed when business case requires it. Sending of OTP is outside the scope of this specification.
         webhook:
-          $ref: "#/components/schemas/Webhook"
+          allOf:
+            - $ref: "#/components/schemas/Webhook"
+            - description: Information to manage payment notifications
     PaymentArray:
       description: A list of payment(s)
       type: array
@@ -537,6 +616,7 @@ components:
         paymentId:
           type: string
           description: Unique Identifier of the payment
+          example: "AK234rfweSBuWGFUEWFGWEVWRV"
         amountTransaction:
           $ref: "#/components/schemas/AmountTransaction"
         paymentCreationDate:
@@ -548,7 +628,9 @@ components:
           format: date-time
           description: Date time when the payment is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
         webhook:
-          $ref: "#/components/schemas/Webhook"
+          allOf:
+            - $ref: "#/components/schemas/Webhook"
+            - description: Information to manage payment notifications
     Webhook:
       type: object
       required:
@@ -573,6 +655,7 @@ components:
         phoneNumber:
           type: string
           description: Identifies the mobile account to be charged. Phone number in E.164 format (starting with country code). Optionally prefixed with '+'.
+          example: "+34671999000"
         clientCorrelator:
           type: string
           description:
@@ -580,6 +663,7 @@ components:
             a communication failure during the payment request, using the same clientCorrelator
             when retrying the request allows the operator to avoid applying the same
             charge twice. This field SHOULD be present. Same value as indicated in the request.
+          example: "req-12f2pgh448gh2hvrfrv"
         paymentAmount:
           $ref: "#/components/schemas/PaymentAmountForCharge"
         referenceCode:
@@ -587,19 +671,22 @@ components:
           description:
             Merchant generated payment reference to uniquely identify the
             request, for instance, in the case of disputes. Same value as the one provided in the request.
+          example: "ref-pay-834tfr2rA3v8r8vr3rv"
         transactionOperationStatus:
           type: string
           description:
-            Specifies the payment status (`processing`, `denied`, `reserved`,
-            `succeeded`, `cancelled`).
+            Specifies the payment status (`processing`, `pending_validation`, `denied`, `reserved`, `succeeded`, `cancelled`).
+          example: "processing"
         resourceURL:
           type: string
           description: URI of the created resource (same as in the Location header)
+          example: "urn:payments:AK234rfweSBuWGFUEWFGWEVWRV"
         serverReferenceCode:
           type: string
           description:
             Reference to the charge or refund, provided by the server,
             and meaningful to the server’s backend system for the purpose of reconciliation.
+          example: "ref-pay-834tfr2rA3v8r8vr3rv-serv"
     AmountTransactionInput:
       type: object
       required:
@@ -613,6 +700,7 @@ components:
             Additional Considerations:
             - When phoneNumber is not indicated, it can be inferred from authorization context (i.e. token), otherwise `HTTP 403` will be answered.
             - When phoneNumber is indicated, authorization context will be consistent, otherwise `HTTP 403` will be answered.
+          example: "+34671999000"
         clientCorrelator:
           type: string
           description:
@@ -620,6 +708,7 @@ components:
             a communication failure during the payment request, using the same clientCorrelator
             when retrying the request allows the operator to avoid applying the same
             charge twice. This field SHOULD be present.
+          example: "req-12f2pgh448gh2hvrfrv"
         paymentAmount:
           $ref: "#/components/schemas/PaymentAmountForCharge"
         referenceCode:
@@ -627,6 +716,7 @@ components:
           description:
             Merchant generated payment reference to uniquely identify the
             request, for instance, in the case of disputes.
+          example: "ref-pay-834tfr2rA3v8r8vr3rv"
     PaymentAmountForCharge:
       type: object
       required:
@@ -644,6 +734,21 @@ components:
         phoneNumber:
           type: string
           description: Identifies the mobile account to be charged. Phone number in E.164 format (starting with country code). Optionally prefixed with '+'.
+          example: "+34671999000"
+    ValidatePayment:
+      type: object
+      required:
+        - authorizationId
+        - code
+      properties:
+        authorizationId:
+          type: string
+          description: Unique authorization identifier for a specific payment.
+          example: "Fn34o8g239v3wrb3t"
+        code:
+          type: string
+          description: Code received via SMS to validate and authorize a specific payment, only needed when business case requires it. Sending of this code is outside this specification.
+          example: "352673"
     BodyAmountReservationTransactionForReserve:
       required:
         - amountTransaction
@@ -654,17 +759,21 @@ components:
         paymentId:
           type: string
           description: Unique Identifier of the payment
+          example: "AK234rfweSBuWGFUEWFGWEVWRV"
         amountTransaction:
           $ref: "#/components/schemas/AmountReservationTransactionForReserve"
         paymentCreationDate:
           type: string
           format: date-time
           description: Date time when the payment is created in server database. This is a technical information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
-        validationUrl:
-          type: string
-          description: Backend generated URL to trigger otp validation. Only needed when business case requires it. Sending of OTP is outside the scope of this specification.
+        validationInfo:
+          allOf:
+            - $ref: "#/components/schemas/ValidationInfo"
+            - description: Information to perform otp validation. Only needed when business case requires it. Sending of OTP is outside the scope of this specification.
         webhook:
-          $ref: "#/components/schemas/Webhook"
+          allOf:
+            - $ref: "#/components/schemas/Webhook"
+            - description: Information to manage payment notifications
     BodyAmountReservationTransactionForReserveInput:
       required:
         - amountTransaction
@@ -673,7 +782,9 @@ components:
         amountTransaction:
           $ref: "#/components/schemas/AmountReservationTransactionForReserveInput"
         webhook:
-          $ref: "#/components/schemas/Webhook"
+          allOf:
+            - $ref: "#/components/schemas/Webhook"
+            - description: Information to manage payment notifications
     AmountReservationTransactionForReserve:
       required:
         - paymentAmount
@@ -684,12 +795,14 @@ components:
         phoneNumber:
           type: string
           description: Identifies the mobile account to be charged. Phone number in E.164 format (starting with country code). Optionally prefixed with '+'.
+          example: "+34671999000"
         clientCorrelator:
           type: string
           description: Uniquely identifies this payment request. If there is
             a communication failure during the payment request, using the same clientCorrelator
             when retrying the request allows the operator to avoid applying the same
             charge twice. This field SHOULD be present. Same value as indicated in the request.
+          example: "req-12f2pgh448gh2hvrfrv"
         paymentAmount:
           $ref: "#/components/schemas/PaymentAmountForReserve"
         referenceCode:
@@ -697,19 +810,22 @@ components:
           description:
             Merchant generated payment reference to uniquely identify the
             request, for example, in the case of disputes. Same value as the one provided in the request.
+          example: "ref-pay-834tfr2rA3v8r8vr3rv"
         transactionOperationStatus:
           type: string
           description:
-            Specifies the payment status (`processing`, `denied`, `reserved`,
-            `succeeded`, `cancelled`).
+            Specifies the payment status (`processing`, `pending_validation`, `denied`, `reserved`, `succeeded`, `cancelled`).
+          example: "processing"
         resourceURL:
           type: string
           description: URI of the created resource (same as in the Location header)
+          example: "urn:payments:AK234rfweSBuWGFUEWFGWEVWRV"
         serverReferenceCode:
           type: string
           description:
             Reference to the charge or refund, provided by the server,
             and meaningful to the server’s backend system for the purpose of reconciliation.
+          example: "ref-pay-834tfr2rA3v8r8vr3rv-serv"
     AmountReservationTransactionForReserveInput:
       type: object
       required:
@@ -723,6 +839,7 @@ components:
             Additional Considerations:
             - When phoneNumber is not indicated, it can be inferred from authorization context (i.e. token), otherwise `HTTP 403` will be answered.
             - When phoneNumber is indicated, authorization context will be consistent, otherwise `HTTP 403` will be answered.
+          example: "+34671999000"
         clientCorrelator:
           type: string
           description:
@@ -730,6 +847,7 @@ components:
             a communication failure during the payment request, using the same clientCorrelator
             when retrying the request allows the operator to avoid applying the same
             charge twice. This field SHOULD be present.
+          example: "req-12f2pgh448gh2hvrfrv"
         paymentAmount:
           $ref: "#/components/schemas/PaymentAmountForReserve"
         referenceCode:
@@ -737,6 +855,7 @@ components:
           description:
             Merchant generated payment reference to uniquely identify the
             request, for instance, in the case of disputes.
+          example: "ref-pay-834tfr2rA3v8r8vr3rv"
     PaymentAmountForReserve:
       type: object
       required:
@@ -766,12 +885,15 @@ components:
           format: float
           multipleOf: 0.001
           description: Specific amount to be charged or reserved referred to a specific item.
+          example: 100
         currency:
           type: string
           description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
+          example: "EUR"
         description:
           type: string
           description: Description text to be used for information and billing text referred to a specific item.
+          example: "FIFA EA Sports 24"
         isTaxIncluded:
           type: boolean
           default: false
@@ -782,6 +904,7 @@ components:
           multipleOf: 0.001
           description: |
             The tax amount charged by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
+          example: 21
     ChargingInformation:
       type: object
       required:
@@ -794,12 +917,15 @@ components:
           format: float
           multipleOf: 0.001
           description: Amount to be charged or reserved.
+          example: 100
         currency:
           type: string
           description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
+          example: "EUR"
         description:
           type: string
           description: Description text to be used for information and billing text
+          example: "FIFA EA Sports 24"
         isTaxIncluded:
           type: boolean
           default: false
@@ -810,32 +936,83 @@ components:
           multipleOf: 0.001
           description: |
             The tax amount charged by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
+          example: 21
     ChargingMetaData:
       type: object
       properties:
         merchantName:
           type: string
           description: Indicates the merchant name. Allows aggregators/partners to specify the actual merchant name
+          example: "EA Sports"
         merchantIdentifier:
           type: string
           description: Indicates the merchant identifier. Allows aggregators/partners to specify the actual merchant identifier
+          example: "eas-12345"
         fee:
           type: number
           format: float
           multipleOf: 0.01
           description: Percentage of the amount to be received by the requester
+          example: 10
         purchaseCategoryCode:
           type: string
           description: A category defining the type of service, product or media being purchased
+          example: "games"
         channel:
           type: string
           description: The channel over which the requester is interacting with the merchant (e.g. WAP, Web, SMS...)
+          example: "web"
         serviceId:
           type: string
           description: The identifier of the partner/merchant service being purchased
+          example: "games-online"
         productId:
           type: string
           description: The product identifier to be combined with the `serviceId` to uniquely identify the product being purchased. For example if the `serviceId` relates to a VOD service, the `productId` can specify the movie rented
+          example: "138235321"
+    ValidationInfo:
+      type: object
+      required:
+        - action
+      properties:
+        action:
+          type: string
+          enum:
+            - open
+            - validate
+          description: Action to be done regarding otp validation.
+      discriminator:
+        propertyName: action 
+        mapping:
+          open: '#/components/schemas/Open'
+          validate: '#/components/schemas/Validate'
+      example:
+        action: validate
+        authorizationId: "Fn34o8g239v3wrb3t"
+    Open:
+      allOf:
+        - $ref: '#/components/schemas/ValidationInfo'
+        - type: object
+          description: Information for otp validation by means of browseable URL.
+          required:
+            - validationURL
+          properties:
+            validationURL:
+              type: string
+              description: Backend generated Public URL to perform otp validation. Sending of OTP is outside the scope of this specification.
+              example: "https://my-payment-service.com/validate/358y24t2g4f2397g45"
+    Validate:
+      allOf:
+        - $ref: '#/components/schemas/ValidationInfo'
+        - type: object
+          description: Information for otp validation by means of received otp.
+          required:
+            - authorizationId
+          properties:
+            authorizationId:
+              type: string
+              description: Unique authorization identifier for a given payment to perform otp validation. Sending of OTP is outside the scope of this specification. Validation of this `authorizationId` is performed by means of `validatePayment` endpoint.
+              example: "Fn34o8g239v3wrb3t"
     CloudEvent:
       description: The notification format
       required:
@@ -848,16 +1025,19 @@ components:
         id:
           type: string
           description: Identifier of this event, that must be unique in the source context.
+          minLength: 1
           example: "sd5e-uy52-88t4-za66"
         source:
           $ref: "#/components/schemas/Source"
         type:
           type: string
           description: Type of event as defined in each CAMARA API
+          minLength: 25
           example: "org.camaraproject.carrier-billing.v0.payment-reserved"
         specversion:
           type: string
           description: Version of the specification to which this event conforms (must be 1.0 if it conforms to cloudevents 1.0.2 version)
+          minLength: 3
           example: "1.0"
         datacontenttype:
           type: string
@@ -871,20 +1051,39 @@ components:
       discriminator:
         propertyName: "type"
         mapping:
+          org.camaraproject.carrier-billing.v0.payment-pending-validation: "#/components/schemas/EventPaymentPendingValidation"
           org.camaraproject.carrier-billing.v0.payment-reserved: "#/components/schemas/EventPaymentReserved"
           org.camaraproject.carrier-billing.v0.payment-completed: "#/components/schemas/EventPaymentCompleted"
           org.camaraproject.carrier-billing.v0.payment-cancelled: "#/components/schemas/EventPaymentCancelled"
+          org.camaraproject.carrier-billing.v0.payment-denied: "#/components/schemas/EventPaymentDenied"
     Source:
       type: string
       format: uri-reference
       minLength: 1
-      description: Identifies the context in which an event happened in the specific Provider Implementation.
+      description: |
+        Identifies the context in which an event happened - be a non-empty `URI-reference` like:
+        - URI with a DNS authority:
+          * https://github.com/cloudevents
+          * mailto:cncf-wg-serverless@lists.cncf.io
+        - Universally-unique URN with a UUID:
+          * urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66
+        - Application-specific identifier:
+          * /cloudevents/spec/pull/123
+          * 1-555-123-4567
       example: "https://notificationSendServer12.supertelco.com"
     DateTime:
       type: string
       format: date-time
       description: Timestamp when the occurrence happened. Must adhere to RFC 3339.
       example: "2023-11-03T12:27:10Z"
+    EventPaymentPendingValidation:
+      description: Event structure for payment pending validation
+      allOf:
+        - $ref: "#/components/schemas/CloudEvent"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/PaymentPendingValidation"
     EventPaymentReserved:
       description: Event structure for payment reserved
       allOf:
@@ -909,6 +1108,18 @@ components:
           properties:
             data:
               $ref: "#/components/schemas/PaymentCancelled"
+    EventPaymentDenied:
+      description: Event structure for payment denied
+      allOf:
+        - $ref: "#/components/schemas/CloudEvent"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/PaymentDenied"
+    PaymentPendingValidation:
+      allOf:
+        - description: Event detail structure for org.camaraproject.carrier-billing.v0.payment-pending-validation event
+        - $ref: "#/components/schemas/BasicEvent"
     PaymentReserved:
       allOf:
         - description: Event detail structure for org.camaraproject.carrier-billing.v0.payment-reserved event
@@ -930,6 +1141,16 @@ components:
       allOf:
         - description: Event detail structure for org.camaraproject.carrier-billing.v0.payment-cancelled event
         - $ref: "#/components/schemas/BasicEvent"
+    PaymentDenied:
+      allOf:
+        - description: Event detail structure for org.camaraproject.carrier-billing.v0.payment-denied event
+        - $ref: "#/components/schemas/BasicEvent"
+        - type: object
+          properties:
+            denialReason:
+              type: string
+              description: Indicates the business reason for denying the payment.
+              example: "User is blocked due to pending debt"
     BasicEvent:
       type: object
       description: Data type to provide basic payment event information
@@ -941,7 +1162,7 @@ components:
         paymentId:
           type: string
           description: Unique Identifier of the payment
-          example: "238r62efh289gt4g2794tg"
+          example: "AK234rfweSBuWGFUEWFGWEVWRV"
         status:
           type: string
           enum:
@@ -990,6 +1211,7 @@ components:
         Invalid input. In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:
           - Inconsistent startDate and endDate values ("code": "CARRIER_BILLING.INVALID_DATE_RANGE","message": "Client specified an invalid date range").
           - Request out of range ("code": "OUT_OF_RANGE","message": "Client specified an invalid range").
+          - Too many matching records found ("code": "CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS","message": "Too many matching records found. Specify additional/suitable criteria to limit the number of records").
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
@@ -1016,6 +1238,12 @@ components:
                 status: 400
                 code: OUT_OF_RANGE
                 message: "Client specified an invalid range"
+            TooManyMatchingRecords:
+              summary: Too many matching records found
+              value:
+                status: 400
+                code: CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS
+                message: "Too many matching records found. Specify additional/suitable criteria to limit the number of records"
     PaymentInvalid400:
       description: |-
         Invalid input.
@@ -1082,6 +1310,57 @@ components:
                 code: INVALID_ARGUMENT
                 status: 400
                 message: "Expected property is missing: paymentId"
+    ValidatePaymentInvalid400:
+      description: | 
+        Invalid input.
+        In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:
+          - authorizationId is not valid ("code": "CARRIER_BILLING.INVALID_AUTHORIZATION_ID","message": "Invalid authorizationId").
+          - code is not valid ("code": "CARRIER_BILLING.INVALID_CODE","message": "Invalid code").
+          - validation failed ("code": "CARRIER_BILLING.VALIDATION_FAILED","message": "the maximum number of attempts have been consumed for this validation").
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            Generic400:
+              summary: Schema validation failed
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: "Schema validation failed at  ..."
+            AuthorizationIdRequired:
+              summary: AuthorizationId is required
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: "Expected property is missing: authorizationId"
+            CodeRequired:
+              summary: code is required
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: "Expected property is missing: code"
+            InvalidAuthorizationId:
+              summary: code is not valid
+              value:
+                code: CARRIER_BILLING.INVALID_AUTHORIZATION_ID
+                status: 400
+                message: "Invalid authorizationId"
+            InvalidCode:
+              summary: code is not valid
+              value:
+                code: CARRIER_BILLING.INVALID_CODE
+                status: 400
+                message: "Invalid code"
+            ValidationFailed:
+              summary: validation failed
+              value:
+                code: CARRIER_BILLING.VALIDATION_FAILED
+                status: 400
+                message: "the maximum number of attempts have been consumed for this validation"
     Generic401:
       description: Unauthorized
       headers:
@@ -1116,6 +1395,7 @@ components:
           - Phone Number provided not matching Access Token context ("code": "CARRIER_BILLING.INVALID_TOKEN_CONTEXT","message": "Phone Number does not match with Access Token context").
           - Unauthorized amount requested ("code": "CARRIER_BILLING.UNAUTHORIZED_AMOUNT","message": "Unauthorized amount requested").
           - Accumulated threshold amount for the user's mobile account overpassed ("code": "CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED","message": "Unathorized payment request. Accumulated user mobile payments overpass account amount threshold").
+          - Payment denied by business ("code": "CARRIER_BILLING.PAYMENT_DENIED","message": "Payment denied by business").  
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -1154,6 +1434,62 @@ components:
                 status: 403
                 code: CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED
                 message: "Unathorized payment request. Accumulated user mobile payments overpass account amount threshold"
+            PaymentDenied:
+              summary: Payment denied by business
+              value:
+                status: 403
+                code: CARRIER_BILLING.PAYMENT_DENIED
+                message: "Payment denied by business"
+    PaymentConfirmPermissionDenied403:
+      description: |-
+        Client does not have sufficient permission.
+        In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
+          - Payment denied by business ("code": "CARRIER_BILLING.PAYMENT_DENIED","message": "Payment denied by business").  
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            Generic403:
+              summary: Forbidden
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: "Operation not allowed: ..."
+            PaymentDenied:
+              summary: Payment denied by business
+              value:
+                status: 403
+                code: CARRIER_BILLING.PAYMENT_DENIED
+                message: "Payment denied by business"
+    PaymentReadPermissionDenied403:
+      description: |-
+        Client does not have sufficient permission.
+        In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
+          - Phone Number cannot be deducted from access token context ("code": "CARRIER_BILLING.INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from access token context").  
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            Generic403:
+              summary: Forbidden
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: "Operation not allowed: ..."
+            InvalidTokenContext:
+              summary: Phone Number cannot be deducted from access token context
+              value:
+                status: 403
+                code: CARRIER_BILLING.INVALID_TOKEN_CONTEXT
+                message: "User phone number cannot be deducted from access token context"
     Generic404:
       description: Resource Not Found
       headers:
@@ -1294,12 +1630,14 @@ components:
       description: Requested index to indicate the start of the resources to be provided in the response
       schema:
         type: integer
+        default: 1
     PerPage:
       name: perPage
       in: query
       description: Requested number of resources to be provided in response
       schema:
         type: integer
+        default: 10
     StartPaymentCreationDate:
       description: Initial `paymentCreationDate` for running the query. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
       in: query
@@ -1338,7 +1676,8 @@ components:
           type: string
           enum: 
             - processing
-            - defined
+            - pending_validation
+            - denied
             - reserved
             - succeeded
             - cancelled
