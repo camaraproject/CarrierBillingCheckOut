@@ -16,7 +16,7 @@ note right of fork: Distinction between 1 step (1S)\nor 2 steps (2S) payment
 fork: separation between one or stwo steps payment
 
 fork -right-> Succeeded : (1S) Payment\nsuccessfully executed
-fork -left-> Denied : (1S)/(2S) Payment request\ndenied by carrier
+fork -left-> Denied : (1S)/(2S) Async - Payment request\ndenied by carrier
 
 fork --> Pending_Validation : (2S) [Optional] Payment\n validation required
 fork --> Reserved : (2S) Payment reserved\nsuccessfully executed
