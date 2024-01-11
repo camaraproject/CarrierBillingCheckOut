@@ -444,6 +444,9 @@ paths:
           $ref: "#/components/responses/Generic403"
         409:
           description: Conflict
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
