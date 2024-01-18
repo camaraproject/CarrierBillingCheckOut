@@ -100,7 +100,7 @@ info:
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
-  version: 0.2.0-rc
+  version: 0.2.0
   title: Carrier Billing
   termsOfService: http://swagger.io/terms/
   contact:
