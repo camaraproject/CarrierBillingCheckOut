@@ -40,7 +40,7 @@ jobs:
       - name: Install Spectral functions
         run: npm install -g @stoplight/spectral-functions
       - name: Run spectral:oas Spectral Linting
-        run: spectral lint code/API_definitions/openapi.yaml --verbose --ruleset .spectral.yml
+        run: spectral lint code/API_definitions/carrier_billing.yaml --verbose --ruleset .spectral.yml
         # Replace openapi.yaml file with your API specification file
 
       # MegaLinter
@@ -60,6 +60,7 @@ jobs:
           DISABLE_LINTERS: SPELL_CSPELL,SPELL_LYCHEE,YAML_PRETTIER,REPOSITORY_SEMGREP,REPOSITORY_DEVSKIM,REPOSITORY_KICS,REPOSITORY_TRIVY,REPOSITORY_CHECKOV,REPOSITORY_GITLEAKS,JAVA_PMD
           YAML_YAMLLINT_CONFIG_FILE: ".yamllint.yaml"
           JAVA_CHECKSTYLE_CONFIG_FILE: "javalint.xml"
+          OPENAPI_SPECTRAL_CONFIG_FILE: ".spectral.yml"
 
           # Upload MegaLinter artifacts
       - name: Archive production artifacts
