@@ -46,6 +46,7 @@ rules:
   oas3-valid-schema-example: true
   oas3-server-variables: true
 
+
   # Custom Rules Utilizing Spectral's Built-in Functions and JavaScript Implementations
 
   camara-language-avoid-telco:
