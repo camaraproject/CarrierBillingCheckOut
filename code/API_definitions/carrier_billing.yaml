@@ -1190,7 +1190,7 @@ components:
           type: string
           description: Code given to this error
         status:
-          type: string
+          type: integer
           description: HTTP response status code
         message:
           type: string
