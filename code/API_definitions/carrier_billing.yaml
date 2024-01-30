@@ -189,7 +189,7 @@ paths:
                 "504":
                   $ref: "#/components/responses/Generic504"
       responses:
-        201:
+        "201":
           description: Created
           headers:
             x-correlator:
@@ -198,19 +198,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PaymentCreated"
-        400:
+        "400":
           $ref: "#/components/responses/PaymentInvalid400"
-        401:
+        "401":
           $ref: "#/components/responses/Generic401"
-        403:
+        "403":
           $ref: "#/components/responses/PaymentPermissionDenied403"
-        409:
+        "409":
           $ref: "#/components/responses/Generic409"
-        500:
+        "500":
           $ref: "#/components/responses/Generic500"
-        503:
+        "503":
           $ref: "#/components/responses/Generic503"
-        504:
+        "504":
           $ref: "#/components/responses/Generic504"
     get:
       security:
@@ -242,7 +242,7 @@ paths:
         - $ref: "#/components/parameters/TransactionOperationStatus"
         - $ref: "#/components/parameters/MerchantIdentifier"
       responses:
-        200:
+        "200":
           description: OK
           headers:
             x-correlator:
@@ -255,17 +255,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PaymentArray"
-        400:
+        "400":
           $ref: "#/components/responses/GetPaymentsInvalid400"
-        401:
+        "401":
           $ref: "#/components/responses/Generic401"
-        403:
+        "403":
           $ref: "#/components/responses/PaymentReadPermissionDenied403"
-        500:
+        "500":
           $ref: "#/components/responses/Generic500"
-        503:
+        "503":
           $ref: "#/components/responses/Generic503"
-        504:
+        "504":
           $ref: "#/components/responses/Generic504"
   /payments/{paymentId}:
     get:
@@ -289,7 +289,7 @@ paths:
             type: string
         - $ref: "#/components/parameters/x-correlator"
       responses:
-        200:
+        "200":
           description: OK
           headers:
             x-correlator:
@@ -298,17 +298,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Payment"
-        401:
+        "401":
           $ref: "#/components/responses/Generic401"
-        403:
+        "403":
           $ref: "#/components/responses/PaymentReadPermissionDenied403"
-        404:
+        "404":
           $ref: "#/components/responses/Generic404"
-        500:
+        "500":
           $ref: "#/components/responses/Generic500"
-        503:
+        "503":
           $ref: "#/components/responses/Generic503"
-        504:
+        "504":
           $ref: "#/components/responses/Generic504"
   /payments/prepare:
     post:
@@ -371,7 +371,7 @@ paths:
                 "504":
                   $ref: "#/components/responses/Generic504"
       responses:
-        201:
+        "201":
           description: Created
           headers:
             x-correlator:
@@ -380,13 +380,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BodyAmountReservationTransactionForReserve"
-        400:
+        "400":
           $ref: "#/components/responses/PaymentInvalid400"
-        401:
+        "401":
           $ref: "#/components/responses/Generic401"
-        403:
+        "403":
           $ref: "#/components/responses/PaymentPermissionDenied403"
-        409:
+        "409":
           description: Conflict
           headers:
             x-correlator:
@@ -399,11 +399,11 @@ paths:
                 code: ALREADY_EXISTS
                 status: 409
                 message: "Another session is created for the same UE"
-        500:
+        "500":
           $ref: "#/components/responses/Generic500"
-        503:
+        "503":
           $ref: "#/components/responses/Generic503"
-        504:
+        "504":
           $ref: "#/components/responses/Generic504"
   /payments/{paymentId}/validate:
     post:
@@ -431,18 +431,18 @@ paths:
               $ref: "#/components/schemas/ValidatePayment"
         required: true
       responses:
-        204:
+        "204":
           description: Validation Succeeded
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
-        400:
+        "400":
           $ref: "#/components/responses/ValidatePaymentInvalid400"
-        401:
+        "401":
           $ref: "#/components/responses/Generic401"
-        403:
+        "403":
           $ref: "#/components/responses/Generic403"
-        409:
+        "409":
           description: Conflict
           headers:
             x-correlator:
@@ -458,11 +458,11 @@ paths:
                     code: ALREADY_EXISTS
                     status: 409
                     message: "Payment already validated"
-        500:
+        "500":
           $ref: "#/components/responses/Generic500"
-        503:
+        "503":
           $ref: "#/components/responses/Generic503"
-        504:
+        "504":
           $ref: "#/components/responses/Generic504"
   /payments/{paymentId}/confirm:
     post:
@@ -489,26 +489,26 @@ paths:
             schema:
               $ref: "#/components/schemas/PhoneNumber"
       responses:
-        202:
+        "202":
           description: Payment confirmation accepted
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
-        400:
+        "400":
           $ref: "#/components/responses/Payment2StepInvalid400"
-        401:
+        "401":
           $ref: "#/components/responses/Generic401"
-        403:
+        "403":
           $ref: "#/components/responses/PaymentConfirmPermissionDenied403"
-        404:
+        "404":
           $ref: "#/components/responses/Generic404"
-        409:
+        "409":
           $ref: "#/components/responses/PaymentConfirmConflict409"
-        500:
+        "500":
           $ref: "#/components/responses/Generic500"
-        503:
+        "503":
           $ref: "#/components/responses/Generic503"
-        504:
+        "504":
           $ref: "#/components/responses/Generic504"
   /payments/{paymentId}/cancel:
     post:
@@ -536,26 +536,26 @@ paths:
               $ref: "#/components/schemas/PhoneNumber"
         required: true
       responses:
-        202:
+        "202":
           description: Payment Cancellation Accepted
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
-        400:
+        "400":
           $ref: "#/components/responses/Payment2StepInvalid400"
-        401:
+        "401":
           $ref: "#/components/responses/Generic401"
-        403:
+        "403":
           $ref: "#/components/responses/Generic403"
-        404:
+        "404":
           $ref: "#/components/responses/Generic404"
-        409:
+        "409":
           $ref: "#/components/responses/PaymentCancelConflict409"
-        500:
+        "500":
           $ref: "#/components/responses/Generic500"
-        503:
+        "503":
           $ref: "#/components/responses/Generic503"
-        504:
+        "504":
           $ref: "#/components/responses/Generic504"
 components:
   securitySchemes:
@@ -1190,7 +1190,7 @@ components:
           type: string
           description: Code given to this error
         status:
-          type: string
+          type: integer
           description: HTTP response status code
         message:
           type: string
