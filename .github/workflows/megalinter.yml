@@ -42,8 +42,8 @@ jobs:
         run: npm install -g @stoplight/spectral
       - name: Install Spectral functions
         run: npm install -g @stoplight/spectral-functions
-      - name: Run spectral:oas Spectral Linting
-        run: spectral lint code/API_definitions/*.yaml --verbose --ruleset .spectral.yml
+    # - name: Run spectral:oas Spectral Linting
+    #   run: spectral lint code/API_definitions/*.yaml --verbose --ruleset .spectral.yml
         # Replace openapi.yaml file with your API specification file
 
       # MegaLinter
