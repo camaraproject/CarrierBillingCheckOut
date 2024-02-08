@@ -1063,7 +1063,7 @@ components:
       type: string
       format: uri-reference
       minLength: 1
-      description: |
+      description: |-
         Identifies the context in which an event happened - be a non-empty `URI-reference` like:
         - URI with a DNS authority:
           * https://github.com/cloudevents
@@ -1171,7 +1171,7 @@ components:
           enum:
             - succeeded
             - failed
-          description: |
+          description: |-
             Status of the procedure. Possible status are:
             * `succeeded`: procedure was accomplished
             * `failed`: procedure failed.
