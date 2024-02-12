@@ -13,19 +13,19 @@ info:
     - **Carrier Billing**:
     An online payment process which allows users to make purchases by charging payments against Telco Operator Billing Systems, accordingly to the user's configuration in the Telco Operator. In a common usage in the industry, the payment is processed on current account balance or charged on next bill generated for this line.
 
-    - **Payment**: 
+    - **Payment**:
     The process of paying for a (set of) good(s)/service(s).
 
-    - **1-STEP Payment**: 
+    - **1-STEP Payment**:
     Payment process performed in one phase (i.e. one action), that involves all the Telco Operator Carrier Billing Systems checking and trigger the charging request against Billing Systems.
 
-    - **2-STEP Payment**: 
+    - **2-STEP Payment**:
     Payment process performed in two phases (i.e. two actions). First action deals with payment preparation request to guarantee the reservation of the involved amount. Second action is an explicit confirmation or cancellation of the payment by the user. Any payment not confirmed/cancelled by a given user is discarded after some time in order to avoid inconsistency in the billing systems.
 
     # API Functionality
 
     This API allows to third party clients to request the payment of a (set of) digital good(s)/service(s), as well as to retrieve information about a specific payment or a list of payments.
-    
+
     In the scope of **version v0.2, only one-off payments are covered**. Recurrent payments (a.k.a. payment subscriptions) are not covered so far.
 
     The API provides several endpoints/operations:
@@ -40,7 +40,7 @@ info:
 
     Before starting to use the API, the developer needs to know about the below specified details:
     - **Payment service endpoint**: The URL pointing to the RESTful resource of the payment API. As 1-STEP and 2-STEP processes are managed, 2 separate tags _`One Step Payment`_ and _`Two Step Payment`_ have been defined to explicitly distinguish them in the API specification. A third tag _`Payment`_ is defined for common operations in both processes (query/retrieve list of payments or a specific payment).
-    - **1-STEP & 2-STEP Payment**: 
+    - **1-STEP & 2-STEP Payment**:
       - **1-STEP Payment**: The request intent is to charge an amount to the mobile line. When the server receives the request, it will check the user account associated with this line and, if nothing prevents it, the amount is charged and will be either bill in next invoice or removed from current line credit/balance.
       - **2-STEP Payment**: The first call is to request a payment preparation, which implies an amount reservation. The amount is not charged and the server has to be ready to get a confirmation or a cancellation to perform the payment. Only when the confirmation is done, payment is charged. Depending on business rules of the Telco operator, a `prepared` payment could expire after a defined delay.
     - **Notification URL**: Developers may provide a callback URL (`webhook.notificationUrl` param) on which status change notifications, regarding the payment, can be received from the Telco Operator. This is an optional parameter.
@@ -52,7 +52,7 @@ info:
     ![Payment State Engine](https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/main/documentation/API_documentation/resources/Carrier_Billing_State_Engine.JPG)
 
     State transitions:
-    
+
     **1-STEP Payment**
 
     If `createPayment` is a **SYNC** process:
@@ -75,7 +75,7 @@ info:
     - **Case B** - `validationInfo` is provided in response.
       - Response contains `paymentId` and status=`pending_validation`.
     - In case of any error scenario `paymentId` is not created.
-    
+
     If `preparePayment` is an **ASYNC** process:
     - **Case A** - `validationInfo` is NOT provided in response.
       - Response contains `paymentId` and status=`processing`. After completion:
@@ -132,7 +132,7 @@ paths:
     post:
       security:
         - openId:
-          - carrier-billing:payments:create
+            - carrier-billing:payments:create
       tags:
         - One Step Payment
       summary: Create a new Payment
@@ -215,23 +215,23 @@ paths:
     get:
       security:
         - openId:
-          - carrier-billing:payments:read
+            - carrier-billing:payments:read
       tags:
         - Payment
       summary: Get a list of payments
       operationId: retrievePayments
-      description: |- 
+      description: |-
         Retrieve a list of payments and their details based on some filtering criteria.
         Regardless the payment criteria provided, response MUST be always limited to payments performed by the API client (i.e same oAuth credentials) triggering this request.
         This is to guarantee no API client can check payments performed by other, therefore avoiding any legal or privacy topic.
 
         When Access Token is issued for a given user phone number, the list of payments returned would be only the ones associated to that user phone number and API client. When Access Token is not associated to a user phone number, therefore only associated to API client the list of payments returned would be all the ones managed by that API client.
 
-        Considerations regarding `paymentCreationDate.gte`, `paymentCreationDate.lte`: 
+        Considerations regarding `paymentCreationDate.gte`, `paymentCreationDate.lte`:
         - If both included, return payments in that date range
         - If no one included, no filtering by date range is applied
         - If only settled `paymentCreationDate.gte`, `paymentCreationDate.lte` is considered current date-time
-        - If only settled `paymentCreationDate.lte`, every payment existing in the Operator billing system until such date is returned  
+        - If only settled `paymentCreationDate.lte`, every payment existing in the Operator billing system until such date is returned
       parameters:
         - $ref: "#/components/parameters/x-correlator"
         - $ref: "#/components/parameters/Page"
@@ -271,7 +271,7 @@ paths:
     get:
       security:
         - openId:
-          - carrier-billing:payments:read
+            - carrier-billing:payments:read
       tags:
         - Payment
       summary: Get payment details
@@ -314,7 +314,7 @@ paths:
     post:
       security:
         - openId:
-          - carrier-billing:payments:create
+            - carrier-billing:payments:create
       tags:
         - Two Step Payment
       summary: Prepare (reserve) a payment
@@ -409,7 +409,7 @@ paths:
     post:
       security:
         - openId:
-          - carrier-billing:payments:write
+            - carrier-billing:payments:write
       tags:
         - Two Step Payment
       summary: Validate a payment
@@ -468,7 +468,7 @@ paths:
     post:
       security:
         - openId:
-          - carrier-billing:payments:write
+            - carrier-billing:payments:write
       tags:
         - Two Step Payment
       summary: Confirm a payment
@@ -514,7 +514,7 @@ paths:
     post:
       security:
         - openId:
-          - carrier-billing:payments:write
+            - carrier-billing:payments:write
       tags:
         - Two Step Payment
       summary: Cancel a payment
@@ -985,7 +985,7 @@ components:
             - validate
           description: Action to be done regarding otp validation.
       discriminator:
-        propertyName: action 
+        propertyName: action
         mapping:
           open: '#/components/schemas/Open'
           validate: '#/components/schemas/Validate'
@@ -1063,7 +1063,7 @@ components:
       type: string
       format: uri-reference
       minLength: 1
-      description: |
+      description: |-
         Identifies the context in which an event happened - be a non-empty `URI-reference` like:
         - URI with a DNS authority:
           * https://github.com/cloudevents
@@ -1171,9 +1171,9 @@ components:
           enum:
             - succeeded
             - failed
-          description: |
+          description: |-
             Status of the procedure. Possible status are:
-            * `succeeded`: procedure was accomplished 
+            * `succeeded`: procedure was accomplished
             * `failed`: procedure failed.
         description:
           type: string
@@ -1314,7 +1314,7 @@ components:
                 status: 400
                 message: "Expected property is missing: paymentId"
     ValidatePaymentInvalid400:
-      description: | 
+      description: |-
         Invalid input.
         In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:
           - authorizationId is not valid ("code": "CARRIER_BILLING.INVALID_AUTHORIZATION_ID","message": "Invalid authorizationId").
@@ -1398,7 +1398,7 @@ components:
           - Phone Number provided not matching Access Token context ("code": "CARRIER_BILLING.INVALID_TOKEN_CONTEXT","message": "Phone Number does not match with Access Token context").
           - Unauthorized amount requested ("code": "CARRIER_BILLING.UNAUTHORIZED_AMOUNT","message": "Unauthorized amount requested").
           - Accumulated threshold amount for the user's mobile account overpassed ("code": "CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED","message": "Unathorized payment request. Accumulated user mobile payments overpass account amount threshold").
-          - Payment denied by business ("code": "CARRIER_BILLING.PAYMENT_DENIED","message": "Payment denied by business").  
+          - Payment denied by business ("code": "CARRIER_BILLING.PAYMENT_DENIED","message": "Payment denied by business").
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -1414,7 +1414,7 @@ components:
                 code: PERMISSION_DENIED
                 message: "Operation not allowed: ..."
             PhoneNumberRequired:
-              summary: Phone Number is required 
+              summary: Phone Number is required
               value:
                 status: 403
                 code: CARRIER_BILLING.PHONE_NUMBER_REQUIRED
@@ -1447,7 +1447,7 @@ components:
       description: |-
         Client does not have sufficient permission.
         In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Payment denied by business ("code": "CARRIER_BILLING.PAYMENT_DENIED","message": "Payment denied by business").  
+          - Payment denied by business ("code": "CARRIER_BILLING.PAYMENT_DENIED","message": "Payment denied by business").
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -1472,7 +1472,7 @@ components:
       description: |-
         Client does not have sufficient permission.
         In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Phone Number cannot be deducted from access token context ("code": "CARRIER_BILLING.INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from access token context").  
+          - Phone Number cannot be deducted from access token context ("code": "CARRIER_BILLING.INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from access token context").
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator'
@@ -1668,7 +1668,7 @@ components:
           - desc
           - asc
         type: string
-    TransactionOperationStatus: 
+    TransactionOperationStatus:
       description: List of payment status to be considered for the query
       in: query
       name: transactionOperationStatus
@@ -1677,14 +1677,14 @@ components:
         type: array
         items:
           type: string
-          enum: 
+          enum:
             - processing
             - pending_validation
             - denied
             - reserved
             - succeeded
             - cancelled
-    MerchantIdentifier: 
+    MerchantIdentifier:
       description: Merchant identifier to filter the results
       in: query
       name: merchantIdentifier
