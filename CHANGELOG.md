@@ -9,7 +9,7 @@
 ## 0.2.0
 
 **Initial baseline contribution**
-- API [definition](https://github.com/camaraproject/CarrierBillingCheckOut/tree/release-0.2.0/code/API_definitions)
+- API [definition](https://github.com/camaraproject/CarrierBillingCheckOut/tree/release-v0.2.0/code/API_definitions)
 
 
 ## Please note 
