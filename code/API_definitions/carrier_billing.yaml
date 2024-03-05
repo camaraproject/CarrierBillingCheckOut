@@ -100,7 +100,7 @@ info:
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
-  version: 0.2.0
+  version: 0.2.1
   title: Carrier Billing
   termsOfService: http://swagger.io/terms/
   contact:
@@ -157,7 +157,7 @@ paths:
               tags:
                 - Payment Notifications
               summary: Carrier Billing payment notifications
-              operationId: paymentNotification
+              operationId: createPaymentNotification
               description: |
                 Important: This endpoint is exposed by the API client, accepting requests in the defined format.
                 The Carrier Billing server will call this endpoint whenever any carrier billing related event occurs.
@@ -339,7 +339,7 @@ paths:
               tags:
                 - Payment Notifications
               summary: Carrier Billing payment notifications
-              operationId: paymentNotification
+              operationId: preparePaymentNotification
               description: |
                 Important: This endpoint is exposed by the API client, accepting requests in the defined format.
                 The Carrier Billing server will call this endpoint whenever any carrier billing related event occurs.

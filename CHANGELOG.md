@@ -2,9 +2,41 @@
 
 ## Table of Contents
 
+- [v0.2.1](#v0.2.1)
 - [v0.2.0](#v0.2.0)
 
 **Please be aware that the project will have frequent updates to the main branch. There are no compatibility guarantees associated with code in any branch, including main, until it has been released. For example, changes may be reverted before a release is published. For the best results, use the latest published release.**
+
+## v0.2.1
+
+**Fix over the first release**
+
+- API definition **with inline documentation**:
+  - [View it on ReDoc](https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/release-v0.2.1/code/API_definitions/carrier_billing.yaml&nocors)
+  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/release-v0.2.1/code/API_definitions/carrier_billing.yaml)
+  - OpenAPI [YAML spec file](https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/release-v0.2.1/code/API_definitions/carrier_billing.yaml)
+
+### Added
+
+* N/A
+
+### Changed
+
+* N/A
+
+### Fixed
+
+* Fix `operationId` name of callbacks to be unique.
+
+### Removed
+
+* N/A
+
+## New Contributors
+* N/A
+
+
+**Full Changelog**: https://github.com/camaraproject/CarrierBillingCheckOut/commits/v0.2.1
 
 ## v0.2.0
 
