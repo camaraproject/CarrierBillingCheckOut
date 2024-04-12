@@ -77,6 +77,12 @@ paths:
       operationId: createRefund
       description: Create a new refund for an existing payment. Refund can be `total` or `partial`. This procedure MUST be always limited to the API client which performed the related payment.
       parameters:
+        - name: paymentId
+          in: path
+          description: The payment identifier for which the payment refund is requested.
+          required: true
+          schema:
+            type: string
         - $ref: "#/components/parameters/x-correlator"
       requestBody:
         description: Refund transaction
@@ -171,6 +177,12 @@ paths:
         - If only settled `refundCreationDate.gte`, `refundCreationDate.lte` is considered current date-time
         - If only settled `refundCreationDate.lte`, every refund existing in the Operator billing system until such date is returned
       parameters:
+        - name: paymentId
+          in: path
+          description: Payment identifier for which their refunds are queried
+          required: true
+          schema:
+            type: string
         - $ref: "#/components/parameters/x-correlator"
         - $ref: "#/components/parameters/Page"
         - $ref: "#/components/parameters/PerPage"
@@ -219,6 +231,12 @@ paths:
 
         When Access Token is issued for a given user phone number, the refund details would be returned in case the `refundId` is associated to that user phone number and API client, otherwise `404 NOT_FOUND` will be returned. When Access Token is not associated to a user phone number, the refund details are returned in case the API client managed that refund.
       parameters:
+        - name: paymentId
+          in: path
+          description: Payment identifier associated to the `refundId`
+          required: true
+          schema:
+            type: string
         - name: refundId
           in: path
           description: Refund identifier that was obtained from the create refund operation
