@@ -1,0 +1,1053 @@
+openapi: 3.0.3
+info:
+  description: |-
+    Service Enabling Refunds against OB Carrier Billing Systems
+
+    # Introduction
+
+    The Carrier Billing Refund API provides programmable interface for developers and other users (capabilities consumers) to perform a refund over a given payment.
+    The API provides management of a refund entity and its associated lifecycle.
+
+    # Relevant terms and definitions
+
+    - **Carrier Billing**:
+    An online payment process which allows users to make purchases by charging payments against Telco Operator Billing Systems, accordingly to the user's configuration in the Telco Operator. In a common usage in the industry, the payment is processed on current account balance or charged on next bill generated for this line.
+
+    - **Payment**:
+    The process of paying for a (set of) good(s)/service(s).
+
+    - **Refund**:
+    The process of returning the amount involved in a given payment (totally or partially) to a given back to the user.
+
+    # API Functionality
+
+    This API allows to third party clients to request the refund ...., as well as to retrieve information about a specific refund or a list of refunds.
+
+    The API provides several endpoints/operations:
+    - An endpoint to request a refund, named `createRefund`.
+    - A set of endpoints to retrieve information about a list of refunds or a specific refund (identified by its specific `refundId`), named `retrieveRefunds` and `retrieveRefund` respectively.
+    - A callback endpoint where API Server can send notifications about a refund procedure, as defined within `createRefund` operation, towards the `webhook.notificationUrl` when provided by API client.
+
+
+    State transitions:
+
+    TBD
+
+    # Authorization and authentication
+
+    CAMARA guidelines defines a set of authorization flows which can grant API clients access to the API functionality, as outlined in the document [CAMARA-API-access-and-user-consent.md](https://github.com/camaraproject/IdentityAndConsentManagement/blob/main/documentation/CAMARA-API-access-and-user-consent.md). Which specific authorization flows are to be used will be determined during onboarding process, happening between the API Client and the Telco Operator exposing the API, taking into account the declared purpose for accessing the API, while also being subject to the prevailing legal framework dictated by local legislation.
+
+    It is important to remark that in cases where personal user data is processed by the API, and users can exercise their rights through mechanisms such as opt-in and/or opt-out, the use of 3-legged access tokens becomes mandatory. This measure ensures that the API remains in strict compliance with user privacy preferences and regulatory obligations, upholding the principles of transparency and user-centric data control.
+  
+    # Further info and support
+
+    (FAQs will be added in a later version of the documentation)
+  version: 0.1.0-wip
+  title: Carrier Billing Refunds
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: project-email@sample.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+externalDocs:
+  description: Product documentation at Camara
+  url: https://github.com/camaraproject/
+servers:
+  - url: "{apiRoot}/{basePath}"
+    variables:
+      apiRoot:
+        default: http://localhost:9091
+        description: API root
+      basePath:
+        default: carrier-billing-refund/v0
+        description: Base path for the carrier billing refund API
+tags:
+  - name: Refund
+    description: Operations to manage Refund procedure
+paths:
+  /payments/{paymentId}/refunds:
+    post:
+      security:
+        - openId:
+            - carrier-billing-refund:refunds:create
+      tags:
+        - Refund
+      summary: Create a new Refund
+      operationId: createRefund
+      description: Create a new refund for an existing payment. Refund can be `total` or `partial`. This procedure MUST be always limited to the API client which performed the related payment.
+      parameters:
+        - $ref: "#/components/parameters/x-correlator"
+      requestBody:
+        description: Refund transaction
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRefund"
+        required: true
+      callbacks:
+        notifications:
+          "{$request.body#/webhook/notificationUrl}":
+            post:
+              security:
+                - {}
+                - notificationsBearerAuth: []
+              tags:
+                - Refund Notifications
+              summary: Carrier Billing refund notifications
+              operationId: createRefundNotification
+              description: |
+                Important: This endpoint is exposed by the API client, accepting requests in the defined format.
+                The Carrier Billing server will call this endpoint whenever any carrier billing related event occurs.
+              parameters:
+                - $ref: "#/components/parameters/x-correlator"
+              requestBody:
+                description: Creates a new carrier billing refund notification
+                content:
+                  application/cloudevents+json:
+                    schema:
+                      $ref: "#/components/schemas/CloudEvent"
+                required: true
+              responses:
+                "204":
+                  description: Successful notification
+                  headers:
+                    x-correlator:
+                      $ref: "#/components/headers/x-correlator"
+                "400":
+                  $ref: "#/components/responses/Generic400"
+                "401":
+                  $ref: "#/components/responses/Generic401"
+                "403":
+                  $ref: "#/components/responses/Generic403"
+                "500":
+                  $ref: "#/components/responses/Generic500"
+                "503":
+                  $ref: "#/components/responses/Generic503"
+                "504":
+                  $ref: "#/components/responses/Generic504"
+      responses:
+        "201":
+          description: Created
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RefundCreated"
+        "400":
+          $ref: "#/components/responses/RefundInvalid400"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/RefundPermissionDenied403"
+        "409":
+          $ref: "#/components/responses/Generic409"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
+    get:
+      security:
+        - openId:
+            - carrier-billing-refund:refunds:read
+      tags:
+        - Refund
+      summary: Get a list of refunds
+      operationId: retrieveRefunds
+      description: |-
+        Retrieve a list of refunds and their details for a specific payment, identified by its `paymentId`, based on some filtering criteria (TBD).
+        Regardless the refund criteria provided, response MUST be always limited to refunds performed by the API client (i.e same oAuth credentials) triggering this request.
+        This is to guarantee no API client can check refunds performed by other, therefore avoiding any legal or privacy topic.
+
+        When Access Token is issued for a given user phone number, the list of refunds returned would be only the ones associated to that user phone number and API client. When Access Token is not associated to a user phone number, therefore only associated to API client the list of refunds returned would be all the ones managed by that API client.
+
+        Considerations regarding `refundCreationDate.gte`, `refundCreationDate.lte`:
+        - If both included, return refunds in that date range
+        - If no one included, no filtering by date range is applied
+        - If only settled `refundCreationDate.gte`, `refundCreationDate.lte` is considered current date-time
+        - If only settled `refundCreationDate.lte`, every refund existing in the Operator billing system until such date is returned
+      parameters:
+        - $ref: "#/components/parameters/x-correlator"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PerPage"
+        - $ref: "#/components/parameters/StartRefundCreationDate"
+        - $ref: "#/components/parameters/EndRefundCreationDate"
+        - $ref: "#/components/parameters/Order"
+        - $ref: "#/components/parameters/TransactionOperationStatus"
+#        - $ref: "#/components/parameters/MerchantIdentifier" (OPEN)
+      responses:
+        "200":
+          description: OK
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
+            Content-Last-Key:
+              $ref: "#/components/headers/Content-Last-Key"
+            X-Total-Count:
+              $ref: "#/components/headers/X-Total-Count"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RefundArray"
+        "400":
+          $ref: "#/components/responses/GetRefundsInvalid400"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/RefundReadPermissionDenied403"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
+  /payments/{paymentId}/refunds/{refundId}:
+    get:
+      security:
+        - openId:
+            - carrier-billing-refund:refunds:read
+      tags:
+        - Refund
+      summary: Get refund details
+      operationId: retrieveRefund
+      description: |-
+        Retrieve refund details for a given refund.
+
+        When Access Token is issued for a given user phone number, the refund details would be returned in case the `refundId` is associated to that user phone number and API client, otherwise `404 NOT_FOUND` will be returned. When Access Token is not associated to a user phone number, the refund details are returned in case the API client managed that refund.
+      parameters:
+        - name: refundId
+          in: path
+          description: Refund identifier that was obtained from the create refund operation
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/x-correlator"
+      responses:
+        "200":
+          description: OK
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
+            Content-Last-Key:
+              $ref: "#/components/headers/Content-Last-Key"
+            X-Total-Count:
+              $ref: "#/components/headers/X-Total-Count"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Refund"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/RefundReadPermissionDenied403"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
+components:
+  securitySchemes:
+    openId:
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    notificationsBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: "{$request.body#/webhook/notificationAuthToken}"
+  schemas:
+    CreateRefund:
+      type: object
+      required:
+        - amountTransaction
+        - type
+      properties:
+        amountTransaction:
+          $ref: "#/components/schemas/AmountTransactionInput"
+        type:
+          type: string
+          description: |- 
+            Type of refund. 
+            - `total` stands for a final refund, whose amount can be indicated by API Consumer (PENDING POINT). No more refunds are allowed for that `paymentId`.
+            - `partial` stands for a partial refund, whose amount is indicated by API Consumer. More refunds are allowed for that `paymentId`.
+          enum:
+            - total
+            - partial
+        reason:
+          type: string
+          description: Reason provided to request the refund. Optionally provided by the user or the merchant.
+        webhook:
+          allOf:
+            - $ref: "#/components/schemas/Webhook"
+            - description: Information to manage refund notifications
+    RefundCreated:
+      type: object
+      required:
+        - amountTransaction
+        - refundId
+        - refundCreationDate
+        - type
+      properties:
+        refundId:
+          type: string
+          description: Unique Identifier of the refund
+          example: "AK234rfweSBuWGFUEWFGWEVWRV"
+        type:
+          type: string
+          description: |- 
+            Type of refund. 
+            - `total` stands for a final refund, whose amount can be indicated by API Consumer. No more refunds are allowed for that `paymentId`.
+            - `partial` stands for a partial refund, whose amount is indicated by API Consumer. More refunds are allowed for that `paymentId`.
+          enum:
+            - total
+            - partial
+        amountTransaction:
+          $ref: "#/components/schemas/AmountTransaction"
+        refundCreationDate:
+          type: string
+          format: date-time
+          description: Date time when the refund is created in server database. This is a technical information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+        refundDate:
+          type: string
+          format: date-time
+          description: Date time when the refund is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+        reason:
+          type: string
+          description: Reason provided to request the refund. Optionally provided by the user or the merchant.
+        webhook:
+          allOf:
+            - $ref: "#/components/schemas/Webhook"
+            - description: Information to manage refund notifications
+    RefundArray:
+      description: A list of refund(s)
+      type: array
+      minItems: 0
+      items:
+        $ref: "#/components/schemas/Refund"
+    Refund:
+      type: object
+      required:
+        - amountTransaction
+        - refundId
+        - refundCreationDate
+        - type
+      properties:
+        refundId:
+          type: string
+          description: Unique Identifier of the refund
+          example: "AK234rfweSBuWGFUEWFGWEVWRV"
+        type:
+          type: string
+          description: |- 
+            Type of refund. 
+            - `total` stands for a final refund, whose amount can be indicated by API Consumer. No more refunds are allowed for that `paymentId`.
+            - `partial` stands for a partial refund, whose amount is indicated by API Consumer. More refunds are allowed for that `paymentId`.
+          enum:
+            - total
+            - partial
+        amountTransaction:
+          $ref: "#/components/schemas/AmountTransaction"
+        refundCreationDate:
+          type: string
+          format: date-time
+          description: Date time when the refund is created in server database. This is a technical information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+        refundDate:
+          type: string
+          format: date-time
+          description: Date time when the refund is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+        reason:
+          type: string
+          description: Reason provided to request the refund. Optionally provided by the user or the merchant.
+        webhook:
+          allOf:
+            - $ref: "#/components/schemas/Webhook"
+            - description: Information to manage refund notifications
+    Webhook:
+      type: object
+      required:
+        - notificationUrl
+      properties:
+        notificationUrl:
+          type: string
+          description: Callback URL to allow asynchronous delivery of refund related events
+          example: "https://myservice.com/refund/events"
+        notificationAuthToken:
+          type: string
+          description: Authentification token for callback endpoint
+          example: "c8974e592c2fa383d4a3960714"
+    AmountTransaction:
+      required:
+        - refundAmount
+        - referenceCode
+        - transactionOperationStatus
+      type: object
+      properties:
+        clientCorrelator:
+          type: string
+          description:
+            Uniquely identifies this create refund request. If there is
+            a communication failure during the refund request, using the same clientCorrelator
+            when retrying the request allows the operator to avoid applying the same
+            refund twice. This field SHOULD be present. Same value as indicated in the request.
+          example: "req-12f2pgh448gh2hvrfrv"
+        refundAmount:
+          $ref: "#/components/schemas/RefundAmount"
+        referenceCode:
+          type: string
+          description:
+            Merchant generated refund reference to uniquely identify the
+            request, for instance, in the case of disputes. Same value as the one provided in the request.
+          example: "ref-refund-834tfr2rA3v8r8vr3rv"
+        transactionOperationStatus:
+          type: string
+          description:
+            Specifies the refund status (`processing`, `denied`, `succeeded`).
+          example: "processing"
+        serverReferenceCode:
+          type: string
+          description:
+            Reference to the charge or refund, provided by the server,
+            and meaningful to the server’s backend system for the purpose of reconciliation.
+          example: "ref-pay-834tfr2rA3v8r8vr3rv-serv"
+    AmountTransactionInput:
+      type: object
+      required:
+        - refundAmount
+        - referenceCode
+      properties:
+        clientCorrelator:
+          type: string
+          description:
+            Uniquely identifies this create refund request. If there is
+            a communication failure during the refund request, using the same clientCorrelator
+            when retrying the request allows the operator to avoid applying the same
+            charge twice. This field SHOULD be present.
+          example: "req-12f2pgh448gh2hvrfrv"
+        refundAmount:
+          $ref: "#/components/schemas/RefundAmount"
+        referenceCode:
+          type: string
+          description:
+            Merchant generated refund reference to uniquely identify the
+            request, for instance, in the case of disputes.
+          example: "ref-refund-834tfr2rA3v8r8vr3rv"
+    RefundAmount:
+      type: object
+      required:
+        - chargingInformation
+      properties:
+        chargingInformation:
+          $ref: "#/components/schemas/ChargingInformation"
+#        chargingMetaData:
+#          $ref: "#/components/schemas/ChargingMetaData"
+        refundDetails:
+          $ref: "#/components/schemas/RefundDetails"
+    RefundDetails:
+      type: array
+      description: Detailed description of the concepts/items considered within a specific refund procedure.
+      minItems: 1
+      items:
+        $ref: "#/components/schemas/RefundItem"
+    RefundItem:
+      type: object
+      required:
+        - amount
+        - currency
+        - description
+      properties:
+        amount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          description: Specific amount to be refunded referred to a specific item.
+          example: 100
+        currency:
+          type: string
+          description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
+          example: "EUR"
+        description:
+          type: string
+          description: Description text to be used for information and billing text referred to a specific item.
+          example: "FIFA EA Sports 24"
+        isTaxIncluded:
+          type: boolean
+          default: false
+          description: If true, the `amount` is tax included, if false the `amount` is provided without tax. In both cases, `taxAmount` could be indicated to provide tax amount.
+        taxAmount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          description: |
+            The tax amount refunded by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
+          example: 21
+    ChargingInformation:
+      type: object
+      required:
+        - amount
+        - currency
+        - description
+      properties:
+        amount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          description: Amount to be refunded.
+          example: 100
+        currency:
+          type: string
+          description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
+          example: "EUR"
+        description:
+          type: string
+          description: Description text to be used for information and billing text
+          example: "FIFA EA Sports 24"
+        isTaxIncluded:
+          type: boolean
+          default: false
+          description: If true, the `amount` is tax included, if false the `amount` is provided without tax. In both cases, `taxAmount` could be indicated to provide tax amount.
+        taxAmount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          description: |
+            The tax amount refunded by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
+          example: 21
+#    ChargingMetaData:
+#      type: object
+#      properties:
+#        merchantName:
+#          type: string
+#          description: Indicates the merchant name. Allows aggregators/partners to specify the actual merchant name
+#          example: "EA Sports"
+#        merchantIdentifier:
+#          type: string
+#          description: Indicates the merchant identifier. Allows aggregators/partners to specify the actual merchant identifier
+#          example: "eas-12345"
+#        fee:
+#          type: number
+#          format: float
+#          multipleOf: 0.01
+#          description: Percentage of the amount to be received by the requester
+#          example: 10
+#        purchaseCategoryCode:
+#          type: string
+#          description: A category defining the type of service, product or media being purchased
+#          example: "games"
+#        channel:
+#          type: string
+#          description: The channel over which the requester is interacting with the merchant (e.g. WAP, Web, SMS...)
+#          example: "web"
+#        serviceId:
+#          type: string
+#          description: The identifier of the partner/merchant service being purchased
+#          example: "games-online"
+#        productId:
+#          type: string
+#          description: The product identifier to be combined with the `serviceId` to uniquely identify the product being purchased. For example if the `serviceId` relates to a VOD service, the `productId` can specify the movie rented
+#          example: "138235321"
+    CloudEvent:
+      description: The notification format
+      required:
+        - id
+        - source
+        - specversion
+        - type
+        - time
+      properties:
+        id:
+          type: string
+          description: Identifier of this event, that must be unique in the source context.
+          minLength: 1
+          example: "sd5e-uy52-88t4-za66"
+        source:
+          $ref: "#/components/schemas/Source"
+        type:
+          type: string
+          description: Type of event as defined in each CAMARA API
+          minLength: 25
+          example: "org.camaraproject.carrier-billing.v0.payment-reserved"
+        specversion:
+          type: string
+          description: Version of the specification to which this event conforms (must be 1.0 if it conforms to cloudevents 1.0.2 version)
+          minLength: 3
+          example: "1.0"
+        datacontenttype:
+          type: string
+          description: 'media-type that describes the event payload encoding, must be "application/json" for CAMARA APIs'
+          example: "application/json"
+        data:
+          type: object
+          description: Event details payload described in each CAMARA API and referenced by its type
+        time:
+          $ref: "#/components/schemas/DateTime"
+      discriminator:
+        propertyName: "type"
+        mapping:
+          org.camaraproject.carrier-billing-refund.v0.refund-completed: "#/components/schemas/EventRefundCompleted"
+          org.camaraproject.carrier-billing-refund.v0.refund-denied: "#/components/schemas/EventRefundDenied"
+          org.camaraproject.carrier-billing-refund.v0.refund-in-bill: "#/components/schemas/EventRefundInBill"
+    Source:
+      type: string
+      format: uri-reference
+      minLength: 1
+      description: |-
+        Identifies the context in which an event happened - be a non-empty `URI-reference` like:
+        - URI with a DNS authority:
+          * https://github.com/cloudevents
+          * mailto:cncf-wg-serverless@lists.cncf.io
+        - Universally-unique URN with a UUID:
+          * urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66
+        - Application-specific identifier:
+          * /cloudevents/spec/pull/123
+          * 1-555-123-4567
+      example: "https://notificationSendServer12.supertelco.com"
+    DateTime:
+      type: string
+      format: date-time
+      description: Timestamp when the occurrence happened. Must adhere to RFC 3339.
+      example: "2023-11-03T12:27:10Z"
+    EventRefundCompleted:
+      description: Event structure for refund completed
+      allOf:
+        - $ref: "#/components/schemas/CloudEvent"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/RefundCompleted"
+    EventRefundDenied:
+      description: Event structure for refund denied
+      allOf:
+        - $ref: "#/components/schemas/CloudEvent"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/RefundDenied"
+    EventRefundInBill:
+      description: Event structure for refund in bill (i.e. confirmation about refund will be applied in next bill)
+      allOf:
+        - $ref: "#/components/schemas/CloudEvent"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/RefundInBill"
+    RefundCompleted:
+      allOf:
+        - description: Event detail structure for org.camaraproject.carrier-billing-refund.v0.refund-completed event
+        - $ref: "#/components/schemas/BasicEvent"
+        - type: object
+          required:
+            - refundDate
+          properties:
+            paymentDate:
+              type: string
+              description: Date when the refund is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+              format: date-time
+              example: "2023-11-03T12:27:08.312Z"
+    RefundDenied:
+      allOf:
+        - description: Event detail structure for org.camaraproject.carrier-billing-refund.v0.refund-denied event
+        - $ref: "#/components/schemas/BasicEvent"
+        - type: object
+          properties:
+            denialReason:
+              type: string
+              description: Indicates the business reason for denying the refund.
+              example: "User is blocked due to pending debt"
+    RefundInBill:
+      allOf:
+        - description: Event detail structure for org.camaraproject.carrier-billing-refund.v0.refund-in-bill event
+        - $ref: "#/components/schemas/BasicEvent"
+    BasicEvent:
+      type: object
+      description: Data type to provide basic refund event information
+      required:
+        - paymentId
+        - refundId
+        - status
+        - description
+      properties:
+        paymentId:
+          type: string
+          description: Unique Identifier of the payment
+          example: "AK234rfweSBuWGFUEWFGWEVWRV"
+        refundId:
+          type: string
+          description: Unique Identifier of the refund
+          example: "AK234rfweSBuWGFUEWFGWEVWRV"
+        status:
+          type: string
+          enum:
+            - succeeded
+            - failed
+          description: |-
+            Status of the refund procedure. Possible status are:
+            * `succeeded`: procedure was accomplished
+            * `failed`: procedure failed.
+        description:
+          type: string
+          description: Description of the notification, both used when process was `succeeded` or `failed` indicating in the latter case human understable reason about why process failed.
+          example: "Payment Notification"
+    ErrorInfo:
+      type: object
+      required:
+        - code
+        - message
+        - status
+      properties:
+        code:
+          type: string
+          description: Code given to this error
+        status:
+          type: integer
+          description: HTTP response status code
+        message:
+          type: string
+          description: Detailed error description
+  responses:
+    Generic400:
+      description: Invalid input
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: INVALID_ARGUMENT
+            status: 400
+            message: "Schema validation failed at  ..."
+    GetRefundsInvalid400:
+      description: |-
+        Invalid input. In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:
+          - Inconsistent startDate and endDate values ("code": "CARRIER_BILLING.INVALID_DATE_RANGE","message": "Client specified an invalid date range").
+          - Request out of range ("code": "OUT_OF_RANGE","message": "Client specified an invalid range").
+          - Too many matching records found ("code": "CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS","message": "Too many matching records found. Specify additional/suitable criteria to limit the number of records").
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            Generic400:
+              summary: Invalid Argument
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: "Invalid Argument ..."
+            InvalidDateRange:
+              summary: Inconsistent startDate and endDate values
+              value:
+                status: 400
+                code: CARRIER_BILLING_REFUND.INVALID_DATE_RANGE
+                message: "Client specified an invalid date range"
+            OutOfRange:
+              summary: Request out of range
+              value:
+                status: 400
+                code: OUT_OF_RANGE
+                message: "Client specified an invalid range"
+            TooManyMatchingRecords:
+              summary: Too many matching records found
+              value:
+                status: 400
+                code: CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS
+                message: "Too many matching records found. Specify additional/suitable criteria to limit the number of records"
+    RefundInvalid400:
+      description: |-
+        Invalid input.
+        Common INVALID_ARGUMENT scenarios usually are:
+          - Schema validation failed ("code": "INVALID_ARGUMENT","message": "Schema validation failed at ...").
+          - Currency is unknown or not authorized ("code": "INVALID_ARGUMENT","message": "Currency is unknown or not authorized").
+          - clientCorrelator still exist ("code": "INVALID_ARGUMENT","message": "clientCorrelator already exist on server").
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            Generic400:
+              summary: Schema validation failed
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: "Schema validation failed at  ..."
+            WrongCurrency:
+              summary: Currency is unknown or not authorized
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: "Currency is unknown or not authorized"
+            DuplicateClientCorrelator:
+              summary: clientCorrelator still exist
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: "clientCorrelator already exist on server"
+    Generic401:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: UNAUTHORIZED
+            status: 401
+            message: "Authorization failed: ..."
+    Generic403:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: FORBIDDEN
+            status: 403
+            message: "Operation not allowed: ..."
+    RefundPermissionDenied403:
+      description: |-
+        Client does not have sufficient permission.
+        In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
+          - Phone Number cannot be deducted from Access Token context (3-legged scenario) ("code": "CARRIER_BILLING_REFUND.INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from Access Token context").
+          - Unauthorized refund amount requested ("code": "CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT","message": "Unauthorized amount requested").
+          - Accumulated threshold refund amount for the user's mobile account overpassed ("code": "CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED","message": "Unathorized refund request. Accumulated user mobile refunds overpass account amount threshold").
+          - Refund denied by business ("code": "CARRIER_BILLING_REFUND.REFUND_DENIED","message": "Payment denied by business").
+          - Payment not eligible for Refund (e.g. Payment conditions agreed do not allow refund) ("code": "CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND","message": "Payment not eligible for refund").
+          - Payment is not in suitable status for refund ("code": "CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS","message": "Payment is not yet completed").
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            Generic403:
+              summary: Forbidden
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: "Operation not allowed: ..."
+            PhoneNumberCannotBeDeducted:
+              summary: Phone Number cannot be deducted from Access Token context (3-legged scenario)
+              value:
+                status: 403
+                code: CARRIER_BILLING.INVALID_TOKEN_CONTEXT
+                message: "User phone number cannot be deducted from Access Token context"
+            UnauthorizedRefundAmount:
+              summary: Unauthorized refund amount requested
+              value:
+                status: 403
+                code: CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT
+                message: "Unauthorized amount requested"
+            UserMobileAccumulatedThresholdRefundAmountOverpassed:
+              summary: Accumulated threshold refund amount for the user's mobile account overpassed
+              value:
+                status: 403
+                code: CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED
+                message: "Unathorized refund request. Accumulated user mobile payments overpass account amount threshold"
+            RefundDenied:
+              summary: Refund denied by business
+              value:
+                status: 403
+                code: CARRIER_BILLING_REFUND.REFUND_DENIED
+                message: "Refund denied by business"
+            PaymentNotEligibleForRefund:
+              summary: Payment not eligible for Refund (e.g. Payment conditions agreed do not allow refund)
+              value:
+                status: 403
+                code: CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND
+                message: "Payment not eligible for refund"
+            InvalidPaymentStatus:
+              summary: Payment is not in suitable status for refund
+              value:
+                status: 403
+                code: CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS
+                message: "Payment is not yet completed"
+    RefundReadPermissionDenied403:
+      description: |-
+        Client does not have sufficient permission.
+        In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
+          - Phone Number cannot be deducted from access token context ("code": "CARRIER_BILLING_REFUND.INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from Access Token context").
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            Generic403:
+              summary: Forbidden
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: "Operation not allowed: ..."
+            InvalidTokenContext:
+              summary: Phone Number cannot be deducted from access token context
+              value:
+                status: 403
+                code: CARRIER_BILLING_REFUND.INVALID_TOKEN_CONTEXT
+                message: "User phone number cannot be deducted from Access Token context"
+    Generic404:
+      description: Resource Not Found
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: NOT_FOUND
+            status: 404
+            message: "The specified resource is not found"
+    Generic409:
+      description: Conflict
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            status: 409
+            code: ALREADY_EXISTS
+            message: "A specified resource duplicate entry found"
+    Generic500:
+      description: Server error
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: SERVER_ERROR
+            status: 500
+            message: "Server Error"
+    Generic503:
+      description: Service unavailable
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: SERVICE_UNAVAILABLE
+            status: 503
+            message: "Service unavailable"
+    Generic504:
+      description: Request timeout exceeded
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: REQUEST_TIMEOUT_EXCEEDED
+            status: 504
+            message: "Request timeout exceeded"
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
+    Page:
+      name: page
+      in: query
+      description: Requested index to indicate the start of the resources to be provided in the response
+      schema:
+        type: integer
+        default: 1
+    PerPage:
+      name: perPage
+      in: query
+      description: Requested number of resources to be provided in response
+      schema:
+        type: integer
+        default: 10
+    StartRefundCreationDate:
+      description: Initial `refundCreationDate` for running the query. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
+      in: query
+      name: refundCreationDate.gte
+      required: false
+      schema:
+        format: date-time
+        type: string
+    EndRefundCreationDate:
+      description: End `refundCreationDate` for running the query. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
+      in: query
+      name: refundCreationDate.lte
+      required: false
+      schema:
+        format: date-time
+        type: string
+    Order:
+      description: Used to return the sorted results in descending (default) or ascending order, based on `paymentCreationDate` property
+      in: query
+      name: order
+      required: false
+      schema:
+        default: desc
+        enum:
+          - desc
+          - asc
+        type: string
+    TransactionOperationStatus:
+      description: List of refund status to be considered for the query
+      in: query
+      name: transactionOperationStatus
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - processing
+            - denied
+            - succeeded
+#    MerchantIdentifier:
+#      description: Merchant identifier to filter the results
+#      in: query
+#      name: merchantIdentifier
+#      required: false
+#      schema:
+#        type: string
+  headers:
+    x-correlator:
+      description: Correlation id for the different services
+      schema:
+        type: string
+    Content-Last-Key:
+      description: Indicates the index of the last result provided in the response
+      schema:
+        type: integer
+    X-Total-Count:
+      description: Total number of items matching criteria
+      schema:
+        type: integer
