@@ -38,7 +38,7 @@ info:
     CAMARA guidelines defines a set of authorization flows which can grant API clients access to the API functionality, as outlined in the document [CAMARA-API-access-and-user-consent.md](https://github.com/camaraproject/IdentityAndConsentManagement/blob/main/documentation/CAMARA-API-access-and-user-consent.md). Which specific authorization flows are to be used will be determined during onboarding process, happening between the API Client and the Telco Operator exposing the API, taking into account the declared purpose for accessing the API, while also being subject to the prevailing legal framework dictated by local legislation.
 
     It is important to remark that in cases where personal user data is processed by the API, and users can exercise their rights through mechanisms such as opt-in and/or opt-out, the use of 3-legged access tokens becomes mandatory. This measure ensures that the API remains in strict compliance with user privacy preferences and regulatory obligations, upholding the principles of transparency and user-centric data control.
-  
+
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
@@ -190,7 +190,7 @@ paths:
         - $ref: "#/components/parameters/EndRefundCreationDate"
         - $ref: "#/components/parameters/Order"
         - $ref: "#/components/parameters/TransactionOperationStatus"
-#        - $ref: "#/components/parameters/MerchantIdentifier" (OPEN)
+        #- $ref: "#/components/parameters/MerchantIdentifier" (OPEN)
       responses:
         "200":
           description: OK
@@ -290,8 +290,8 @@ components:
           $ref: "#/components/schemas/AmountTransactionInput"
         type:
           type: string
-          description: |- 
-            Type of refund. 
+          description: |-
+            Type of refund.
             - `total` stands for a final refund, whose amount can be indicated by API Consumer (PENDING POINT). No more refunds are allowed for that `paymentId`.
             - `partial` stands for a partial refund, whose amount is indicated by API Consumer. More refunds are allowed for that `paymentId`.
           enum:
@@ -318,8 +318,8 @@ components:
           example: "AK234rfweSBuWGFUEWFGWEVWRV"
         type:
           type: string
-          description: |- 
-            Type of refund. 
+          description: |-
+            Type of refund.
             - `total` stands for a final refund, whose amount can be indicated by API Consumer. No more refunds are allowed for that `paymentId`.
             - `partial` stands for a partial refund, whose amount is indicated by API Consumer. More refunds are allowed for that `paymentId`.
           enum:
@@ -362,8 +362,8 @@ components:
           example: "AK234rfweSBuWGFUEWFGWEVWRV"
         type:
           type: string
-          description: |- 
-            Type of refund. 
+          description: |-
+            Type of refund.
             - `total` stands for a final refund, whose amount can be indicated by API Consumer. No more refunds are allowed for that `paymentId`.
             - `partial` stands for a partial refund, whose amount is indicated by API Consumer. More refunds are allowed for that `paymentId`.
           enum:
@@ -462,8 +462,8 @@ components:
       properties:
         chargingInformation:
           $ref: "#/components/schemas/ChargingInformation"
-#        chargingMetaData:
-#          $ref: "#/components/schemas/ChargingMetaData"
+        #chargingMetaData:
+          #$ref: "#/components/schemas/ChargingMetaData"
         refundDetails:
           $ref: "#/components/schemas/RefundDetails"
     RefundDetails:
@@ -536,39 +536,39 @@ components:
           description: |
             The tax amount refunded by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
           example: 21
-#    ChargingMetaData:
-#      type: object
-#      properties:
-#        merchantName:
-#          type: string
-#          description: Indicates the merchant name. Allows aggregators/partners to specify the actual merchant name
-#          example: "EA Sports"
-#        merchantIdentifier:
-#          type: string
-#          description: Indicates the merchant identifier. Allows aggregators/partners to specify the actual merchant identifier
-#          example: "eas-12345"
-#        fee:
-#          type: number
-#          format: float
-#          multipleOf: 0.01
-#          description: Percentage of the amount to be received by the requester
-#          example: 10
-#        purchaseCategoryCode:
-#          type: string
-#          description: A category defining the type of service, product or media being purchased
-#          example: "games"
-#        channel:
-#          type: string
-#          description: The channel over which the requester is interacting with the merchant (e.g. WAP, Web, SMS...)
-#          example: "web"
-#        serviceId:
-#          type: string
-#          description: The identifier of the partner/merchant service being purchased
-#          example: "games-online"
-#        productId:
-#          type: string
-#          description: The product identifier to be combined with the `serviceId` to uniquely identify the product being purchased. For example if the `serviceId` relates to a VOD service, the `productId` can specify the movie rented
-#          example: "138235321"
+    #ChargingMetaData:
+      #type: object
+      #properties:
+        #merchantName:
+          #type: string
+          #description: Indicates the merchant name. Allows aggregators/partners to specify the actual merchant name
+          #example: "EA Sports"
+        #merchantIdentifier:
+          #type: string
+          #description: Indicates the merchant identifier. Allows aggregators/partners to specify the actual merchant identifier
+          #example: "eas-12345"
+        #fee:
+          #type: number
+          #format: float
+          #multipleOf: 0.01
+          #description: Percentage of the amount to be received by the requester
+          #example: 10
+        #purchaseCategoryCode:
+          #type: string
+          #description: A category defining the type of service, product or media being purchased
+          #example: "games"
+        #channel:
+          #type: string
+          #description: The channel over which the requester is interacting with the merchant (e.g. WAP, Web, SMS...)
+          #example: "web"
+        #serviceId:
+          #type: string
+          #description: The identifier of the partner/merchant service being purchased
+          #example: "games-online"
+        #productId:
+          #type: string
+          #description: The product identifier to be combined with the `serviceId` to uniquely identify the product being purchased. For example if the `serviceId` relates to a VOD service, the `productId` can specify the movie rented
+          #example: "138235321"
     CloudEvent:
       description: The notification format
       required:
@@ -1049,13 +1049,13 @@ components:
             - processing
             - denied
             - succeeded
-#    MerchantIdentifier:
-#      description: Merchant identifier to filter the results
-#      in: query
-#      name: merchantIdentifier
-#      required: false
-#      schema:
-#        type: string
+    #MerchantIdentifier:
+      #description: Merchant identifier to filter the results
+      #in: query
+      #name: merchantIdentifier
+      #required: false
+      #schema:
+        #type: string
   headers:
     x-correlator:
       description: Correlation id for the different services

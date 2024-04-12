@@ -673,10 +673,10 @@ components:
           type: string
           description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
           example: "EUR"
-#        description:
-#          type: string
-#          description: Description text to be used for information and billing text referred to a specific item.
-#          example: "FIFA EA Sports 24"
+        description:
+          type: string
+          description: Description text (human readable) to contextualize this amount. Optionally indicated by Telco Operator.
+          example: "Current Amount not refunded so far"
         isTaxIncluded:
           type: boolean
           default: false
