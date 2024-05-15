@@ -189,7 +189,7 @@ paths:
         - $ref: "#/components/parameters/StartRefundCreationDate"
         - $ref: "#/components/parameters/EndRefundCreationDate"
         - $ref: "#/components/parameters/Order"
-        - $ref: "#/components/parameters/TransactionOperationStatus"
+        - $ref: "#/components/parameters/RefundStatus"
         - $ref: "#/components/parameters/MerchantIdentifier"
       responses:
         "200":
@@ -309,6 +309,7 @@ components:
       required:
         - amountTransaction
         - refundId
+        - refundStatus
         - refundCreationDate
         - type
       properties:
@@ -316,6 +317,11 @@ components:
           type: string
           description: Unique Identifier of the refund
           example: "AK234rfweSBuWGFUEWFGWEVWRV"
+        refundStatus:
+          type: string
+          description:
+            Specifies the refund status (`processing`, `denied`, `succeeded`).
+          example: "processing"
         type:
           type: string
           description: |-
@@ -353,6 +359,7 @@ components:
       required:
         - amountTransaction
         - refundId
+        - refundStatus
         - refundCreationDate
         - type
       properties:
@@ -360,6 +367,11 @@ components:
           type: string
           description: Unique Identifier of the refund
           example: "AK234rfweSBuWGFUEWFGWEVWRV"
+        refundStatus:
+          type: string
+          description:
+            Specifies the refund status (`processing`, `denied`, `succeeded`).
+          example: "processing"
         type:
           type: string
           description: |-
@@ -403,7 +415,6 @@ components:
       required:
         - refundAmount
         - referenceCode
-        - transactionOperationStatus
       type: object
       properties:
         clientCorrelator:
@@ -422,11 +433,6 @@ components:
             Merchant generated refund reference to uniquely identify the
             request, for instance, in the case of disputes. Same value as the one provided in the request.
           example: "ref-refund-834tfr2rA3v8r8vr3rv"
-        transactionOperationStatus:
-          type: string
-          description:
-            Specifies the refund status (`processing`, `denied`, `succeeded`).
-          example: "processing"
         serverReferenceCode:
           type: string
           description:
@@ -481,6 +487,7 @@ components:
           type: number
           format: float
           multipleOf: 0.001
+          minimum: 0.001
           description: Specific amount to be refunded referred to a specific item.
           example: 100
         currency:
@@ -499,6 +506,7 @@ components:
           type: number
           format: float
           multipleOf: 0.001
+          minimum: 0
           description: |
             The tax amount refunded by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
           example: 21
@@ -513,6 +521,7 @@ components:
           type: number
           format: float
           multipleOf: 0.001
+          minimum: 0.001
           description: Amount to be refunded.
           example: 100
         currency:
@@ -531,6 +540,7 @@ components:
           type: number
           format: float
           multipleOf: 0.001
+          minimum: 0
           description: |
             The tax amount refunded by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
           example: 21
@@ -1001,10 +1011,10 @@ components:
           - desc
           - asc
         type: string
-    TransactionOperationStatus:
+    RefundStatus:
       description: List of refund status to be considered for the query
       in: query
-      name: transactionOperationStatus
+      name: refundStatus
       required: false
       schema:
         type: array

@@ -245,7 +245,7 @@ paths:
         - $ref: "#/components/parameters/StartPaymentCreationDate"
         - $ref: "#/components/parameters/EndPaymentCreationDate"
         - $ref: "#/components/parameters/Order"
-        - $ref: "#/components/parameters/TransactionOperationStatus"
+        - $ref: "#/components/parameters/PaymentStatus"
         - $ref: "#/components/parameters/MerchantIdentifier"
       responses:
         "200":
@@ -589,6 +589,7 @@ components:
       required:
         - amountTransaction
         - paymentId
+        - paymentStatus
         - paymentCreationDate
       properties:
         paymentId:
@@ -597,6 +598,11 @@ components:
           example: "AK234rfweSBuWGFUEWFGWEVWRV"
         amountTransaction:
           $ref: "#/components/schemas/AmountTransaction"
+        paymentStatus:
+          type: string
+          description:
+            Specifies the payment status (`processing`, `pending_validation`, `denied`, `reserved`, `succeeded`, `cancelled`).
+          example: "processing"     
         paymentCreationDate:
           type: string
           format: date-time
@@ -620,6 +626,7 @@ components:
       required:
         - amountTransaction
         - paymentId
+        - paymentStatus
         - paymentCreationDate
       properties:
         paymentId:
@@ -628,6 +635,11 @@ components:
           example: "AK234rfweSBuWGFUEWFGWEVWRV"
         amountTransaction:
           $ref: "#/components/schemas/AmountTransaction"
+        paymentStatus:
+          type: string
+          description:
+            Specifies the payment status (`processing`, `pending_validation`, `denied`, `reserved`, `succeeded`, `cancelled`).
+          example: "processing"
         paymentCreationDate:
           type: string
           format: date-time
@@ -693,7 +705,6 @@ components:
         - phoneNumber
         - paymentAmount
         - referenceCode
-        - transactionOperationStatus
       type: object
       properties:
         phoneNumber:
@@ -716,11 +727,6 @@ components:
             Merchant generated payment reference to uniquely identify the
             request, for instance, in the case of disputes. Same value as the one provided in the request.
           example: "ref-pay-834tfr2rA3v8r8vr3rv"
-        transactionOperationStatus:
-          type: string
-          description:
-            Specifies the payment status (`processing`, `pending_validation`, `denied`, `reserved`, `succeeded`, `cancelled`, `refund_in_progress`, `totally_refunded`, `partially_refunded`).
-          example: "processing"
         resourceURL:
           type: string
           description: URI of the created resource (same as in the Location header)
@@ -797,6 +803,7 @@ components:
       required:
         - amountTransaction
         - paymentId
+        - paymentStatus
         - paymentCreationDate
       type: object
       properties:
@@ -806,6 +813,11 @@ components:
           example: "AK234rfweSBuWGFUEWFGWEVWRV"
         amountTransaction:
           $ref: "#/components/schemas/AmountReservationTransactionForReserve"
+        paymentStatus:
+          type: string
+          description:
+            Specifies the payment status (`processing`, `pending_validation`, `denied`, `reserved`, `succeeded`, `cancelled`).
+          example: "processing"
         paymentCreationDate:
           type: string
           format: date-time
@@ -833,7 +845,6 @@ components:
       required:
         - paymentAmount
         - referenceCode
-        - transactionOperationStatus
       type: object
       properties:
         phoneNumber:
@@ -855,11 +866,6 @@ components:
             Merchant generated payment reference to uniquely identify the
             request, for example, in the case of disputes. Same value as the one provided in the request.
           example: "ref-pay-834tfr2rA3v8r8vr3rv"
-        transactionOperationStatus:
-          type: string
-          description:
-            Specifies the payment status (`processing`, `pending_validation`, `denied`, `reserved`, `succeeded`, `cancelled`, `refund_in_progress`, `totally_refunded`, `partially_refunded`).
-          example: "processing"
         resourceURL:
           type: string
           description: URI of the created resource (same as in the Location header)
@@ -1713,10 +1719,10 @@ components:
           - desc
           - asc
         type: string
-    TransactionOperationStatus:
+    PaymentStatus:
       description: List of payment status to be considered for the query
       in: query
-      name: transactionOperationStatus
+      name: paymentStatus
       required: false
       schema:
         type: array
@@ -1729,9 +1735,6 @@ components:
             - reserved
             - succeeded
             - cancelled
-            - refund_in_progress
-            - totally_refunded
-            - partially_refunded
     MerchantIdentifier:
       description: Merchant identifier to filter the results
       in: query
