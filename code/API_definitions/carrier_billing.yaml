@@ -928,6 +928,7 @@ components:
           type: number
           format: float
           multipleOf: 0.001
+          minimum: 0.001
           description: Specific amount to be charged or reserved referred to a specific item.
           example: 100
         currency:
@@ -946,6 +947,7 @@ components:
           type: number
           format: float
           multipleOf: 0.001
+          minimum: 0
           description: |
             The tax amount charged by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
           example: 21
@@ -960,6 +962,7 @@ components:
           type: number
           format: float
           multipleOf: 0.001
+          minimum: 0.001
           description: Amount to be charged or reserved.
           example: 100
         currency:
@@ -978,6 +981,7 @@ components:
           type: number
           format: float
           multipleOf: 0.001
+          minimum: 0
           description: |
             The tax amount charged by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
           example: 21
