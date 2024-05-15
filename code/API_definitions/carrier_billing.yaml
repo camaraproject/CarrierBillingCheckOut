@@ -602,7 +602,7 @@ components:
           type: string
           description:
             Specifies the payment status (`processing`, `pending_validation`, `denied`, `reserved`, `succeeded`, `cancelled`).
-          example: "processing"     
+          example: "processing"
         paymentCreationDate:
           type: string
           format: date-time
