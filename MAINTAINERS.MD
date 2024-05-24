@@ -1,10 +1,9 @@
-| Organization | Name                    |
-|--------------|-------------------------|
-| GSMA         | Gareth Williams         |
-| KDDI         | Toshiyasu Wakayama      |
-| Orange       | Sylvain Morel           |
-| Orange       | Ludovic Robert          |
-| STC          | Albaraa A. Bajnaid      |
-| Telefonica   | Pedro Diez Garcia       |
-| Telefónica   | Diego González Martínez |
-
+| Organization | Name                    | GitHub                  |
+|--------------|-------------------------|-------------------------|
+| GSMA         | Gareth Williams         | GarethWGSMA             |
+| KDDI         | Toshiyasu Wakayama      | ToshiWakayama-KDDI      |
+| Orange       | Sylvain Morel           | SylMOREL                |
+| Orange       | Ludovic Robert          | bigludo7                |
+| STC          | Albaraa A. Bajnaid      | alabajnaid              |
+| Telefonica   | Pedro Diez Garcia       | PedroDiez               |
+| Telefónica   | Diego González Martínez | diegogonmar             |
