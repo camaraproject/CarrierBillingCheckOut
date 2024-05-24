@@ -17,11 +17,11 @@ info:
     The process of paying for a (set of) good(s)/service(s).
 
     - **Refund**:
-    The process of returning the amount involved in a given payment (totally or partially) to a given back to the user.
+    The process of returning the amount involved in a given payment (totally or partially) back to the user.
 
     # API Functionality
 
-    This API allows to third party clients to request the refund ...., as well as to retrieve information about a specific refund or a list of refunds.
+    This API allows to third party clients to request the refund of a given payment, as well as to retrieve information about a specific refund or a list of refunds.
 
     The API provides several endpoints/operations:
     - An endpoint to request a refund, named `createRefund`.
@@ -31,7 +31,15 @@ info:
 
     State transitions:
 
-    TBD
+    If `createRefund` is a **SYNC** process:
+    - Response contains `refundId` and refundStatus=`succeeded`.
+    - In case of any error scenario `refundId` is not created.
+
+    If `createRefund` is an **ASYNC** process:
+    - Response contains `refundId` and refundStatus=`processing`. After completion:
+      - When refund is successfully completed then refundStatus=`succeeded`.
+      - When refund is not successfully performed then refundStatus=`denied`.
+    - In case of any error scenario `refundId` is not created.
 
     # Authorization and authentication
 
@@ -148,6 +156,8 @@ paths:
           $ref: "#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/RefundPermissionDenied403"
+        "422":
+          $ref: "#/components/responses/CreateRefundUnprocessableContent422"
         "409":
           $ref: "#/components/responses/Generic409"
         "500":
@@ -468,6 +478,8 @@ components:
       properties:
         chargingInformation:
           $ref: "#/components/schemas/ChargingInformation"
+        chargingMetaData:
+          $ref: "#/components/schemas/ChargingMetaData"
         refundDetails:
           $ref: "#/components/schemas/RefundDetails"
     RefundDetails:
@@ -544,6 +556,13 @@ components:
           description: |
             The tax amount refunded by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
           example: 21
+    ChargingMetaData:
+      type: object
+      properties:
+        merchantIdentifier:
+          type: string
+          description: Indicates the merchant identifier. Allows aggregators/partners to specify the actual merchant identifier
+          example: "eas-12345"
     CloudEvent:
       description: The notification format
       required:
@@ -924,6 +943,32 @@ components:
             status: 409
             code: ALREADY_EXISTS
             message: "A specified resource duplicate entry found"
+    CreateRefundUnprocessableContent422:
+      description: |-
+        Client indicates content that is understable by the Server but unable to be processed.
+        Scenarios considered:
+          - Property `isTaxIncluded` has not the same value as related Payment ("code": "CARRIER_BILLING_REFUND.TAXES_MANAGEMENT_MISMATCH","message": "Inconsistent isTaxIncluded value with regards to related payment.").
+          - Refund details provided are inconsistent with regards to the related Payment ("code": "CARRIER_BILLING_REFUND.REFUND_DETAILS_MISMATCH","message": "Inconsistent refundDetails information with regards to related payment.").
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            TaxesManagementMismatch:
+              summary: Property `isTaxIncluded` has not the same value as related Payment
+              value:
+                status: 422
+                code: CARRIER_BILLING_REFUND.TAXES_MANAGEMENT_MISMATCH
+                message: "Inconsistent isTaxIncluded value with regards to related payment."
+            RefundDetailsMismatch:
+              summary: Refund details provided are inconsistent with regards to the related Payment
+              value:
+                status: 422
+                code: CARRIER_BILLING_REFUND.REFUND_DETAILS_MISMATCH
+                message: "Inconsistent refundDetails information with regards to related payment."
     Generic500:
       description: Server error
       headers:
