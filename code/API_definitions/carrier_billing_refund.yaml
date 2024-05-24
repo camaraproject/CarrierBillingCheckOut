@@ -282,6 +282,53 @@ paths:
           $ref: "#/components/responses/Generic503"
         "504":
           $ref: "#/components/responses/Generic504"
+  /payments/{paymentId}/refunds/remainingAmount:
+    get:
+      security:
+        - openId:
+            - carrier-billing-refund:refunds:read
+      tags:
+        - Refund
+      summary: Get remaining amount not refunded for a given payment
+      operationId: retrievePaymentRemainingAmount
+      description: |-
+        Retrieve remaining amount not yet refunded for a given payment.
+
+        When Access Token is issued for a given user phone number, information would be returned in case the `paymentId` is associated to that user phone number and API client, otherwise `404 NOT_FOUND` will be returned. When Access Token is not associated to a user phone number, the information is returned in case the API client managed that payment.
+      parameters:
+        - name: paymentId
+          in: path
+          description: Payment identifier associated to the `refundId`
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/x-correlator"
+      responses:
+        "200":
+          description: OK
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
+            Content-Last-Key:
+              $ref: "#/components/headers/Content-Last-Key"
+            X-Total-Count:
+              $ref: "#/components/headers/X-Total-Count"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentRemainingAmount"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/RefundReadPermissionDenied403"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+        "504":
+          $ref: "#/components/responses/Generic504"
 components:
   securitySchemes:
     openId:
@@ -552,6 +599,40 @@ components:
           type: string
           description: Description text to be used for information and billing text referred to a specific item.
           example: "FIFA EA Sports 24"
+        isTaxIncluded:
+          type: boolean
+          default: false
+          description: If true, the `amount` is tax included, if false the `amount` is provided without tax. In both cases, `taxAmount` could be indicated to provide tax amount.
+        taxAmount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          minimum: 0
+          description: |
+            The tax amount refunded by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
+          example: 21
+    PaymentRemainingAmount:
+      type: object
+      description: Remaining Amount of a given payment not refunded yet.
+      required:
+        - amount
+        - currency
+      properties:
+        amount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          minimum: 0
+          description: Specific amount not yet refunded for the payment. When takes value `0` it means whole payment has been refunded.
+          example: 100
+        currency:
+          type: string
+          description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
+          example: "EUR"
+        description:
+          type: string
+          description: Description text (human readable) to contextualize this amount. Optionally indicated by Telco Operator.
+          example: "Current Amount not refunded so far"
         isTaxIncluded:
           type: boolean
           default: false

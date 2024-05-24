@@ -648,10 +648,6 @@ components:
           type: string
           format: date-time
           description: Date time when the payment is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
-        paymentRemainingAmount:
-          allOf:
-            - $ref: "#/components/schemas/PaymentRemainingAmount"
-            - description: Remaining Amount of a given payment not refunded yet. Only included when a payment has been refunded at least one time. Check Carrier Billing Refund API for details.
         webhook:
           allOf:
             - $ref: "#/components/schemas/Webhook"
@@ -669,37 +665,6 @@ components:
           type: string
           description: Authentification token for callback endpoint
           example: "c8974e592c2fa383d4a3960714"
-    PaymentRemainingAmount:
-      type: object
-      required:
-        - amount
-        - currency
-      properties:
-        amount:
-          type: number
-          format: float
-          multipleOf: 0.001
-          description: Specific amount not yet refunded for the payment.
-          example: 100
-        currency:
-          type: string
-          description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
-          example: "EUR"
-        description:
-          type: string
-          description: Description text (human readable) to contextualize this amount. Optionally indicated by Telco Operator.
-          example: "Current Amount not refunded so far"
-        isTaxIncluded:
-          type: boolean
-          default: false
-          description: If true, the `amount` is tax included, if false the `amount` is provided without tax. In both cases, `taxAmount` could be indicated to provide tax amount.
-        taxAmount:
-          type: number
-          format: float
-          multipleOf: 0.001
-          description: |
-            The tax amount refunded by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
-          example: 21
     AmountTransaction:
       required:
         - phoneNumber
