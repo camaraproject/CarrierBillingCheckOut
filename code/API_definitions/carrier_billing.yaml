@@ -56,13 +56,13 @@ info:
     **1-STEP Payment**
 
     If `createPayment` is a **SYNC** process:
-    - Response contains `paymentId` and status=`succeeded`.
+    - Response contains `paymentId` and paymentStatus=`succeeded`.
     - In case of any error scenario `paymentId` is not created.
 
     If `createPayment` is an **ASYNC** process:
-    - Response contains `paymentId` and status=`processing`. After completion:
-      - When payment is successfully completed then status=`succeeded`.
-      - When payment is not successfully performed then status=`denied`.
+    - Response contains `paymentId` and paymentStatus=`processing`. After completion:
+      - When payment is successfully completed then paymentStatus=`succeeded`.
+      - When payment is not successfully performed then paymentStatus=`denied`.
     - In case of any error scenario `paymentId` is not created.
 
     **2-STEP Payment**
@@ -71,31 +71,31 @@ info:
 
     If `preparePayment` is a **SYNC** process:
     - **Case A** - `validationInfo` is NOT provided in response.
-      - Response contains `paymentId` and status=`reserved`.
+      - Response contains `paymentId` and paymentStatus=`reserved`.
     - **Case B** - `validationInfo` is provided in response.
-      - Response contains `paymentId` and status=`pending_validation`.
+      - Response contains `paymentId` and paymentStatus=`pending_validation`.
     - In case of any error scenario `paymentId` is not created.
 
     If `preparePayment` is an **ASYNC** process:
     - **Case A** - `validationInfo` is NOT provided in response.
-      - Response contains `paymentId` and status=`processing`. After completion:
-        - When payment preparation is successfully completed then status=`reserved`.
-        - When payment preparation is not successfully performed then status=`denied`.
+      - Response contains `paymentId` and paymentStatus=`processing`. After completion:
+        - When payment preparation is successfully completed then paymentStatus=`reserved`.
+        - When payment preparation is not successfully performed then paymentStatus=`denied`.
     - **Case B** - `validationInfo` is provided in response.
-      - Response contains `paymentId` and status=`processing`. After completion:
-        - When payment preparation is successfully completed then status=`pending_validation`. [1]
-        - When payment preparation is not successfully performed then status=`denied`.
+      - Response contains `paymentId` and paymentStatus=`processing`. After completion:
+        - When payment preparation is successfully completed then paymentStatus=`pending_validation`. [1]
+        - When payment preparation is not successfully performed then paymentStatus=`denied`.
     - In case of any error scenario `paymentId` is not created.
 
     [OPTIONAL] VALIDATE STEP [1]
 
-    After `validatePayment`, status=`reserved` OR `denied`, depending whether it was successful or not.
+    After `validatePayment`, paymentStatus=`reserved` OR `denied`, depending whether it was successful or not.
 
     SECOND STEP
 
-    After `confirmPayment`, status=`succeeded` OR `denied`, depending whether it was successful or not.
+    After `confirmPayment`, paymentStatus=`succeeded` OR `denied`, depending whether it was successful or not.
 
-    After `cancelPayment`, status=`cancelled`.
+    After `cancelPayment`, paymentStatus=`cancelled`.
 
     # Authorization and authentication
 
@@ -552,7 +552,7 @@ paths:
         "401":
           $ref: "#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "#/components/responses/PaymentCancelPermissionDenied403"
         "404":
           $ref: "#/components/responses/Generic404"
         "409":
@@ -709,7 +709,11 @@ components:
       properties:
         phoneNumber:
           type: string
-          description: Identifies the mobile account to be charged. Phone number in E.164 format (starting with country code). Optionally prefixed with '+'.
+          description: |-
+            Identifies the mobile account to be charged.
+
+            A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+          pattern: '^\+[1-9][0-9]{4,14}$'
           example: "+34671999000"
         clientCorrelator:
           type: string
@@ -745,11 +749,15 @@ components:
       properties:
         phoneNumber:
           type: string
-          description: |
-            Identifies the mobile account to be charged. Phone number in E.164 format (starting with country code). Optionally prefixed with '+'.
+          description: |-
+            Identifies the mobile account to be charged.
+
+            A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+
             Additional Considerations:
             - When phoneNumber is not indicated, it can be inferred from authorization context (i.e. token), otherwise `HTTP 403` will be answered.
             - When phoneNumber is indicated, authorization context will be consistent, otherwise `HTTP 403` will be answered.
+          pattern: '^\+[1-9][0-9]{4,14}$'
           example: "+34671999000"
         clientCorrelator:
           type: string
@@ -783,7 +791,15 @@ components:
       properties:
         phoneNumber:
           type: string
-          description: Identifies the mobile account to be charged. Phone number in E.164 format (starting with country code). Optionally prefixed with '+'.
+          description: |-
+            Identifies the mobile account to be charged.
+
+            A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+
+            Additional Considerations:
+            - When phoneNumber is not indicated, it can be inferred from authorization context (i.e. token), otherwise `HTTP 403` will be answered.
+            - When phoneNumber is indicated, authorization context will be consistent, otherwise `HTTP 403` will be answered.
+          pattern: '^\+[1-9][0-9]{4,14}$'
           example: "+34671999000"
     ValidatePayment:
       type: object
@@ -843,13 +859,18 @@ components:
             - description: Information to manage payment notifications
     AmountReservationTransactionForReserve:
       required:
+        - phoneNumber
         - paymentAmount
         - referenceCode
       type: object
       properties:
         phoneNumber:
           type: string
-          description: Identifies the mobile account to be charged. Phone number in E.164 format (starting with country code). Optionally prefixed with '+'.
+          description: |-
+            Identifies the mobile account to be charged.
+
+            A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+          pattern: '^\+[1-9][0-9]{4,14}$'
           example: "+34671999000"
         clientCorrelator:
           type: string
@@ -884,11 +905,15 @@ components:
       properties:
         phoneNumber:
           type: string
-          description: |
-            Identifies the mobile account to be charged. Phone number in E.164 format (starting with country code). Optionally prefixed with '+'.
+          description: |-
+            Identifies the mobile account to be charged.
+
+            A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+
             Additional Considerations:
             - When phoneNumber is not indicated, it can be inferred from authorization context (i.e. token), otherwise `HTTP 403` will be answered.
             - When phoneNumber is indicated, authorization context will be consistent, otherwise `HTTP 403` will be answered.
+          pattern: '^\+[1-9][0-9]{4,14}$'
           example: "+34671999000"
         clientCorrelator:
           type: string
@@ -1498,6 +1523,8 @@ components:
       description: |-
         Client does not have sufficient permission.
         In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
+          - Phone Number is required ("code": "CARRIER_BILLING.PHONE_NUMBER_REQUIRED","message": "Phone Number is required").
+          - Phone Number provided not matching Access Token context ("code": "CARRIER_BILLING.INVALID_TOKEN_CONTEXT","message": "Phone Number does not match with Access Token context").
           - Payment denied by business ("code": "CARRIER_BILLING.PAYMENT_DENIED","message": "Payment denied by business").
       headers:
         x-correlator:
@@ -1513,12 +1540,56 @@ components:
                 status: 403
                 code: PERMISSION_DENIED
                 message: "Operation not allowed: ..."
+            PhoneNumberRequired:
+              summary: Phone Number is required
+              value:
+                status: 403
+                code: CARRIER_BILLING.PHONE_NUMBER_REQUIRED
+                message: "Phone Number not provided and cannot be obtained from Access Token context"
+            PhoneNumberMismatch:
+              summary: Phone Number provided not matching Access Token context
+              value:
+                status: 403
+                code: CARRIER_BILLING.INVALID_TOKEN_CONTEXT
+                message: "Phone Number does not match with Access Token context"
             PaymentDenied:
               summary: Payment denied by business
               value:
                 status: 403
                 code: CARRIER_BILLING.PAYMENT_DENIED
                 message: "Payment denied by business"
+    PaymentCancelPermissionDenied403:
+      description: |-
+        Client does not have sufficient permission.
+        In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
+          - Phone Number is required ("code": "CARRIER_BILLING.PHONE_NUMBER_REQUIRED","message": "Phone Number is required").
+          - Phone Number provided not matching Access Token context ("code": "CARRIER_BILLING.INVALID_TOKEN_CONTEXT","message": "Phone Number does not match with Access Token context").
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            Generic403:
+              summary: Forbidden
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: "Operation not allowed: ..."
+            PhoneNumberRequired:
+              summary: Phone Number is required
+              value:
+                status: 403
+                code: CARRIER_BILLING.PHONE_NUMBER_REQUIRED
+                message: "Phone Number not provided and cannot be obtained from Access Token context"
+            PhoneNumberMismatch:
+              summary: Phone Number provided not matching Access Token context
+              value:
+                status: 403
+                code: CARRIER_BILLING.INVALID_TOKEN_CONTEXT
+                message: "Phone Number does not match with Access Token context"
     PaymentReadPermissionDenied403:
       description: |-
         Client does not have sufficient permission.
