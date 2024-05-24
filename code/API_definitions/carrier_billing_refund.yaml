@@ -149,13 +149,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RefundCreated"
+                $ref: "#/components/schemas/Refund"
         "400":
           $ref: "#/components/responses/RefundInvalid400"
         "401":
           $ref: "#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/RefundPermissionDenied403"
+        "404":
+          $ref: "#/components/responses/Generic404"
         "422":
           $ref: "#/components/responses/CreateRefundUnprocessableContent422"
         "409":
@@ -292,17 +294,15 @@ components:
   schemas:
     CreateRefund:
       type: object
+      description: Information to create a Refund resource.
       required:
-        - amountTransaction
         - type
       properties:
-        amountTransaction:
-          $ref: "#/components/schemas/AmountTransactionInput"
         type:
           type: string
           description: |-
             Type of refund.
-            - `total` stands for a final refund, whose amount can be indicated by API Consumer (PENDING POINT). No more refunds are allowed for that `paymentId`.
+            - `total` stands for a final refund, where whole amount is refunded so as it is not indicated by API Consumer. No more refunds are allowed for that `paymentId`.
             - `partial` stands for a partial refund, whose amount is indicated by API Consumer. More refunds are allowed for that `paymentId`.
           enum:
             - total
@@ -314,60 +314,33 @@ components:
           allOf:
             - $ref: "#/components/schemas/Webhook"
             - description: Information to manage refund notifications
-    RefundCreated:
-      type: object
-      required:
-        - amountTransaction
-        - refundId
-        - refundStatus
-        - refundCreationDate
-        - type
-      properties:
-        refundId:
-          type: string
-          description: Unique Identifier of the refund
-          example: "AK234rfweSBuWGFUEWFGWEVWRV"
-        refundStatus:
-          type: string
-          description:
-            Specifies the refund status (`processing`, `denied`, `succeeded`).
-          example: "processing"
-        type:
-          type: string
-          description: |-
-            Type of refund.
-            - `total` stands for a final refund, whose amount can be indicated by API Consumer. No more refunds are allowed for that `paymentId`.
-            - `partial` stands for a partial refund, whose amount is indicated by API Consumer. More refunds are allowed for that `paymentId`.
-          enum:
-            - total
-            - partial
-        amountTransaction:
-          $ref: "#/components/schemas/AmountTransaction"
-        refundCreationDate:
-          type: string
-          format: date-time
-          description: Date time when the refund is created in server database. This is a technical information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
-        refundDate:
-          type: string
-          format: date-time
-          description: Date time when the refund is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
-        reason:
-          type: string
-          description: Reason provided to request the refund. Optionally provided by the user or the merchant.
-        webhook:
-          allOf:
-            - $ref: "#/components/schemas/Webhook"
-            - description: Information to manage refund notifications
-    RefundArray:
-      description: A list of refund(s)
-      type: array
-      minItems: 0
-      items:
-        $ref: "#/components/schemas/Refund"
+      discriminator:
+        propertyName: type
+        mapping:
+          total: "#/components/schemas/CreateTotalRefund"
+          partial: "#/components/schemas/CreatePartialRefund"
+    CreateTotalRefund:
+      allOf:
+        - $ref: "#/components/schemas/CreateRefund"
+        - type: object
+          required:
+            - amountTransaction
+          properties:
+            amountTransaction:
+              $ref: "#/components/schemas/AmountTransactionTotalRefund"
+    CreatePartialRefund:
+      allOf:
+        - $ref: "#/components/schemas/CreateRefund"
+        - type: object
+          required:
+            - amountTransaction
+          properties:
+            amountTransaction:
+              $ref: "#/components/schemas/AmountTransactionPartialRefund"
     Refund:
       type: object
+      description: Information about a Refund resource.
       required:
-        - amountTransaction
         - refundId
         - refundStatus
         - refundCreationDate
@@ -386,13 +359,11 @@ components:
           type: string
           description: |-
             Type of refund.
-            - `total` stands for a final refund, whose amount can be indicated by API Consumer. No more refunds are allowed for that `paymentId`.
+            - `total` stands for a final refund, where whole amount is refunded so as it is not indicated by API Consumer. No more refunds are allowed for that `paymentId`.
             - `partial` stands for a partial refund, whose amount is indicated by API Consumer. More refunds are allowed for that `paymentId`.
           enum:
             - total
             - partial
-        amountTransaction:
-          $ref: "#/components/schemas/AmountTransaction"
         refundCreationDate:
           type: string
           format: date-time
@@ -408,48 +379,30 @@ components:
           allOf:
             - $ref: "#/components/schemas/Webhook"
             - description: Information to manage refund notifications
-    Webhook:
-      type: object
-      required:
-        - notificationUrl
-      properties:
-        notificationUrl:
-          type: string
-          description: Callback URL to allow asynchronous delivery of refund related events
-          example: "https://myservice.com/refund/events"
-        notificationAuthToken:
-          type: string
-          description: Authentification token for callback endpoint
-          example: "c8974e592c2fa383d4a3960714"
-    AmountTransaction:
-      required:
-        - refundAmount
-        - referenceCode
-      type: object
-      properties:
-        clientCorrelator:
-          type: string
-          description:
-            Uniquely identifies this create refund request. If there is
-            a communication failure during the refund request, using the same clientCorrelator
-            when retrying the request allows the operator to avoid applying the same
-            refund twice. This field SHOULD be present. Same value as indicated in the request.
-          example: "req-12f2pgh448gh2hvrfrv"
-        refundAmount:
-          $ref: "#/components/schemas/RefundAmount"
-        referenceCode:
-          type: string
-          description:
-            Merchant generated refund reference to uniquely identify the
-            request, for instance, in the case of disputes. Same value as the one provided in the request.
-          example: "ref-refund-834tfr2rA3v8r8vr3rv"
-        serverReferenceCode:
-          type: string
-          description:
-            Reference to the charge or refund, provided by the server,
-            and meaningful to the server’s backend system for the purpose of reconciliation.
-          example: "ref-pay-834tfr2rA3v8r8vr3rv-serv"
-    AmountTransactionInput:
+      discriminator:
+        propertyName: type
+        mapping:
+          total: "#/components/schemas/TotalRefund"
+          partial: "#/components/schemas/PartialRefund"
+    TotalRefund:
+      allOf:
+        - $ref: "#/components/schemas/Refund"
+        - type: object
+          required:
+            - amountTransaction
+          properties:
+            amountTransaction:
+              $ref: "#/components/schemas/AmountTransactionTotalRefund"
+    PartialRefund:
+      allOf:
+        - $ref: "#/components/schemas/Refund"
+        - type: object
+          required:
+            - amountTransaction
+          properties:
+            amountTransaction:
+              $ref: "#/components/schemas/AmountTransactionPartialRefund"
+    AmountTransactionTotalRefund:
       type: object
       required:
         - refundAmount
@@ -464,15 +417,44 @@ components:
             charge twice. This field SHOULD be present.
           example: "req-12f2pgh448gh2hvrfrv"
         refundAmount:
-          $ref: "#/components/schemas/RefundAmount"
+          $ref: "#/components/schemas/RefundAmountTotalRefund"
         referenceCode:
           type: string
           description:
             Merchant generated refund reference to uniquely identify the
             request, for instance, in the case of disputes.
           example: "ref-refund-834tfr2rA3v8r8vr3rv"
-    RefundAmount:
+    RefundAmountTotalRefund:
       type: object
+      description: Information for a `total` refund. Whole amount is refunded so as it is not needed to be provided, then it can be an empty object unless `merchantIdentifier` is indicated.
+      properties:
+        chargingMetaData:
+          $ref: "#/components/schemas/ChargingMetaData"
+    AmountTransactionPartialRefund:
+      type: object
+      required:
+        - refundAmount
+        - referenceCode
+      properties:
+        clientCorrelator:
+          type: string
+          description:
+            Uniquely identifies this create refund request. If there is
+            a communication failure during the refund request, using the same clientCorrelator
+            when retrying the request allows the operator to avoid applying the same
+            charge twice. This field SHOULD be present.
+          example: "req-12f2pgh448gh2hvrfrv"
+        refundAmount:
+          $ref: "#/components/schemas/RefundAmountPartialRefund"
+        referenceCode:
+          type: string
+          description:
+            Merchant generated refund reference to uniquely identify the
+            request, for instance, in the case of disputes.
+          example: "ref-refund-834tfr2rA3v8r8vr3rv"
+    RefundAmountPartialRefund:
+      type: object
+      description: Information for a `partial` refund. Amount to be refunded is required.
       required:
         - chargingInformation
       properties:
@@ -482,46 +464,25 @@ components:
           $ref: "#/components/schemas/ChargingMetaData"
         refundDetails:
           $ref: "#/components/schemas/RefundDetails"
-    RefundDetails:
+    RefundArray:
+      description: A list of refund(s)
       type: array
-      description: Detailed description of the concepts/items considered within a specific refund procedure.
-      minItems: 1
+      minItems: 0
       items:
-        $ref: "#/components/schemas/RefundItem"
-    RefundItem:
+        $ref: "#/components/schemas/Refund"
+    Webhook:
       type: object
       required:
-        - amount
-        - currency
-        - description
+        - notificationUrl
       properties:
-        amount:
-          type: number
-          format: float
-          multipleOf: 0.001
-          minimum: 0.001
-          description: Specific amount to be refunded referred to a specific item.
-          example: 100
-        currency:
+        notificationUrl:
           type: string
-          description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
-          example: "EUR"
-        description:
+          description: Callback URL to allow asynchronous delivery of refund related events
+          example: "https://myservice.com/refund/events"
+        notificationAuthToken:
           type: string
-          description: Description text to be used for information and billing text referred to a specific item.
-          example: "FIFA EA Sports 24"
-        isTaxIncluded:
-          type: boolean
-          default: false
-          description: If true, the `amount` is tax included, if false the `amount` is provided without tax. In both cases, `taxAmount` could be indicated to provide tax amount.
-        taxAmount:
-          type: number
-          format: float
-          multipleOf: 0.001
-          minimum: 0
-          description: |
-            The tax amount refunded by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
-          example: 21
+          description: Authentification token for callback endpoint
+          example: "c8974e592c2fa383d4a3960714"
     ChargingInformation:
       type: object
       required:
@@ -563,6 +524,46 @@ components:
           type: string
           description: Indicates the merchant identifier. Allows aggregators/partners to specify the actual merchant identifier
           example: "eas-12345"
+    RefundDetails:
+      type: array
+      description: Detailed description of the concepts/items considered within a specific refund procedure.
+      minItems: 1
+      items:
+        $ref: "#/components/schemas/RefundItem"
+    RefundItem:
+      type: object
+      required:
+        - amount
+        - currency
+        - description
+      properties:
+        amount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          minimum: 0.001
+          description: Specific amount to be refunded referred to a specific item.
+          example: 100
+        currency:
+          type: string
+          description: Currency code in which amount is expressed as defined in [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html).
+          example: "EUR"
+        description:
+          type: string
+          description: Description text to be used for information and billing text referred to a specific item.
+          example: "FIFA EA Sports 24"
+        isTaxIncluded:
+          type: boolean
+          default: false
+          description: If true, the `amount` is tax included, if false the `amount` is provided without tax. In both cases, `taxAmount` could be indicated to provide tax amount.
+        taxAmount:
+          type: number
+          format: float
+          multipleOf: 0.001
+          minimum: 0
+          description: |
+            The tax amount refunded by the merchant. Indicated when the merchant is the one applying taxes. This field also provides an indicator to the downstream billing system.
+          example: 21
     CloudEvent:
       description: The notification format
       required:
