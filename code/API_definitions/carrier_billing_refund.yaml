@@ -26,7 +26,7 @@ info:
     The API provides several endpoints/operations:
     - An endpoint to request a refund, named `createRefund`.
     - A set of endpoints to retrieve information about a list of refunds or a specific refund (identified by its specific `refundId`), named `retrieveRefunds` and `retrieveRefund` respectively.
-    - A callback endpoint where API Server can send notifications about a refund procedure, as defined within `createRefund` operation, towards the `webhook.notificationUrl` when provided by API client.
+    - A callback endpoint where API Server can send notifications about a refund procedure, as defined within `createRefund` operation, towards the `sink` when provided by API client.
 
 
     State transitions:
@@ -61,15 +61,13 @@ info:
 externalDocs:
   description: Product documentation at Camara
   url: https://github.com/camaraproject/
+x-camara-commonalities: 0.4.0
 servers:
-  - url: "{apiRoot}/{basePath}"
+  - url: "{apiRoot}/carrier-billing-refund/v0"
     variables:
       apiRoot:
         default: http://localhost:9091
-        description: API root
-      basePath:
-        default: carrier-billing-refund/v0
-        description: Base path for the carrier billing refund API
+        description: API root, defined by the service provider
 tags:
   - name: Refund
     description: Operations to manage Refund procedure
@@ -101,7 +99,7 @@ paths:
         required: true
       callbacks:
         notifications:
-          "{$request.body#/webhook/notificationUrl}":
+          "{$request.body#/sink}":
             post:
               security:
                 - {}
@@ -134,12 +132,14 @@ paths:
                   $ref: "#/components/responses/Generic401"
                 "403":
                   $ref: "#/components/responses/Generic403"
+                "410":
+                  $ref: "#/components/responses/Generic410"
+                "429":
+                  $ref: "#/components/responses/Generic429"
                 "500":
                   $ref: "#/components/responses/Generic500"
                 "503":
                   $ref: "#/components/responses/Generic503"
-                "504":
-                  $ref: "#/components/responses/Generic504"
       responses:
         "201":
           description: Created
@@ -177,7 +177,7 @@ paths:
       summary: Get a list of refunds
       operationId: retrieveRefunds
       description: |-
-        Retrieve a list of refunds and their details for a specific payment, identified by its `paymentId`, based on some filtering criteria (TBD).
+        Retrieve a list of refunds and their details for a specific payment, identified by its `paymentId`, based on some filtering criteria.
         Regardless the refund criteria provided, response MUST be always limited to refunds performed by the API client (i.e same oAuth credentials) triggering this request.
         This is to guarantee no API client can check refunds performed by other, therefore avoiding any legal or privacy topic.
 
@@ -337,7 +337,7 @@ components:
     notificationsBearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: "{$request.body#/webhook/notificationAuthToken}"
+      bearerFormat: "{$request.body#/sinkCredential.credentialType}"
   schemas:
     CreateRefund:
       type: object
@@ -357,10 +357,15 @@ components:
         reason:
           type: string
           description: Reason provided to request the refund. Optionally provided by the user or the merchant.
-        webhook:
+        sink:
+          type: string
+          format: url
+          description: The address to which events shall be delivered using the selected protocol.
+          example: "https://endpoint.example.com/sink"
+        sinkCredential:
           allOf:
-            - $ref: "#/components/schemas/Webhook"
-            - description: Information to manage refund notifications
+            - description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
+            - $ref: "#/components/schemas/SinkCredential"
       discriminator:
         propertyName: type
         mapping:
@@ -399,8 +404,7 @@ components:
           example: "AK234rfweSBuWGFUEWFGWEVWRV"
         refundStatus:
           type: string
-          description:
-            Specifies the refund status (`processing`, `denied`, `succeeded`).
+          description: Specifies the refund status (`processing`, `denied`, `succeeded`).
           example: "processing"
         type:
           type: string
@@ -422,10 +426,15 @@ components:
         reason:
           type: string
           description: Reason provided to request the refund. Optionally provided by the user or the merchant.
-        webhook:
+        sink:
+          type: string
+          format: url
+          description: The address to which events shall be delivered using the selected protocol.
+          example: "https://endpoint.example.com/sink"
+        sinkCredential:
           allOf:
-            - $ref: "#/components/schemas/Webhook"
-            - description: Information to manage refund notifications
+            - description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
+            - $ref: "#/components/schemas/SinkCredential"
       discriminator:
         propertyName: type
         mapping:
@@ -517,19 +526,95 @@ components:
       minItems: 0
       items:
         $ref: "#/components/schemas/Refund"
-    Webhook:
+    SinkCredential:
       type: object
-      required:
-        - notificationUrl
       properties:
-        notificationUrl:
+        credentialType:
           type: string
-          description: Callback URL to allow asynchronous delivery of refund related events
-          example: "https://myservice.com/refund/events"
-        notificationAuthToken:
-          type: string
-          description: Authentification token for callback endpoint
-          example: "c8974e592c2fa383d4a3960714"
+          enum:
+            - PLAIN
+            - ACCESSTOKEN
+            - REFRESHTOKEN
+          description: "The type of the credential. Only `ACCESSTOKEN` is supported so far."
+      discriminator:
+        propertyName: credentialType
+        mapping:
+          PLAIN: "#/components/schemas/PlainCredential"
+          ACCESSTOKEN: "#/components/schemas/AccessTokenCredential"
+          REFRESHTOKEN: "#/components/schemas/RefreshTokenCredential"
+      required:
+        - credentialType
+    PlainCredential:
+      type: object
+      description: A plain credential as a combination of an identifier and a secret.
+      allOf:
+        - $ref: "#/components/schemas/SinkCredential"
+        - type: object
+          required:
+            - identifier
+            - secret
+          properties:
+            identifier:
+              description: The identifier might be an account or username.
+              type: string
+            secret:
+              description: The secret might be a password or passphrase.
+              type: string
+    AccessTokenCredential:
+      type: object
+      description: An access token credential.
+      allOf:
+        - $ref: "#/components/schemas/SinkCredential"
+        - type: object
+          properties:
+            accessToken:
+              description: REQUIRED. An access token is a previously acquired token granting access to the target resource.
+              type: string
+            accessTokenExpiresUtc:
+              type: string
+              format: date-time
+              description: REQUIRED. An absolute UTC instant at which the token shall be considered expired.
+            accessTokenType:
+              description: REQUIRED. Type of the access token (See [OAuth 2.0](https://tools.ietf.org/html/rfc6749#section-7.1)).
+              type: string
+              enum:
+                - bearer
+          required:
+            - accessToken
+            - accessTokenExpiresUtc
+            - accessTokenType
+    RefreshTokenCredential:
+      type: object
+      description: An access token credential with a refresh token.
+      allOf:
+        - $ref: "#/components/schemas/SinkCredential"
+        - type: object
+          properties:
+            accessToken:
+              description: REQUIRED. An access token is a previously acquired token granting access to the target resource.
+              type: string
+            accessTokenExpiresUtc:
+              type: string
+              format: date-time
+              description: REQUIRED. An absolute UTC instant at which the token shall be considered expired.
+            accessTokenType:
+              description: REQUIRED. Type of the access token (See [OAuth 2.0](https://tools.ietf.org/html/rfc6749#section-7.1)).
+              type: string
+              enum:
+                - bearer
+            refreshToken:
+              description: REQUIRED. An refresh token credential used to acquire access tokens.
+              type: string
+            refreshTokenEndpoint:
+              type: string
+              format: uri
+              description: REQUIRED. A URL at which the refresh token can be traded for an access token.
+      required:
+        - accessToken
+        - accessTokenExpiresUtc
+        - accessTokenType
+        - refreshToken
+        - refreshTokenEndpoint
     ChargingInformation:
       type: object
       required:
@@ -862,6 +947,8 @@ components:
           - Schema validation failed ("code": "INVALID_ARGUMENT","message": "Schema validation failed at ...").
           - Currency is unknown or not authorized ("code": "INVALID_ARGUMENT","message": "Currency is unknown or not authorized").
           - clientCorrelator still exist ("code": "INVALID_ARGUMENT","message": "clientCorrelator already exist on server").
+          - Invalid sink credential ("code": "INVALID_CREDENTIAL","message": "Only Access token is supported").
+          - Invalid sink credential access token ("code": "INVALID_TOKEN","message": "Only bearer token is supported").
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
@@ -888,6 +975,18 @@ components:
                 code: INVALID_ARGUMENT
                 status: 400
                 message: "clientCorrelator already exist on server"
+            InvalidCredential:
+              summary: Invalid sink credential
+              value:
+                status: 400
+                code: "INVALID_CREDENTIAL"
+                message: "Only Access token is supported"
+            InvalidToken:
+              summary: Invalid sink credential access token
+              value:
+                status: 400
+                code: "INVALID_TOKEN"
+                message: "Only bearer token is supported"
     Generic401:
       description: Unauthorized
       headers:
@@ -926,7 +1025,7 @@ components:
           - Payment is not in suitable status for refund ("code": "CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS","message": "Payment is not yet completed").
       headers:
         x-correlator:
-          $ref: '#/components/headers/x-correlator'
+          $ref: "#/components/headers/x-correlator"
       content:
         application/json:
           schema:
@@ -981,7 +1080,7 @@ components:
           - Phone Number cannot be deducted from access token context ("code": "CARRIER_BILLING_REFUND.INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from Access Token context").
       headers:
         x-correlator:
-          $ref: '#/components/headers/x-correlator'
+          $ref: "#/components/headers/x-correlator"
       content:
         application/json:
           schema:
@@ -1033,7 +1132,7 @@ components:
           - Refund details provided are inconsistent with regards to the related Payment ("code": "CARRIER_BILLING_REFUND.REFUND_DETAILS_MISMATCH","message": "Inconsistent refundDetails information with regards to related payment.").
       headers:
         x-correlator:
-          $ref: '#/components/headers/x-correlator'
+          $ref: "#/components/headers/x-correlator"
       content:
         application/json:
           schema:
@@ -1051,6 +1150,32 @@ components:
                 status: 422
                 code: CARRIER_BILLING_REFUND.REFUND_DETAILS_MISMATCH
                 message: "Inconsistent refundDetails information with regards to related payment."
+    Generic410:
+      description: Gone
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: GONE
+            status: 410
+            description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
+    Generic429:
+      description: Too Many Requests
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            code: TOO_MANY_REQUESTS
+            status: 429
+            message: Either out of resource quota or reaching rate limiting.
     Generic500:
       description: Server error
       headers:
