@@ -1162,7 +1162,7 @@ components:
           example:
             code: GONE
             status: 410
-            description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
+            message: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
     Generic429:
       description: Too Many Requests
       headers:
