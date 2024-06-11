@@ -1026,7 +1026,7 @@ components:
           - Phone Number cannot be deducted from Access Token context (3-legged scenario) ("code": "CARRIER_BILLING_REFUND.INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from Access Token context").
           - Unauthorized refund amount requested ("code": "CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT","message": "Unauthorized amount requested").
           - Accumulated threshold refund amount for the user's mobile account overpassed ("code": "CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED","message": "Unathorized refund request. Accumulated user mobile refunds overpass account amount threshold").
-          - Refund denied by business ("code": "CARRIER_BILLING_REFUND.REFUND_DENIED","message": "Payment denied by business").
+          - Refund denied by business ("code": "CARRIER_BILLING_REFUND.REFUND_DENIED","message": "Refund denied by business").
           - Payment not eligible for Refund (e.g. Payment conditions agreed do not allow refund) ("code": "CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND","message": "Payment not eligible for refund").
           - Payment is not in suitable status for refund ("code": "CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS","message": "Payment is not yet completed").
       headers:
