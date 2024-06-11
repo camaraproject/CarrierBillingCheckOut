@@ -672,7 +672,7 @@ components:
       properties:
         paymentItemId:
           type: string
-          description: |- 
+          description: |-
             Unique payment item identifier to which this refund item is related to. Relevant when indicating `refundDetails` to correlate information for a refund regarding this `paymentItemId`.
           example: "3goug3uvu32v3b"
         amount:

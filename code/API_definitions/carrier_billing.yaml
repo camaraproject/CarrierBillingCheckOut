@@ -1023,7 +1023,7 @@ components:
       properties:
         id:
           type: string
-          description: |- 
+          description: |-
             Unique payment item identifier. Relevant to uniquely identify an item within a given payment when `paymentDetails` are provided and also to correlate information when a refund regarding this item is performed, by means of using `refundDetails`.
           example: "3goug3uvu32v3b"
         amount:
