@@ -389,7 +389,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/BodyAmountReservationTransactionForReserve"
         "400":
-          $ref: "#/components/responses/PaymentInvalid400"
+          $ref: "#/components/responses/Payment2StepPrepareInvalid400"
         "401":
           $ref: "#/components/responses/Generic401"
         "403":
@@ -1401,6 +1401,8 @@ components:
           - Schema validation failed ("code": "INVALID_ARGUMENT","message": "Schema validation failed at ...").
           - Currency is unknown or not authorized ("code": "INVALID_ARGUMENT","message": "Currency is unknown or not authorized").
           - clientCorrelator still exist ("code": "INVALID_ARGUMENT","message": "clientCorrelator already exist on server").
+
+        In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:
           - Invalid sink credential ("code": "INVALID_CREDENTIAL","message": "Only Access token is supported").
           - Invalid sink credential access token ("code": "INVALID_TOKEN","message": "Only bearer token is supported").
       headers:
@@ -1441,13 +1443,15 @@ components:
                 status: 400
                 code: "INVALID_TOKEN"
                 message: "Only bearer token is supported"
-    Payment2StepInvalid400:
+    Payment2StepPrepareInvalid400:
       description: |-
         Invalid input.
         Common INVALID_ARGUMENT scenarios usually are:
           - Schema validation failed ("code": "INVALID_ARGUMENT","message": "Schema validation failed at ...").
           - Phone Number is required ("code": "INVALID_ARGUMENT","message": "Expected property is missing: phoneNumber").
           - paymentId is required ("code": "INVALID_ARGUMENT","message": "Expected property is missing: paymentId").
+
+        In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:
           - Invalid sink credential ("code": "INVALID_CREDENTIAL","message": "Only Access token is supported").
           - Invalid sink credential access token ("code": "INVALID_TOKEN","message": "Only bearer token is supported").
       headers:
@@ -1488,6 +1492,39 @@ components:
                 status: 400
                 code: "INVALID_TOKEN"
                 message: "Only bearer token is supported"
+    Payment2StepInvalid400:
+      description: |-
+        Invalid input.
+        Common INVALID_ARGUMENT scenarios usually are:
+          - Schema validation failed ("code": "INVALID_ARGUMENT","message": "Schema validation failed at ...").
+          - Phone Number is required ("code": "INVALID_ARGUMENT","message": "Expected property is missing: phoneNumber").
+          - paymentId is required ("code": "INVALID_ARGUMENT","message": "Expected property is missing: paymentId").
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            Generic400:
+              summary: Schema validation failed
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: "Schema validation failed at  ..."
+            phoneNumberRequired:
+              summary: Phone Number is required
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: "Expected property is missing: phoneNumber"
+            paymentIdRequired:
+              summary: paymentId is required
+              value:
+                code: INVALID_ARGUMENT
+                status: 400
+                message: "Expected property is missing: paymentId"
     ValidatePaymentInvalid400:
       description: |-
         Invalid input.
