@@ -953,6 +953,8 @@ components:
           - Schema validation failed ("code": "INVALID_ARGUMENT","message": "Schema validation failed at ...").
           - Currency is unknown or not authorized ("code": "INVALID_ARGUMENT","message": "Currency is unknown or not authorized").
           - clientCorrelator still exist ("code": "INVALID_ARGUMENT","message": "clientCorrelator already exist on server").
+
+        In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:
           - Invalid sink credential ("code": "INVALID_CREDENTIAL","message": "Only Access token is supported").
           - Invalid sink credential access token ("code": "INVALID_TOKEN","message": "Only bearer token is supported").
       headers:
