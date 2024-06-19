@@ -39,7 +39,7 @@ info:
     - Response contains `refundId` and refundStatus=`processing`. After completion:
       - When refund is successfully completed then refundStatus=`succeeded`.
       - When refund is not successfully performed then refundStatus=`denied`.
-    - In case of any error scenario `refundId` is not created.
+    - In case of any error scenario `refundId` is not created. That means a `denied` Refund is not considerated as an error for the ASYNC process, because a `denied` Refund is a refund that has been created (i.e. the refund resource exists) and after applying the internal business logic has been settled to `denied` refundStatus.
 
     # Authorization and authentication
 
@@ -296,7 +296,31 @@ paths:
       summary: Get remaining amount not refunded for a given payment
       operationId: retrievePaymentRemainingAmount
       description: |-
-        Retrieve remaining amount not yet refunded for a given payment.
+        Retrieve remaining amount not yet refunded for a given payment. This amount refers to the pending amount never requested to be refunded (i.e. a refund not yet consolidated -processing- implies that such an amount is not part of the remaining amount until final status for that procedure is reached). Some cases below to illustrate the behaviour:
+
+        **Case_1:** Payment of 80 EUR, with 2 partial `succedeed` Refunds, each of them of 20 EUR
+          - remainingAmount: 40 EUR
+
+        **Case_2:** Payment of 80 EUR, with 2 partial Refunds, one `succeeded` of 20 EUR and other `processing` of 15 EUR
+          - remainingAmount: 45 EUR (API cannot return 60 EUR, because there is an ongoing refund process)
+
+            ***SubCase_A***: Second partial Refund of 15 EUR is `succeeded`
+              - remainingAmount: 45 EUR
+
+            ***SubCase_B***: Second partial Refund of 15 EUR is `denied`
+              - remainingAmount: 60 EUR
+
+        **Case_3:** Payment of 80 EUR, with 1 total `succeeded` Refund
+          - remainingAmount: 0 EUR
+
+        **Case_4:** Payment of 80 EUR, with 1 total `processing` Refund
+          - remainingAmount: 0 EUR (API cannot return 80 EUR, because there is an ongoing refund process)
+
+            ***SubCase_A***: Total Refund is `succeeded`
+              - remainingAmount: 0 EUR
+
+            ***SubCase_B***: Total Refund is `denied`
+              - remainingAmount: 80 EUR
 
         When Access Token is issued for a given user phone number, information would be returned in case the `paymentId` is associated to that user phone number and API client, otherwise `404 NOT_FOUND` will be returned. When Access Token is not associated to a user phone number, the information is returned in case the API client managed that payment.
       parameters:
