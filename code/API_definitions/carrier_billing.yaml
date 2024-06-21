@@ -121,7 +121,7 @@ externalDocs:
   url: https://github.com/camaraproject/
 x-camara-commonalities: 0.4.0
 servers:
-  - url: "{apiRoot}/carrier-billing/v0"
+  - url: "{apiRoot}/carrier-billing/v0.3"
     variables:
       apiRoot:
         default: http://localhost:9091
@@ -214,6 +214,8 @@ paths:
           $ref: "#/components/responses/PaymentPermissionDenied403"
         "409":
           $ref: "#/components/responses/Generic409"
+        "422":
+          $ref: "#/components/responses/PaymentUnprocessable422"
         "500":
           $ref: "#/components/responses/Generic500"
         "503":
@@ -409,6 +411,8 @@ paths:
                 code: ALREADY_EXISTS
                 status: 409
                 message: "Another session is created for the same UE"
+        "422":
+          $ref: "#/components/responses/PaymentUnprocessable422"
         "500":
           $ref: "#/components/responses/Generic500"
         "503":
@@ -514,6 +518,8 @@ paths:
           $ref: "#/components/responses/Generic404"
         "409":
           $ref: "#/components/responses/PaymentConfirmConflict409"
+        "422":
+          $ref: "#/components/responses/PaymentSecondStepUnprocessable422"
         "500":
           $ref: "#/components/responses/Generic500"
         "503":
@@ -561,6 +567,8 @@ paths:
           $ref: "#/components/responses/Generic404"
         "409":
           $ref: "#/components/responses/PaymentCancelConflict409"
+        "422":
+          $ref: "#/components/responses/PaymentSecondStepUnprocessable422"
         "500":
           $ref: "#/components/responses/Generic500"
         "503":
@@ -1608,10 +1616,7 @@ components:
       description: |-
         Client does not have sufficient permission.
         In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Phone Number is required ("code": "CARRIER_BILLING.PHONE_NUMBER_REQUIRED","message": "Phone Number is required").
-          - Phone Number provided not matching Access Token context ("code": "CARRIER_BILLING.INVALID_TOKEN_CONTEXT","message": "Phone Number does not match with Access Token context").
-          - Unauthorized amount requested ("code": "CARRIER_BILLING.UNAUTHORIZED_AMOUNT","message": "Unauthorized amount requested").
-          - Accumulated threshold amount for the user's mobile account overpassed ("code": "CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED","message": "Unathorized payment request. Accumulated user mobile payments overpass account amount threshold").
+          - Phone Number provided not matching Access Token context ("code": "INVALID_TOKEN_CONTEXT","message": "Phone Number does not match with Access Token context").
           - Payment denied by business ("code": "CARRIER_BILLING.PAYMENT_DENIED","message": "Payment denied by business").
       headers:
         x-correlator:
@@ -1627,30 +1632,12 @@ components:
                 status: 403
                 code: PERMISSION_DENIED
                 message: "Operation not allowed: ..."
-            PhoneNumberRequired:
-              summary: Phone Number is required
-              value:
-                status: 403
-                code: CARRIER_BILLING.PHONE_NUMBER_REQUIRED
-                message: "Phone Number not provided and cannot be obtained from Access Token context"
             PhoneNumberMismatch:
               summary: Phone Number provided not matching Access Token context
               value:
                 status: 403
-                code: CARRIER_BILLING.INVALID_TOKEN_CONTEXT
+                code: INVALID_TOKEN_CONTEXT
                 message: "Phone Number does not match with Access Token context"
-            UnauthorizedAmount:
-              summary: Unauthorized amount requested
-              value:
-                status: 403
-                code: CARRIER_BILLING.UNAUTHORIZED_AMOUNT
-                message: "Unauthorized amount requested"
-            UserMobileAccumulatedThresholdAmountOverpassed:
-              summary: Accumulated threshold amount for the user's mobile account overpassed
-              value:
-                status: 403
-                code: CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED
-                message: "Unathorized payment request. Accumulated user mobile payments overpass account amount threshold"
             PaymentDenied:
               summary: Payment denied by business
               value:
@@ -1661,8 +1648,7 @@ components:
       description: |-
         Client does not have sufficient permission.
         In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Phone Number is required ("code": "CARRIER_BILLING.PHONE_NUMBER_REQUIRED","message": "Phone Number is required").
-          - Phone Number provided not matching Access Token context ("code": "CARRIER_BILLING.INVALID_TOKEN_CONTEXT","message": "Phone Number does not match with Access Token context").
+          - Phone Number provided not matching Access Token context ("code": "INVALID_TOKEN_CONTEXT","message": "Phone Number does not match with Access Token context").
           - Payment denied by business ("code": "CARRIER_BILLING.PAYMENT_DENIED","message": "Payment denied by business").
       headers:
         x-correlator:
@@ -1678,17 +1664,11 @@ components:
                 status: 403
                 code: PERMISSION_DENIED
                 message: "Operation not allowed: ..."
-            PhoneNumberRequired:
-              summary: Phone Number is required
-              value:
-                status: 403
-                code: CARRIER_BILLING.PHONE_NUMBER_REQUIRED
-                message: "Phone Number not provided and cannot be obtained from Access Token context"
             PhoneNumberMismatch:
               summary: Phone Number provided not matching Access Token context
               value:
                 status: 403
-                code: CARRIER_BILLING.INVALID_TOKEN_CONTEXT
+                code: INVALID_TOKEN_CONTEXT
                 message: "Phone Number does not match with Access Token context"
             PaymentDenied:
               summary: Payment denied by business
@@ -1700,8 +1680,7 @@ components:
       description: |-
         Client does not have sufficient permission.
         In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Phone Number is required ("code": "CARRIER_BILLING.PHONE_NUMBER_REQUIRED","message": "Phone Number is required").
-          - Phone Number provided not matching Access Token context ("code": "CARRIER_BILLING.INVALID_TOKEN_CONTEXT","message": "Phone Number does not match with Access Token context").
+          - Phone Number provided not matching Access Token context ("code": "INVALID_TOKEN_CONTEXT","message": "Phone Number does not match with Access Token context").
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
@@ -1716,23 +1695,17 @@ components:
                 status: 403
                 code: PERMISSION_DENIED
                 message: "Operation not allowed: ..."
-            PhoneNumberRequired:
-              summary: Phone Number is required
-              value:
-                status: 403
-                code: CARRIER_BILLING.PHONE_NUMBER_REQUIRED
-                message: "Phone Number not provided and cannot be obtained from Access Token context"
             PhoneNumberMismatch:
               summary: Phone Number provided not matching Access Token context
               value:
                 status: 403
-                code: CARRIER_BILLING.INVALID_TOKEN_CONTEXT
+                code: INVALID_TOKEN_CONTEXT
                 message: "Phone Number does not match with Access Token context"
     PaymentReadPermissionDenied403:
       description: |-
         Client does not have sufficient permission.
         In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Phone Number cannot be deducted from access token context ("code": "CARRIER_BILLING.INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from access token context").
+          - Phone Number cannot be deducted from access token context ("code": "INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from access token context").
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
@@ -1751,7 +1724,7 @@ components:
               summary: Phone Number cannot be deducted from access token context
               value:
                 status: 403
-                code: CARRIER_BILLING.INVALID_TOKEN_CONTEXT
+                code: INVALID_TOKEN_CONTEXT
                 message: "User phone number cannot be deducted from access token context"
     Generic404:
       description: Resource Not Found
@@ -1854,6 +1827,58 @@ components:
             code: GONE
             status: 410
             message: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
+    PaymentUnprocessable422:
+      description: |-
+        Client indicates content that is understable by the Server but unable to be processed.
+        Scenarios that may exist:
+          - Phone Number is required ("code": "CARRIER_BILLING.PHONE_NUMBER_REQUIRED","message": "Phone Number is required").
+          - Unauthorized amount requested ("code": "CARRIER_BILLING.UNAUTHORIZED_AMOUNT","message": "Unauthorized amount requested").
+          - Accumulated threshold amount for the user's mobile account overpassed ("code": "CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED","message": "Unathorized payment request. Accumulated user mobile payments overpass account amount threshold").
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            PhoneNumberRequired:
+              summary: Phone Number is required
+              value:
+                status: 422
+                code: CARRIER_BILLING.PHONE_NUMBER_REQUIRED
+                message: "Phone Number not provided and cannot be obtained from Access Token context"
+            UnauthorizedAmount:
+              summary: Unauthorized amount requested
+              value:
+                status: 422
+                code: CARRIER_BILLING.UNAUTHORIZED_AMOUNT
+                message: "Unauthorized amount requested"
+            UserMobileAccumulatedThresholdAmountOverpassed:
+              summary: Accumulated threshold amount for the user's mobile account overpassed
+              value:
+                status: 422
+                code: CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED
+                message: "Unathorized payment request. Accumulated user mobile payments overpass account amount threshold"
+    PaymentSecondStepUnprocessable422:
+      description: |-
+        Client indicates content that is understable by the Server but unable to be processed.
+        Scenarios that may exist:
+          - Phone Number is required ("code": "CARRIER_BILLING.PHONE_NUMBER_REQUIRED","message": "Phone Number is required").
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          examples:
+            PhoneNumberRequired:
+              summary: Phone Number is required
+              value:
+                status: 422
+                code: CARRIER_BILLING.PHONE_NUMBER_REQUIRED
+                message: "Phone Number not provided and cannot be obtained from Access Token context"
     Generic429:
       description: Too Many Requests
       headers:

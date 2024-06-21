@@ -65,7 +65,7 @@ externalDocs:
   url: https://github.com/camaraproject/
 x-camara-commonalities: 0.4.0
 servers:
-  - url: "{apiRoot}/carrier-billing-refund/v0"
+  - url: "{apiRoot}/carrier-billing-refund/v0.1"
     variables:
       apiRoot:
         default: http://localhost:9091
@@ -1053,12 +1053,9 @@ components:
       description: |-
         Client does not have sufficient permission.
         In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Phone Number cannot be deducted from Access Token context (3-legged scenario) ("code": "CARRIER_BILLING_REFUND.INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from Access Token context").
-          - Unauthorized refund amount requested ("code": "CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT","message": "Unauthorized amount requested").
-          - Accumulated threshold refund amount for the user's mobile account overpassed ("code": "CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED","message": "Unathorized refund request. Accumulated user mobile refunds overpass account amount threshold").
+          - Phone Number cannot be deducted from Access Token context (3-legged scenario) ("code": "INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from Access Token context").
           - Refund denied by business ("code": "CARRIER_BILLING_REFUND.REFUND_DENIED","message": "Refund denied by business").
           - Payment not eligible for Refund (e.g. Payment conditions agreed do not allow refund) ("code": "CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND","message": "Payment not eligible for refund").
-          - Payment is not in suitable status for refund ("code": "CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS","message": "Payment is not yet completed").
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
@@ -1077,20 +1074,8 @@ components:
               summary: Phone Number cannot be deducted from Access Token context (3-legged scenario)
               value:
                 status: 403
-                code: CARRIER_BILLING.INVALID_TOKEN_CONTEXT
+                code: INVALID_TOKEN_CONTEXT
                 message: "User phone number cannot be deducted from Access Token context"
-            UnauthorizedRefundAmount:
-              summary: Unauthorized refund amount requested
-              value:
-                status: 403
-                code: CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT
-                message: "Unauthorized amount requested"
-            UserMobileAccumulatedThresholdRefundAmountOverpassed:
-              summary: Accumulated threshold refund amount for the user's mobile account overpassed
-              value:
-                status: 403
-                code: CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED
-                message: "Unathorized refund request. Accumulated user mobile payments overpass account amount threshold"
             RefundDenied:
               summary: Refund denied by business
               value:
@@ -1103,17 +1088,11 @@ components:
                 status: 403
                 code: CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND
                 message: "Payment not eligible for refund"
-            InvalidPaymentStatus:
-              summary: Payment is not in suitable status for refund
-              value:
-                status: 403
-                code: CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS
-                message: "Payment is not yet completed"
     RefundReadPermissionDenied403:
       description: |-
         Client does not have sufficient permission.
         In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Phone Number cannot be deducted from access token context ("code": "CARRIER_BILLING_REFUND.INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from Access Token context").
+          - Phone Number cannot be deducted from access token context ("code": "INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from Access Token context").
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
@@ -1132,7 +1111,7 @@ components:
               summary: Phone Number cannot be deducted from access token context
               value:
                 status: 403
-                code: CARRIER_BILLING_REFUND.INVALID_TOKEN_CONTEXT
+                code: INVALID_TOKEN_CONTEXT
                 message: "User phone number cannot be deducted from Access Token context"
     Generic404:
       description: Resource Not Found
@@ -1164,6 +1143,9 @@ components:
       description: |-
         Client indicates content that is understable by the Server but unable to be processed.
         Scenarios considered:
+          - Unauthorized refund amount requested ("code": "CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT","message": "Unauthorized amount requested").
+          - Accumulated threshold refund amount for the user's mobile account overpassed ("code": "CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED","message": "Unathorized refund request. Accumulated user mobile refunds overpass account amount threshold").
+          - Payment is not in suitable status for refund ("code": "CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS","message": "Payment is not yet completed").
           - Property `isTaxIncluded` has not the same value as related Payment ("code": "CARRIER_BILLING_REFUND.TAXES_MANAGEMENT_MISMATCH","message": "Inconsistent isTaxIncluded value with regards to related payment.").
           - Refund details provided are inconsistent with regards to the related Payment ("code": "CARRIER_BILLING_REFUND.REFUND_DETAILS_MISMATCH","message": "Inconsistent refundDetails information with regards to related payment.").
       headers:
@@ -1174,6 +1156,24 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           examples:
+            UnauthorizedRefundAmount:
+              summary: Unauthorized refund amount requested
+              value:
+                status: 422
+                code: CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT
+                message: "Unauthorized amount requested"
+            UserMobileAccumulatedThresholdRefundAmountOverpassed:
+              summary: Accumulated threshold refund amount for the user's mobile account overpassed
+              value:
+                status: 422
+                code: CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED
+                message: "Unathorized refund request. Accumulated user mobile payments overpass account amount threshold"
+            InvalidPaymentStatus:
+              summary: Payment is not in suitable status for refund
+              value:
+                status: 422
+                code: CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS
+                message: "Payment is not yet completed"
             TaxesManagementMismatch:
               summary: Property `isTaxIncluded` has not the same value as related Payment
               value:
