@@ -52,7 +52,7 @@ info:
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
-  version: 0.1.0-wip
+  version: 0.1.0-rc.1
   title: Carrier Billing Refunds
   termsOfService: http://swagger.io/terms/
   contact:
