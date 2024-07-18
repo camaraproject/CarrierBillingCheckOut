@@ -52,7 +52,7 @@ info:
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
-  version: 0.1.0-wip
+  version: 0.1.0-rc.1
   title: Carrier Billing Refunds
   termsOfService: http://swagger.io/terms/
   contact:
@@ -65,7 +65,7 @@ externalDocs:
   url: https://github.com/camaraproject/
 x-camara-commonalities: 0.4.0
 servers:
-  - url: "{apiRoot}/carrier-billing-refund/v0.1"
+  - url: "{apiRoot}/carrier-billing-refund/v0.1rc1"
     variables:
       apiRoot:
         default: http://localhost:9091
