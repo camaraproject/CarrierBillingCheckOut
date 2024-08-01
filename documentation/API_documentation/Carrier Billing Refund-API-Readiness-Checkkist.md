@@ -14,7 +14,7 @@ Checklist for Carrier Billing Refund v0.1.0-rc.1 in r1.1
 |  8 | Enhanced API test cases & documentation      |   O   |         O         |    O    |    M   |  N   | link |
 |  9 | Test result statement                        |   O   |         O         |    O    |    M   |  N   | link |
 | 10 | API release numbering convention applied     |   M   |         M         |    M    |    M   |  Y   |      |
-| 11 | Change log updated                           |   M   |         M         |    M    |    M   |  Y   | link |
+| 11 | Change log updated                           |   M   |         M         |    M    |    M   |  Y   | [link](/CHANGELOG.md) |
 | 12 | Previous public release was certified        |   O   |         O         |    O    |    M   |  N   |      |
 
 To fill the checklist:
