@@ -99,7 +99,7 @@ info:
 
     # Authorization and authentication
 
-    [Camara Security and Interoperability Profile](https://github.com/camaraproject/IdentityAndConsentManagement/blob/main/documentation/CAMARA-Security-Interoperability.md) provides details on how a client requests an access token.
+    The "Camara Security and Interoperability Profile" provides details on how a client requests an access token. Please refer to Identify and Consent Management (https://github.com/camaraproject/IdentityAndConsentManagement/) for the released version of the Profile.
 
     Which specific authorization flows are to be used will be determined during onboarding process, happening between the API Client and the Telco Operator exposing the API, taking into account the declared purpose for accessing the API, while also being subject to the prevailing legal framework dictated by local legislation.
 
@@ -108,11 +108,8 @@ info:
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
-  version: 0.3.0-wip
+  version: 0.3.0-rc.1
   title: Carrier Billing
-  termsOfService: http://swagger.io/terms/
-  contact:
-    email: project-email@sample.com
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -121,7 +118,7 @@ externalDocs:
   url: https://github.com/camaraproject/
 x-camara-commonalities: 0.4.0
 servers:
-  - url: "{apiRoot}/carrier-billing/v0.3"
+  - url: "{apiRoot}/carrier-billing/v0.3rc1"
     variables:
       apiRoot:
         default: http://localhost:9091
