@@ -87,7 +87,7 @@ The API definition(s) are based on
 * N/A
 
 
-**Full Changelog**: https://github.com/camaraproject/CarrierBillingCheckOut/compare/v0.2.1...r1.1---rc
+**Full Changelog**: https://github.com/camaraproject/CarrierBillingCheckOut/compare/v0.2.1...r1.1
 
 ## v0.2.1
 
