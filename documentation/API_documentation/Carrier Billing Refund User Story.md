@@ -29,7 +29,7 @@
 
 | **Item** | **Details** |
 | ---- | ------- |
-| ***Summary*** | As an application developer belonging to an enterprise, I want to get a list of performed refunds from criteria (using my application server/backend service), by means of that application. |
+| ***Summary*** | As an application developer belonging to an enterprise, I want to get a list of performed refunds, for a given payment, from criteria (using my application server/backend service), by means of that application. |
 | ***Roles, Actors and Scope*** | **Roles:** Customer:User<br> **Actors:** Application service providers, hyperscalers, application developers. <br> **Scope:** *Request Refunds list done against Carrier Billing* |
 | ***Pre-conditions*** |The preconditions are listed below:<br><ol><li>The Customer:User has performed refunds via application, both success and failed</li><li>The requester provides a list of criteria(s) to select refund (Customer/user identifier, refund status)</li></ol> |
 | ***Activities/Steps*** | **Starts when:** The customer application server makes a request to the Carrier Billing Refund service (API) to get refund/refunds details performed via that application<br>**Ends when:** Response is received from Carrier Billing Refund service showing the details |
