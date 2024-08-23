@@ -47,7 +47,7 @@ Repository to describe, develop, document and test the CarrierBilling API family
 
 ## Contributing
 * Meetings are held virtually <!-- for new API families request a meeting link from the LF admin team or replace the information with the existing meeting information (of the API family) -->
-    * Schedule: Bi-weekly (odd weeks), Wednesday, 3 PM CET/CEST (13:00 UTC,21:00 Beijing)
+    * Schedule: Bi-Weekly, Wednesdays 16:00 - 17:00 CET/CEST 
     * [Registration / Join](https://zoom-lfx.platform.linuxfoundation.org/meeting/96513497117?password=ac26d34b-87d2-4d78-aa47-4de1ca14c882)
     * Minutes: Access [Meeting minutes](https://wiki.camaraproject.org/display/CAM/CarrierBillingCheckOut)
 * Mailing List
