@@ -4,6 +4,7 @@
 <a href="https://github.com/camaraproject/CarrierBillingCheckOut/graphs/contributors" title="Contributors"><img src="https://img.shields.io/github/contributors/camaraproject/CarrierBillingCheckOut?style=plastic"></a>
 <a href="https://github.com/camaraproject/CarrierBillingCheckOut" title="Repo Size"><img src="https://img.shields.io/github/repo-size/camaraproject/CarrierBillingCheckOut?style=plastic"></a>
 <a href="https://github.com/camaraproject/CarrierBillingCheckOut/blob/main/LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=plastic"></a>
+<a href="https://github.com/camaraproject/CarrierBillingCheckOut/releases/latest" title="Latest Release"><img src="https://img.shields.io/github/release/camaraproject/CarrierBillingCheckOut?style=plastic"></a>
 
 # CarrierBillingCheckOut
 Repository to describe, develop, document and test the CarrierBilling API family
@@ -18,13 +19,11 @@ Repository to describe, develop, document and test the CarrierBilling API family
   * Started: October 2022
   * Location: virtually  
 
-## Meetings
-* Meetings are held virtually
-* Schedule:
-  * Bi-Weekly, Wednesdays 16:00 - 17:00 CET/CEST
-* Meeting link: [Link](https://teams.microsoft.com/l/meetup-join/19%3ameeting_M2UzOTNhOWItMmNkNC00NDVjLWIzYjAtYzgxNDBkOGY2MjFi%40thread.v2/0?context=%7b%22Tid%22%3a%229744600e-3e04-492e-baa1-25ec245c6f10%22%2c%22Oid%22%3a%2219764050-b5d5-4991-9f15-d10905a94c08%22%7d)
-
-## Status and released versions
+## Release Information
+<!-- Use/uncomment one or multiple the following options -->
+<!-- Pre-releases of this sub project are available in https://github.com/camaraproject/§repo_name§/releases -->
+<!-- The latest public release is available here: https://github.com/camaraproject/§repo_name§/releases/latest -->
+<!-- For changes see [CHANGELOG.md](https://github.com/camaraproject/§repo_name§/blob/main/CHANGELOG.md) -->
 * **The Release [r1.1 - rc](https://github.com/camaraproject/CarrierBillingCheckOut/blob/main/CHANGELOG.md#r1.1---rc) for the Carrier Billing APIs Family is available.**
 <br>This is a release candidate. Until the public release there are bug fixes to be expected. The release candidate is suitable for implementors, but it is not recommended to use the API with customers in productive environments.
 * The release **r1.1 - rc** is available in [r1.1](https://github.com/camaraproject/CarrierBillingCheckOut/tree/r1.1), and includes the following APIs:
@@ -46,6 +45,12 @@ Repository to describe, develop, document and test the CarrierBilling API family
     - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/release-v0.2.1/code/API_definitions/carrier_billing.yaml)
     - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/release-v0.2.1/code/API_definitions/carrier_billing.yaml)
 
-## Contributorship and mailing list
-* To subscribe / unsubscribe to the mailing list of this Sub Project and thus be / resign as Contributor please visit <https://lists.camaraproject.org/g/sp-cbc>.
-* A message to all Contributors of this Sub Project can be sent using <sp-cbc@lists.camaraproject.org>.
+## Contributing
+* Meetings are held virtually <!-- for new API families request a meeting link from the LF admin team or replace the information with the existing meeting information (of the API family) -->
+    * Schedule: Bi-Weekly, Wednesdays 16:00 - 17:00 CET/CEST 
+    * [Registration / Join](https://zoom-lfx.platform.linuxfoundation.org/meeting/96513497117?password=ac26d34b-87d2-4d78-aa47-4de1ca14c882)
+    * Minutes: Access [Meeting minutes](https://wiki.camaraproject.org/display/CAM/CarrierBillingCheckOut)
+* Mailing List
+    <!-- Note: the $sub-project-mailinglistname$ is either already existing or will be created by the CAMARA Admin Team  -->
+    * Subscribe / Unsubscribe to the mailing list of this Sub Project <https://lists.camaraproject.org/g/sp-cbc>.
+    * A message to the community of this Sub Project can be sent using <sp-cbc@lists.camaraproject.org>.
