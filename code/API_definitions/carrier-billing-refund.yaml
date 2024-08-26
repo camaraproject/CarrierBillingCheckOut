@@ -1067,9 +1067,12 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           examples:
-            code: FORBIDDEN
-            status: 403
-            message: "Operation not allowed: ..."
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
     RefundPermissionDenied403:
       description: |-
         Client does not have sufficient permission.
