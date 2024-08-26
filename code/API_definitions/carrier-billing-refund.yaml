@@ -929,7 +929,7 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
-          example:
+          examples:
             GENERIC_400_INVALID_ARGUMENT:
               summary: Generic Invalid Argument
               description: Invalid Argument. Generic Syntax Exception
