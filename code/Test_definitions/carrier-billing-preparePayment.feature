@@ -33,7 +33,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
     # The response has to comply with the generic response schema which is part of the spec
-    And the response body complies with the OAS schema at "/components/schemas/PaymentCreated"
+    And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
 
 
   @prepare_payment_02_generic_success_scenario_with_sink_information
@@ -48,7 +48,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
     # The response has to comply with the generic response schema which is part of the spec
-    And the response body complies with the OAS schema at "/components/schemas/PaymentCreated"
+    And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
 
 
   @prepare_payment_03_generic_success_scenario_with_sink_and_sinkCredential_information
@@ -65,7 +65,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
     # The response has to comply with the generic response schema which is part of the spec
-    And the response body complies with the OAS schema at "/components/schemas/PaymentCreated"
+    And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
 
 
   # Scenarios testing specific situations for amountTransaction
@@ -78,7 +78,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/PaymentCreated"
+    And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.amountTransaction.paymentAmount.chargingInformation.isTaxIncluded" is true
 
 
@@ -90,7 +90,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/PaymentCreated"
+    And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.amountTransaction.paymentAmount.chargingInformation.isTaxIncluded" is false OR not returned
 
 
@@ -102,7 +102,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/PaymentCreated"
+    And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.amountTransaction.paymentAmount.chargingInformation.taxAmount" has the same value as provided in the request body
 
 
@@ -115,7 +115,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/PaymentCreated"
+    And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.amountTransaction.paymentAmount.chargingMetaData.merchantIdentifier" has the same value as provided in the request body
 
 
@@ -127,7 +127,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/PaymentCreated"
+    And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body array property "$.amountTransaction.paymentAmount.paymentDetails" has the same information as provided in the request body
 
 
@@ -140,7 +140,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/PaymentCreated"
+    And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.amountTransaction.clientCorrelator" has the same value as provided in the request body
 
 
@@ -153,7 +153,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/PaymentCreated"
+    And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.amountTransaction.phoneNumber" has the same value as provided in the request body
 
 
@@ -166,7 +166,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/PaymentCreated"
+    And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.amountTransaction.phoneNumber" has the same value as provided in the request body
 
 
@@ -178,7 +178,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/PaymentCreated"
+    And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response property "$.validatioInfo" is not returned
     And the response body property "$.paymentStatus" is "reserved"
 
@@ -191,7 +191,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/PaymentCreated"
+    And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response property "$.validatioInfo" is returned
     And the response body property "$.paymentStatus" is "pending_validation"
 
@@ -204,7 +204,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/PaymentCreated"
+    And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.paymentStatus" is "processing"
 
 
@@ -282,7 +282,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
 
   @prepare_payment_400.06_invalid_sink
   Scenario: Using a invalid sink value
-    Given the request body property includes property "$.sink" with an HTTP endpoint
+    Given the request body property includes property "$.sink" which is not set to an url
     When the HTTP "POST" request is sent
     Then the response status code is 400
     And the response property "$.status" is 400
@@ -321,6 +321,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
 
+
   @prepare_payment_401.02_expired_access_token
   Scenario: Expired access token
     Given the header "Authorization" is set to an expired access token
@@ -330,6 +331,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
+
 
   @prepare_payment_401.03_invalid_access_token
   Scenario: Invalid access token
@@ -377,7 +379,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     When the HTTP "POST" request is sent
     Then the response status code is 403
     And the response property "$.status" is 403
-    And the response property "$.code" is "PAYMENT_DENIED"
+    And the response property "$.code" is "CARRIER_BILLING.PAYMENT_DENIED"
     And the response property "$.message" contains a user friendly text
 
 

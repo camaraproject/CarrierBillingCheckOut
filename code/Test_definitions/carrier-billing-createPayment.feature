@@ -158,7 +158,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation createPayment
 
 
   @create_payment_11_amountTransaction_phoneNumber_two_legged
-  # Case using a 2-legged Access Token. Only applicable for Countries and Telcp Operators whose regulation allows for it
+  # Case using a 2-legged Access Token. Only applicable for Countries and Telco Operators whose regulation allows for it
   Scenario: Request 1-step payment indicating phoneNumber
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body property "$.amountTransaction.phoneNumber" is set to a valid value
@@ -268,7 +268,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation createPayment
 
   @create_payment_400.06_invalid_sink
   Scenario: Using a invalid sink value
-    Given the request body property includes property "$.sink" with an HTTP endpoint
+    Given the request body property includes property "$.sink" which is not set to an url
     When the HTTP "POST" request is sent
     Then the response status code is 400
     And the response property "$.status" is 400
@@ -307,6 +307,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation createPayment
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
 
+
   @create_payment_401.02_expired_access_token
   Scenario: Expired access token
     Given the header "Authorization" is set to an expired access token
@@ -316,6 +317,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation createPayment
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
+
 
   @create_payment_401.03_invalid_access_token
   Scenario: Invalid access token
@@ -363,7 +365,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation createPayment
     When the HTTP "POST" request is sent
     Then the response status code is 403
     And the response property "$.status" is 403
-    And the response property "$.code" is "PAYMENT_DENIED"
+    And the response property "$.code" is "CARRIER_BILLING.PAYMENT_DENIED"
     And the response property "$.message" contains a user friendly text
 
 

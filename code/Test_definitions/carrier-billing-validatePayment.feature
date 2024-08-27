@@ -124,6 +124,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation validatePayment
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
 
+
   @validate_payment_401.02_expired_access_token
   Scenario: Expired access token
     Given the header "Authorization" is set to an expired access token
@@ -133,6 +134,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation validatePayment
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
+
 
   @validate_payment_401.03_invalid_access_token
   Scenario: Invalid access token
