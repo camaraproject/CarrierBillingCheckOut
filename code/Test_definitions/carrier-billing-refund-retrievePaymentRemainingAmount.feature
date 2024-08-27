@@ -188,7 +188,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation retrievePaymentRema
 
   @retrieve_payment_remaining_amount_404.01_payment_not_found
   Scenario: Payment not found
-    # To test this, a 2-legged access token is needed, just beacuse if not it triggers test CHECK "@retrieve_payment_remaining_amount_403.02_phoneNumber_token_mismatch"
     Given the path parameter "paymentId" is set to non-existing value in the environment
     And the header "Authorization" is set to a valid access token
     When the HTTP "POST" request is sent
