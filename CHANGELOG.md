@@ -2,6 +2,7 @@
 
 ## Table of Contents
 
+- [r1.2](#r12)
 - [r1.1 - rc](#r11---rc)
 - [v0.2.1](#v021)
 - [v0.2.0](#v020)
@@ -13,6 +14,94 @@ The below sections record the changes for each API version in each release as fo
 * for each first alpha or release-candidate API version, all changes since the release of the previous public API version
 * for subsequent alpha or release-candidate API versions, the delta with respect to the previous pre-release
 * for a public API version, the consolidated changes since the release of the previous public API version
+
+## r1.2
+
+## Release Notes
+
+This release contains the definition and documentation of
+* Carrier Billing v0.3.0
+* Carrier Billing Refund v0.1.0
+
+The API definition(s) are based on
+* Commonalities v0.4.0
+* Identity and Consent Management v0.2.0
+
+## Carrier Billing v0.3.0
+
+**Carrier Billing v0.3.0 is the first public release for v0.3.0 of the Carrier Billing (Payment) API.**
+- **This version contains significant changes compared to v0.2.1, and it is not backward compatible:**
+  - Within notifications, callback concept named as `webhook` has been replaced by the terms `sink` and `sinkCredential` in accordance with the updated CAMARA Design Guidelines (Adoption of CloudEvent Subscription Model within MetaRelease Fall24 (v0.4.0))
+  - Exceptions has also been aligned with Commonalities MetaRelease-Fall24 (v0.4.0), so as some excepctions has changed their `HTTP` and/or `status` values.
+  - Version designed to work jointly with Carrier Billing Refund API
+
+- API definition **with inline documentation**:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.2/code/API_definitions/carrier-billing.yaml&nocors)
+  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.2/code/API_definitions/carrier-billing.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r1.2/code/API_definitions/carrier-billing.yaml)
+
+**Main changes since [r1.1 - rc](#r11---rc)**
+
+### Added
+* Basic Test cases definition in https://github.com/camaraproject/CarrierBillingCheckOut/pull/174
+
+### Changed
+* Update User Stories in https://github.com/camaraproject/CarrierBillingCheckOut/pull/172
+* Update `README.md` with meeting info and template alignment in https://github.com/camaraproject/CarrierBillingCheckOut/pull/177
+* Update filename to kebab-case format in https://github.com/camaraproject/CarrierBillingCheckOut/pull/178
+
+### Fixed
+* Align 401 Exception Codes with CAMARA Commonalities in https://github.com/camaraproject/CarrierBillingCheckOut/pull/178
+* Align Exceptions naming model with CAMARA Commonalities in https://github.com/camaraproject/CarrierBillingCheckOut/pull/178
+* Fix `sink` property description in https://github.com/camaraproject/CarrierBillingCheckOut/pull/178
+* Adjust `version` and `servers.url` values aligned with Release Mabagement Commonalities in https://github.com/camaraproject/CarrierBillingCheckOut/pull/178
+* Fix `externalDocs.url` value in https://github.com/camaraproject/CarrierBillingCheckOut/pull/178
+* Fix missing required Request Body for `confirmPayment` operation in https://github.com/camaraproject/CarrierBillingCheckOut/pull/178
+
+### Removed
+* N/A
+
+## Carrier Billing Refund v0.1.0
+
+**Carrier Billing Refund v0.1.0 is the first public release for v0.1.0 of the Carrier Billing Refund API.**
+- **This version defines a new API:**
+  - Initial version covering the following functionality and related endpoints:
+    - New endpoint `createRefund`, both total and partial refunds
+    - New endpoint `retrieveRefunds`
+    - New endpoint `retrieveRefund`
+    - New endpoint `retrievePaymentRemainingAmount`
+    - Support for `Instance-based (implicit) subscription` notification mode
+
+- API definition **with inline documentation**:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.2/code/API_definitions/carrier-billing-refund.yaml&nocors)
+  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.2/code/API_definitions/carrier-billing-refund.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r1.2/code/API_definitions/carrier-billing-refund.yaml)
+
+**Main changes since [r1.1 - rc](#r11---rc)**
+
+### Added
+* Generate User Stories in https://github.com/camaraproject/CarrierBillingCheckOut/pull/172
+* Basic Test cases definition in https://github.com/camaraproject/CarrierBillingCheckOut/pull/176
+
+### Changed
+* Update `README.md` with meeting info and template alignment in https://github.com/camaraproject/CarrierBillingCheckOut/pull/177
+* Update filename to kebab-case format in https://github.com/camaraproject/CarrierBillingCheckOut/pull/178
+
+### Fixed
+* Align 401 Exception Codes with CAMARA Commonalities in https://github.com/camaraproject/CarrierBillingCheckOut/pull/178
+* Align Exceptions naming model with CAMARA Commonalities in https://github.com/camaraproject/CarrierBillingCheckOut/pull/178
+* Fix `sink` property description in https://github.com/camaraproject/CarrierBillingCheckOut/pull/178
+* Adjust `version` and `servers.url` values aligned with Release Mabagement Commonalities in https://github.com/camaraproject/CarrierBillingCheckOut/pull/178
+* Fix `externalDocs.url` value in https://github.com/camaraproject/CarrierBillingCheckOut/pull/178
+
+### Removed
+* N/A
+
+## New Contributors
+* N/A
+
+
+**Full Changelog**: https://github.com/camaraproject/CarrierBillingCheckOut/compare/v0.2.1...r1.2
 
 ## r1.1 - rc
 

@@ -52,17 +52,17 @@ info:
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
-  version: 0.1.0-rc.1
+  version: 0.1.0
   title: Carrier Billing Refunds
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 externalDocs:
   description: Product documentation at Camara
-  url: https://github.com/camaraproject/
+  url: https://github.com/camaraproject/CarrierBillingCheckOut
 x-camara-commonalities: 0.4.0
 servers:
-  - url: "{apiRoot}/carrier-billing-refund/v0.1rc1"
+  - url: "{apiRoot}/carrier-billing-refund/v0.1"
     variables:
       apiRoot:
         default: http://localhost:9091
@@ -385,7 +385,7 @@ components:
         sink:
           type: string
           format: url
-          description: The address to which events shall be delivered using the selected protocol.
+          description: The address to which events shall be delivered, using the HTTP protocol.
           example: "https://endpoint.example.com/sink"
         sinkCredential:
           allOf:
@@ -454,7 +454,7 @@ components:
         sink:
           type: string
           format: url
-          description: The address to which events shall be delivered using the selected protocol.
+          description: The address to which events shall be delivered, using the HTTP protocol.
           example: "https://endpoint.example.com/sink"
         sinkCredential:
           allOf:
@@ -929,16 +929,20 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
-          example:
-            code: INVALID_ARGUMENT
-            status: 400
-            message: "Schema validation failed at  ..."
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              summary: Generic Invalid Argument
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
     GetRefundsInvalid400:
       description: |-
         Invalid input. In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:
-          - Inconsistent startDate and endDate values ("code": "CARRIER_BILLING.INVALID_DATE_RANGE","message": "Client specified an invalid date range").
-          - Request out of range ("code": "OUT_OF_RANGE","message": "Client specified an invalid range").
-          - Too many matching records found ("code": "CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS","message": "Too many matching records found. Specify additional/suitable criteria to limit the number of records").
+          - Inconsistent startDate and endDate values ("code": "CARRIER_BILLING.INVALID_DATE_RANGE","message": "Client specified an invalid date range.").
+          - Request out of range ("code": "OUT_OF_RANGE","message": "Client specified an invalid range.").
+          - Too many matching records found ("code": "CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS","message": "Too many matching records found. Specify additional/suitable criteria to limit the number of records.").
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
@@ -947,37 +951,41 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           examples:
-            Generic400:
-              summary: Invalid Argument
+            GENERIC_400_INVALID_ARGUMENT:
+              summary: Generic Invalid Argument
+              description: Invalid Argument. Generic Syntax Exception
               value:
+                status: 400
                 code: INVALID_ARGUMENT
-                status: 400
-                message: "Invalid Argument ..."
-            InvalidDateRange:
-              summary: Inconsistent startDate and endDate values
+                message: Client specified an invalid argument, request body or query param.
+            GENERIC_400_INVALID_DATE_RANGE:
+              summary: Generic Invalid Date Range
+              description: Inconsistent startDate and endDate values
               value:
                 status: 400
-                code: CARRIER_BILLING_REFUND.INVALID_DATE_RANGE
-                message: "Client specified an invalid date range"
-            OutOfRange:
-              summary: Request out of range
+                code: CARRIER_BILLING.INVALID_DATE_RANGE
+                message: "Client specified an invalid date range."
+            GENERIC_400_OUT_OF_RANGE:
+              summary: Generic Out Of Range
+              description: Out of Range. Specific Syntax Exception used when a given field has a pre-defined range or a invalid filter criteria combination is requested
               value:
                 status: 400
                 code: OUT_OF_RANGE
-                message: "Client specified an invalid range"
-            TooManyMatchingRecords:
-              summary: Too many matching records found
+                message: Client specified an invalid range.
+            GENERIC_400_TOO_MANY_MATCHING_RECORDS:
+              summary: Generic Too Many Matching Records
+              description: Too many matching records found
               value:
                 status: 400
-                code: CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS
-                message: "Too many matching records found. Specify additional/suitable criteria to limit the number of records"
+                code: CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS
+                message: "Too many matching records found. Specify additional/suitable criteria to limit the number of records."
     RefundInvalid400:
       description: |-
         Invalid input.
         Common INVALID_ARGUMENT scenarios usually are:
-          - Schema validation failed ("code": "INVALID_ARGUMENT","message": "Schema validation failed at ...").
-          - Currency is unknown or not authorized ("code": "INVALID_ARGUMENT","message": "Currency is unknown or not authorized").
-          - clientCorrelator still exist ("code": "INVALID_ARGUMENT","message": "clientCorrelator already exist on server").
+          - Schema validation failed ("code": "INVALID_ARGUMENT","message": "Client specified an invalid argument, request body or query param.").
+          - Currency is unknown or not authorized ("code": "INVALID_ARGUMENT","message": "Currency is unknown or not authorized.").
+          - clientCorrelator still exist ("code": "INVALID_ARGUMENT","message": "clientCorrelator already exist on server.").
 
         In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:
           - Invalid sink credential ("code": "INVALID_CREDENTIAL","message": "Only Access token is supported").
@@ -990,32 +998,37 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           examples:
-            Generic400:
-              summary: Schema validation failed
+            GENERIC_400_INVALID_ARGUMENT:
+              summary: Generic Invalid Argument
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+            GENERIC_400_WRONG_CURRENCY:
+              summary: Generic Wrong Currency
+              description: Currency is unknown or not authorized
               value:
                 code: INVALID_ARGUMENT
                 status: 400
-                message: "Schema validation failed at  ..."
-            WrongCurrency:
-              summary: Currency is unknown or not authorized
+                message: "Currency is unknown or not authorized."
+            GENERIC_400_DUPLICATE_CLIENT_CORRELATOR:
+              summary: Generic Duplicate Client Correlator
+              description: clientCorrelator still exist
               value:
                 code: INVALID_ARGUMENT
                 status: 400
-                message: "Currency is unknown or not authorized"
-            DuplicateClientCorrelator:
-              summary: clientCorrelator still exist
-              value:
-                code: INVALID_ARGUMENT
-                status: 400
-                message: "clientCorrelator already exist on server"
-            InvalidCredential:
-              summary: Invalid sink credential
+                message: "clientCorrelator already exist on server."
+            GENERIC_400_INVALID_CREDENTIAL:
+              summary: Generic Invalid Credential
+              description: Invalid sink credential
               value:
                 status: 400
                 code: "INVALID_CREDENTIAL"
                 message: "Only Access token is supported"
-            InvalidToken:
-              summary: Invalid sink credential access token
+            GENERIC_400_INVALID_TOKEN:
+              summary: Generic Invalid Token
+              description: Invalid sink credential access token
               value:
                 status: 400
                 code: "INVALID_TOKEN"
@@ -1029,10 +1042,21 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
-          example:
-            code: UNAUTHORIZED
-            status: 401
-            message: "Authorization failed: ..."
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              summary: Generic Unauthenticated
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials.
+            GENERIC_401_AUTHENTICATION_REQUIRED:
+              summary: Generic Authentication Required
+              description: New authentication is needed, authentication is no longer valid
+              value:
+                status: 401
+                code: AUTHENTICATION_REQUIRED
+                message: New authentication is required.
     Generic403:
       description: Forbidden
       headers:
@@ -1042,17 +1066,20 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
-          example:
-            code: FORBIDDEN
-            status: 403
-            message: "Operation not allowed: ..."
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
     RefundPermissionDenied403:
       description: |-
         Client does not have sufficient permission.
         In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Phone Number cannot be deducted from Access Token context (3-legged scenario) ("code": "INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from Access Token context").
-          - Refund denied by business ("code": "CARRIER_BILLING_REFUND.REFUND_DENIED","message": "Refund denied by business").
-          - Payment not eligible for Refund (e.g. Payment conditions agreed do not allow refund) ("code": "CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND","message": "Payment not eligible for refund").
+          - Phone Number cannot be deducted from Access Token context (3-legged scenario) ("code": "INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from Access Token context.").
+          - Refund denied by business ("code": "CARRIER_BILLING_REFUND.REFUND_DENIED","message": "Refund denied by business.").
+          - Payment not eligible for Refund (e.g. Payment conditions agreed do not allow refund) ("code": "CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND","message": "Payment not eligible for refund.").
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
@@ -1061,35 +1088,38 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           examples:
-            Generic403:
-              summary: Forbidden
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
               value:
                 status: 403
                 code: PERMISSION_DENIED
-                message: "Operation not allowed: ..."
-            PhoneNumberCannotBeDeducted:
-              summary: Phone Number cannot be deducted from Access Token context (3-legged scenario)
+                message: Client does not have sufficient permissions to perform this action.
+            GENERIC_403_INVALID_TOKEN_CONTEXT:
+              summary: Invalid access token context
+              description: Reflects some inconsistency between information in some field of the API and the related OAuth2 Token
               value:
                 status: 403
                 code: INVALID_TOKEN_CONTEXT
-                message: "User phone number cannot be deducted from Access Token context"
-            RefundDenied:
-              summary: Refund denied by business
+                message: "User phone number cannot be deducted from Access Token context."
+            GENERIC_403_REFUND_DENIED:
+              summary: Generic Refund Denied
+              description: Refund denied by business
               value:
                 status: 403
                 code: CARRIER_BILLING_REFUND.REFUND_DENIED
-                message: "Refund denied by business"
-            PaymentNotEligibleForRefund:
-              summary: Payment not eligible for Refund (e.g. Payment conditions agreed do not allow refund)
+                message: "Refund denied by business."
+            GENERIC_403_PAYMENT_NOT_ELIGIBLE_FOR_REFUND:
+              summary: Generic Payment Not Eligible for Refund
+              description: Payment not eligible for Refund (e.g. Payment conditions agreed do not allow refund)
               value:
                 status: 403
                 code: CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND
-                message: "Payment not eligible for refund"
+                message: "Payment not eligible for refund."
     RefundReadPermissionDenied403:
       description: |-
         Client does not have sufficient permission.
         In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Phone Number cannot be deducted from access token context ("code": "INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from Access Token context").
+          - Phone Number cannot be deducted from access token context ("code": "INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from Access Token context.").
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
@@ -1098,18 +1128,19 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           examples:
-            Generic403:
-              summary: Forbidden
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
               value:
                 status: 403
                 code: PERMISSION_DENIED
-                message: "Operation not allowed: ..."
-            InvalidTokenContext:
-              summary: Phone Number cannot be deducted from access token context
+                message: Client does not have sufficient permissions to perform this action.
+            GENERIC_403_INVALID_TOKEN_CONTEXT:
+              summary: Invalid access token context
+              description: Reflects some inconsistency between information in some field of the API and the related OAuth2 Token
               value:
                 status: 403
                 code: INVALID_TOKEN_CONTEXT
-                message: "User phone number cannot be deducted from Access Token context"
+                message: "User phone number cannot be deducted from Access Token context."
     Generic404:
       description: Resource Not Found
       headers:
@@ -1119,10 +1150,14 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
-          example:
-            code: NOT_FOUND
-            status: 404
-            message: "The specified resource is not found"
+          examples:
+            GENERIC_404_NOT_FOUND:
+              summary: Generic Not Found
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
     Generic409:
       description: Conflict
       headers:
@@ -1132,17 +1167,21 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
-          example:
-            status: 409
-            code: ALREADY_EXISTS
-            message: "A specified resource duplicate entry found"
+          examples:
+            GENERIC_409_ALREADY_EXISTS:
+              summary: Generic Already Exists
+              description: Trying to create an existing resource
+              value:
+                status: 409
+                code: ALREADY_EXISTS
+                message: The resource that a client tried to create already exists.
     CreateRefundUnprocessableContent422:
       description: |-
         Client indicates content that is understable by the Server but unable to be processed.
         Scenarios considered:
-          - Unauthorized refund amount requested ("code": "CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT","message": "Unauthorized amount requested").
-          - Accumulated threshold refund amount for the user's mobile account overpassed ("code": "CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED","message": "Unathorized refund request. Accumulated user mobile refunds overpass account amount threshold").
-          - Payment is not in suitable status for refund ("code": "CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS","message": "Payment is not yet completed").
+          - Unauthorized refund amount requested ("code": "CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT","message": "Unauthorized amount requested.").
+          - Accumulated threshold refund amount for the user's mobile account overpassed ("code": "CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED","message": "Unathorized refund request. Accumulated user mobile refunds overpass account amount threshold.").
+          - Payment is not in suitable status for refund ("code": "CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS","message": "Payment is not yet completed.").
           - Property `isTaxIncluded` has not the same value as related Payment ("code": "CARRIER_BILLING_REFUND.TAXES_MANAGEMENT_MISMATCH","message": "Inconsistent isTaxIncluded value with regards to related payment.").
           - Refund details provided are inconsistent with regards to the related Payment ("code": "CARRIER_BILLING_REFUND.REFUND_DETAILS_MISMATCH","message": "Inconsistent refundDetails information with regards to related payment.").
       headers:
@@ -1153,32 +1192,37 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
           examples:
-            UnauthorizedRefundAmount:
-              summary: Unauthorized refund amount requested
+            GENERIC_422_UNAUTHORIZED_REFUND_AMOUNT:
+              summary: Generic Unauthorized Refund Amount
+              description: Unauthorized refund amount requested
               value:
                 status: 422
                 code: CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT
-                message: "Unauthorized amount requested"
-            UserMobileAccumulatedThresholdRefundAmountOverpassed:
-              summary: Accumulated threshold refund amount for the user's mobile account overpassed
+                message: "Unauthorized amount requested."
+            GENERIC_422_GENERIC_422_USER_MOBILE_ACCUMULATED_THRESHOLD_REFUND_AMOUNT_OVERPASSED:
+              summary: Generic User Mobile Accumulated threshold Refund Amount Overpassed
+              description: Accumulated threshold refund amount for the user's mobile account overpassed
               value:
                 status: 422
                 code: CARRIER_BILLING_REFUND.USER_AMOUNT_THRESHOLD_OVERPASSED
-                message: "Unathorized refund request. Accumulated user mobile payments overpass account amount threshold"
-            InvalidPaymentStatus:
-              summary: Payment is not in suitable status for refund
+                message: "Unathorized refund request. Accumulated user mobile payments overpass account amount threshold."
+            GENERIC_422_INVALID_PAYMENT_STATUS:
+              summary: Generic Invalid Payment Status
+              description: Payment is not in suitable status for refund
               value:
                 status: 422
                 code: CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS
-                message: "Payment is not yet completed"
-            TaxesManagementMismatch:
-              summary: Property `isTaxIncluded` has not the same value as related Payment
+                message: "Payment is not yet completed."
+            GENERIC_422_TAXES_MANAGEMENT_MISMATCH:
+              summary: Generic Taxes Management Mismatch
+              description: Property `isTaxIncluded` has not the same value as related Payment
               value:
                 status: 422
                 code: CARRIER_BILLING_REFUND.TAXES_MANAGEMENT_MISMATCH
                 message: "Inconsistent isTaxIncluded value with regards to related payment."
-            RefundDetailsMismatch:
-              summary: Refund details provided are inconsistent with regards to the related Payment
+            GENERIC_422_REFUND_DETAILS_MISMATCH:
+              summary: Generic Refund Details Mismatch
+              description: Refund details provided are inconsistent with regards to the related Payment
               value:
                 status: 422
                 code: CARRIER_BILLING_REFUND.REFUND_DETAILS_MISMATCH
@@ -1192,10 +1236,14 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
-          example:
-            code: GONE
-            status: 410
-            message: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
+          examples:
+            GENERIC_410_GONE:
+              summary: Generic Gone
+              description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
+              value:
+                status: 410
+                code: GONE
+                message: Access to the target resource is no longer available.
     Generic429:
       description: Too Many Requests
       headers:
@@ -1205,10 +1253,14 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
-          example:
-            code: TOO_MANY_REQUESTS
-            status: 429
-            message: Either out of resource quota or reaching rate limiting.
+          examples:
+            GENERIC_429_TOO_MANY_REQUESTS:
+              summary: Generic Too Many Requests
+              description: API Server request limit is overpassed
+              value:
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Either out of resource quota or reaching rate limiting.
     Generic500:
       description: Server error
       headers:
@@ -1218,10 +1270,14 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
-          example:
-            code: SERVER_ERROR
-            status: 500
-            message: "Server Error"
+          examples:
+            GENERIC_500_INTERNAL:
+              summary: Generic Server Error
+              description: Problem in Server side. Regular Server Exception
+              value:
+                status: 500
+                code: INTERNAL
+                message: Unknown server error. Typically a server bug.
     Generic503:
       description: Service unavailable
       headers:
@@ -1231,10 +1287,14 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
-          example:
-            code: SERVICE_UNAVAILABLE
-            status: 503
-            message: "Service unavailable"
+          examples:
+            GENERIC_503_UNAVAILABLE:
+              summary: Generic Service Unavailable
+              description: Service is not available. Temporary situation usually related to maintenance process in the server side
+              value:
+                status: 503
+                code: UNAVAILABLE
+                message: Service Unavailable.
     Generic504:
       description: Request timeout exceeded
       headers:
@@ -1244,10 +1304,14 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorInfo"
-          example:
-            code: REQUEST_TIMEOUT_EXCEEDED
-            status: 504
-            message: "Request timeout exceeded"
+          examples:
+            GENERIC_504_TIMEOUT:
+              summary: Generic Request Timeout
+              description: API Server Timeout
+              value:
+                status: 504
+                code: TIMEOUT
+                message: Request timeout exceeded.
   parameters:
     x-correlator:
       name: x-correlator
