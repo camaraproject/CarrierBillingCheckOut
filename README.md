@@ -47,7 +47,7 @@ Repository to describe, develop, document and test the CarrierBilling API family
 * Meetings are held virtually <!-- for new API families request a meeting link from the LF admin team or replace the information with the existing meeting information (of the API family) -->
     * Schedule: Bi-Weekly, Wednesdays 15:00 - 16:00 CET/CEST 
     * [Registration / Join](https://zoom-lfx.platform.linuxfoundation.org/meeting/96513497117?password=ac26d34b-87d2-4d78-aa47-4de1ca14c882)
-    * Minutes: Access [Meeting minutes](https://wiki.camaraproject.org/display/CAM/CarrierBillingCheckOut)
+    * Minutes: Access [Meeting minutes](https://lf-camaraproject.atlassian.net/wiki/x/CDDe)
 * Mailing List
     <!-- Note: the $sub-project-mailinglistname$ is either already existing or will be created by the CAMARA Admin Team  -->
     * Subscribe / Unsubscribe to the mailing list of this Sub Project <https://lists.camaraproject.org/g/sp-cbc>.
