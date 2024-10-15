@@ -41,6 +41,12 @@ info:
       - When refund is not successfully performed then refundStatus=`denied`.
     - In case of any error scenario `refundId` is not created. That means a `denied` Refund is not considerated as an error for the ASYNC process, because a `denied` Refund is a refund that has been created (i.e. the refund resource exists) and after applying the internal business logic has been settled to `denied` refundStatus.
 
+    # Generic Clarification about optional parameters
+
+    Regarding optional parameters, they can be conditionally mandatory for a Telco Operator to implement them based on business scenarios or applicable regulations in a given market.
+
+    NOTE: Within a given market, in a multi Telco Operator ecosystem, the set of optional parameters to be implemented MUST be aligned among involved Telco Operators.
+
     # Authorization and authentication
 
     The "Camara Security and Interoperability Profile" provides details on how a client requests an access token. Please refer to Identify and Consent Management (https://github.com/camaraproject/IdentityAndConsentManagement/) for the released version of the Profile.
@@ -52,7 +58,7 @@ info:
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
-  version: 0.1.0
+  version: 0.1.1
   title: Carrier Billing Refunds
   license:
     name: Apache 2.0
