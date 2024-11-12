@@ -98,8 +98,8 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation retrieveRefunds
     And the response header "x-correlator" has same value as the request header "x-correlator"
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/RefundArray"
-    And all the refunds returned have their property "$[*].refundCreationDate" <= "<creation_date>"
-    And only the refunds with their property "$[*].refundCreationDate" <= "<creation_date>" are returned
+    And all the refunds returned have their property "$[*].refundCreationDate" =< "<creation_date>"
+    And only the refunds with their property "$[*].refundCreationDate" =< "<creation_date>" are returned
 
     Examples:
       | creation_date |
