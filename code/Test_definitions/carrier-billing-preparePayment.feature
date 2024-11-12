@@ -11,7 +11,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
   # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.3.0
 
   Background: Common preparePayment setup
-    Given the resource "/carrier-billing/v0.3/payments/prepare"                                                              |
+    Given the resource "/carrier-billing/v0.3/payments/prepare"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" is set to a UUID value
