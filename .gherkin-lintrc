@@ -8,7 +8,7 @@
   "indentation" : [
     "on", {
       "Feature": 0,
-      "Background": 0,
+      "Background": 2, //CHANGED: From "0" to "2". Should BE of level "2"
       "Scenario": 2,
       "Step": 2,
       "Examples": 4,
@@ -47,7 +47,7 @@
     "^@.*$"                                   
   ]
  }],
-  "file-name": ["on", {"style": "kebab-case"}],
+  "file-name": ["off", {"style": "kebab-case"}], //DISABLED ("on" -> "off"): As per ATP testing guidelines, the `operationId` can be part of the test file and `operationId` follow lowerCamelCase format
   "max-scenarios-per-file": ["on", {"maxScenarios": 50, "countOutlineExamples": true}],
   "no-restricted-patterns": ["on", {
     "Global": [
