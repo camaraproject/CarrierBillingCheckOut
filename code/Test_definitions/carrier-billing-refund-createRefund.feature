@@ -99,7 +99,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
 
   @create_refunds_05_partial_refund_amountTransaction_net_amount
   Scenario: Request partial refund with net amount
-    Given the request body property "$.type" is set to "partial" 
+    Given the request body property "$.type" is set to "partial"
     And the request body property "$.amountTransaction" is set with valid required information for this refund type
     And the request body property "$.amountTransaction.refundAmount.chargingInformation.isTaxIncluded" is set to false OR not set
     When the HTTP "POST" request is sent

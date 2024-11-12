@@ -54,7 +54,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation validatePayment
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
-    And the response property "$.message" contains a user friendly text                |
+    And the response property "$.message" contains a user friendly text
 
   @validate_payment_400.03_required_input_properties_missing
   Scenario Outline: Required input properties are missing
@@ -90,7 +90,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation validatePayment
 
   @validate_payment_400.06_exceeding_validation attempts
   # Variable "N" can vary up to Telco Operator policies
-  Scenario outline: Using a invalid code value after N requests
+  Scenario Outline: Using a invalid code value after N requests
     Given the request body property includes property "$.code" with a non-existing value in the environment
     When the HTTP "POST" request is sent after "<Number>" times
     Then the response status code is 400
