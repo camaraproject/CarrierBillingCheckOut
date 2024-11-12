@@ -55,7 +55,7 @@
     ],
     "Feature": [
       "poor description",
-      "validate",
+//     "validate", //DISABLED: Specifically for Carrier Billing as there is an operation named validatePayment
       "verify"
     ],
     "Background": [
