@@ -3,7 +3,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
   #
   # Implementation indications:
   # * Telco Operator carrier billing refund behaviour mode: sync or async
-  # 
+  #
   # Testing assets:
   # * A phone number eligible for payment & refund (no restrictions for it to be used to perform a payment or refund)
   # * A phone number not-eligible for refund (refund is denied for it due to business conditions)
@@ -22,7 +22,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
   # Happy path scenarios
   ##############################
 
-
   @create_refunds_01_generic_success_scenario
   Scenario: Common validations for any success scenario
     # Valid default request body compliant with the schema
@@ -37,7 +36,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response header "x-correlator" has same value as the request header "x-correlator"
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/Refund"
-
 
   @create_refunds_02_generic_success_scenario_with_sink_information
   Scenario: Common validations for any success scenario with sink information provided
@@ -54,7 +52,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response header "x-correlator" has same value as the request header "x-correlator"
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/Refund"
-
 
   @create_refunds_03_generic_success_scenario_with_sink_and_sinkCredential_information
   Scenario: Common validations for any success scenario sink and sinkCredential information provided
@@ -74,7 +71,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/Refund"
 
-
   # Scenarios testing specific situations for amountTransaction
 
   @create_refunds_04_total_refund
@@ -89,10 +85,9 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response body property "$.type" is set "total"
     And the response body property "$.amountTransaction.refundAmount" is "{}"
 
-
   @create_refunds_04_partial_refund_amountTransaction_gross_amount
   Scenario: Request partial refund with gross amount
-    Given the request body property "$.type" is set to "partial" 
+    Given the request body property "$.type" is set to "partial"
     And the request body property "$.amountTransaction" is set with valid required information for this refund type
     And the request body property "$.amountTransaction.refundAmount.chargingInformation.isTaxIncluded" is set to true
     When the HTTP "POST" request is sent
@@ -101,7 +96,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response body complies with the OAS schema at "/components/schemas/Refund"
     And the response body property "$.amountTransaction.refundAmount.chargingInformation.isTaxIncluded" is true
-
 
   @create_refunds_05_partial_refund_amountTransaction_net_amount
   Scenario: Request partial refund with net amount
@@ -115,10 +109,9 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response body complies with the OAS schema at "/components/schemas/Refund"
     And the response body property "$.amountTransaction.refundAmount.chargingInformation.isTaxIncluded" is false OR not returned
 
-
   @create_refunds_06_partial_refund_amountTransaction_taxAmount
   Scenario: Request partial refund indicating taxAmount
-    Given the request body property "$.type" is set to "partial" 
+    Given the request body property "$.type" is set to "partial"
     And the request body property "$.amountTransaction" is set with valid required information for this refund type
     And the request body property "$.amountTransaction.refundAmount.chargingInformation.taxAmount" is set to a valid value
     When the HTTP "POST" request is sent
@@ -127,7 +120,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response body complies with the OAS schema at "/components/schemas/Refund"
     And the response body property "$.amountTransaction.refundAmount.chargingInformation.taxAmount" has the same value as provided in the request body
-
 
   @create_refunds_07_amountTransaction_merchantIdentifier
   # May be relevant scenario for Payment Aggregator Case
@@ -142,10 +134,9 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response body complies with the OAS schema at "/components/schemas/Refund"
     And the response body property "$.amountTransaction.refundAmount.chargingMetaData.merchantIdentifier" has the same value as provided in the request body
 
-
   @create_refunds_08_partial_refund_amountTransaction_refundDetails
   Scenario: Request partial refund indicating indicating refundDetails
-    Given the request body property "$.type" is set to "partial" 
+    Given the request body property "$.type" is set to "partial"
     And the request body property "$.amountTransaction" is set with valid required information for this refund type
     And the request body array property "$.amountTransaction.refundAmount.refundDetails" is set with valid information
     When the HTTP "POST" request is sent
@@ -154,7 +145,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response body complies with the OAS schema at "/components/schemas/Refund"
     And the response body array property "$.amountTransaction.refundAmount.refundDetails" has the same information as provided in the request body
-
 
   @create_refunds_09_amountTransaction_clientCorrelator
   # Recommended scenario to manage request idempotency
@@ -169,7 +159,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response body complies with the OAS schema at "/components/schemas/Refund"
     And the response body property "$.amountTransaction.clientCorrelator" has the same value as provided in the request body
 
-
   @create_refunds_10_reason
   Scenario: Request refund indicating reason
     Given the request body property "$.amountTransaction" is set with valid required information
@@ -181,7 +170,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response body complies with the OAS schema at "/components/schemas/Refund"
     And the response body property "$.reason" has the same value as provided in the request body
-
 
   @create_refunds_11_sync_behaviour
   # Scenario for a Telco Operator that behaves synchronously
@@ -195,7 +183,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response body complies with the OAS schema at "/components/schemas/Refund"
     And the response body property "$.refundStatus" is "succeeded"
 
-
   @create_refunds_12_async_behaviour
   # Scenario for a Telco Operator that behaves asynchronously
   Scenario: Request refund with async behaviour
@@ -207,7 +194,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response body complies with the OAS schema at "/components/schemas/Refund"
     And the response body property "$.refundStatus" is "processing"
-
 
   ##############################
   # Error scenarios
@@ -224,7 +210,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
 
-
   @create_refunds_400.02_empty_request_body
   Scenario: Empty object as request body
     Given the request body is set to "{}"
@@ -233,7 +218,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
-
 
   @create_refunds_400.03_other_input_properties_schema_not_compliant
   # Test other input properties in addition to amountTransaction
@@ -249,7 +233,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
       | input_property          | oas_spec_schema                    |
       | $.sink                  | /components/schemas/CreateRefund   |
       | $.sinkCredential        | /components/schemas/SinkCredential |                  |
-
 
   @create_refunds_400.04_required_input_properties_missing
   Scenario Outline: Required input properties are missing
@@ -267,7 +250,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
       | $.amountTransaction.refundAmount                                  |
       | $.amountTransaction.referenceCode                                 |
 
-
   @create_refunds_400.05_clientCorrelator_in_use
   Scenario: Using the same client correlator for two different refund requests
     Given the request body property includes property "$.amountTransaction.clientCorrelator" with a value already use in a non-completed refund
@@ -276,7 +258,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
-
 
   @create_refunds_400.06_invalid_sink
   Scenario: Using a invalid sink value
@@ -287,7 +268,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
 
-
   @create_refunds_400.07_invalid_sinkCredential
   Scenario: Using a invalid sinkCredential type value
     Given the request body property includes property "$.sinkCredential.credentialType" whose value is not "ACCESSTOKEN"
@@ -297,7 +277,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.code" is "INVALID_CREDENTIAL"
     And the response property "$.message" contains a user friendly text
 
-
   @create_refunds_400.08_invalid_sinkCredential_Acccestoken
   Scenario: Using a invalid sinkCredential accesstoken type value
     Given the request body property includes property "$.sinkCredential.accessTokenType" whose value is not "bearer"
@@ -306,7 +285,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_TOKEN"
     And the response property "$.message" contains a user friendly text
-
 
   # Error 401 scenarios
 
@@ -341,7 +319,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
 
-
   # Error 403 scenarios
 
   @create_refunds_403.01_invalid_token_permissions
@@ -355,7 +332,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
 
-
   @create_refunds_403.02_phoneNumber_token_mismatch
   Scenario: Inconsistent access token context for the phoneNumber
     # To test this, a 3-legged access token has to be obtained for a different phoneNumber
@@ -366,7 +342,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.status" is 403
     And the response property "$.code" is "INVALID_TOKEN_CONTEXT"
     And the response property "$.message" contains a user friendly text
-
 
   @create_refunds_403.03_refund_denied
   Scenario: Refund denied by business
@@ -379,7 +354,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.code" is "CARRIER_BILLING_REFUND.REFUND_DENIED"
     And the response property "$.message" contains a user friendly text
 
-
   @create_refunds_403.03_payment_not_eligible_for_refund
   Scenario: Payment not eligible for refund
     # To test this, a business context exists in the Telco Operator to not consider the payment eligible for the refund
@@ -390,7 +364,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.status" is 403
     And the response property "$.code" is "CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND"
     And the response property "$.message" contains a user friendly text
-
 
   # Error 404 scenarios
 
@@ -405,11 +378,10 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.code" is "NOT_FOUND"
     And the response property "$.message" contains a user friendly text
 
-
   # Error 409 scenarios
 
   @create_refunds_409.01_refund_duplicated
-  Scenario: Payment duplicated
+  Scenario: Refund duplicated
     Given the request body is set to a valid request body
     And the request body property "$.amountTransaction.referenceCode" is set to a value already use in another refund request
     And the request body property "$.amountTransaction.clientCorrelator" is missing
@@ -419,7 +391,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.status" is 409
     And the response property "$.code" is "ALREADY_EXISTS"
     And the response property "$.message" contains a user friendly text
-
 
   # Error 422 scenarios
 
@@ -436,7 +407,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.code" is "CARRIER_BILLING_REFUND.UNAUTHORIZED_AMOUNT"
     And the response property "$.message" contains a user friendly text
 
-
   @create_refunds_422.02_accumulated_threshold_amount_overpassed
   Scenario: Refund amount exceeds the accumulated threshold amount value allowed by the regulation
     # This test applies/depends on the regulation applicable for a given Country
@@ -450,9 +420,8 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.code" is "CARRIER_BILLING_REFUND.AMOUNT_THRESHOLD_OVERPASSED"
     And the response property "$.message" contains a user friendly text
 
-
   @create_refunds_422.03_payment_invalid_status
-  Scenario: Payment duplicated
+  Scenario: Refund for a Payment in an invalid status
     Given the request body is set to a valid request body
     And the path parameter "paymentId" is set to a valid value of a payment whose "paymentStatus" != "succeeded"
     And the header "Authorization" is set to a valid access token
@@ -461,7 +430,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.status" is 422
     And the response property "$.code" is "CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS"
     And the response property "$.message" contains a user friendly text
-
 
   @create_refunds_422.04_inconsistent_tax_management
   Scenario: Request refund with inconsistent "isTaxIncluded"
@@ -475,7 +443,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.code" is "CARRIER_BILLING_REFUND.TAXES_MANAGEMENT_MISMATCH"
     And the response property "$.message" contains a user friendly text
 
-
   @create_refunds_422.05_inconsistent_refund_details
   Scenario: Request refund with inconsistent "refundDetails"
     Given the request body is set to a valid request body
@@ -488,8 +455,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     And the response property "$.code" is "CARRIER_BILLING_REFUND.REFUND_DETAILS_MISMATCH"
     And the response property "$.message" contains a user friendly text
 
-
   ##############################
   ##END
   ##############################
-

@@ -22,7 +22,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
   # Happy path scenarios
   ##############################
 
-
   @confirm_payment_01_generic_success_scenario
   Scenario: Common validations for any success scenario
     # Valid default request body compliant with the schema
@@ -32,26 +31,23 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
 
-
   @confirm_payment_02_phoneNumber_three_legged
   # Case using a 3-legged Access Token
-  Scenario: Request confirm payment indicating phoneNumber
+  Scenario: Request confirm payment indicating phoneNumber in 3-legged access mode
     Given the request body property "$.phonenumber" is set to a valid value which is the same as associated to access token
     When the HTTP "POST" request is sent
     Then the response status code is 202
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-
 
   @confirm_payment_03_phoneNumber_two_legged
   # Case using a 2-legged Access Token. Only applicable for Countries and Telco Operators whose regulation allows for it
-  Scenario: Request confirm payment indicating phoneNumber
+  Scenario: Request confirm payment indicating phoneNumber in 2-legged access mode
     Given the request body property "$.phonenumber" is set to a valid value which is the same as associated to access token
     When the HTTP "POST" request is sent
     Then the response status code is 202
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-
 
   ##############################
   # Error scenarios
@@ -68,7 +64,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
 
-
   @confirm_payment_400.02_empty_request_body
   Scenario: Empty object as request body
     Given the request body is set to "{}"
@@ -77,7 +72,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
-
 
   # Error 401 scenarios
 
@@ -91,7 +85,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
 
-
   @confirm_payment_401.02_expired_access_token
   Scenario: Expired access token
     Given the header "Authorization" is set to an expired access token
@@ -101,7 +94,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
-
 
   @confirm_payment_401.03_invalid_access_token
   Scenario: Invalid access token
@@ -113,7 +105,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
-
 
   # Error 403 scenarios
 
@@ -128,7 +119,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
 
-
   @confirm_payment_403.02_phoneNumber_token_mismatch
   Scenario: Inconsistent access token context for the phoneNumber
     # To test this, a 3-legged access token has to be obtained for a different phoneNumber
@@ -140,7 +130,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
     And the response property "$.code" is "INVALID_TOKEN_CONTEXT"
     And the response property "$.message" contains a user friendly text
 
-
   @confirm_payment_403.02_payment_denied
   Scenario: Payment denied by business
     # To test this, a business context exists in the Telco Operator to deny the payment
@@ -151,7 +140,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
     And the response property "$.status" is 403
     And the response property "$.code" is "CARRIER_BILLING.PAYMENT_DENIED"
     And the response property "$.message" contains a user friendly text
-
 
   # Error 409 scenarios
 
@@ -166,7 +154,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
     And the response property "$.code" is "CARRIER_BILLING.PAYMENT_CONFIRMED"
     And the response property "$.message" contains a user friendly text
 
-
   @confirm_payment_409.02_payment_cancelled
   Scenario: Payment already cancelled
     Given the request body is set to a valid request body
@@ -177,7 +164,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
     And the response property "$.status" is 409
     And the response property "$.code" is "CARRIER_BILLING.PAYMENT_CANCELLED"
     And the response property "$.message" contains a user friendly text
-
 
   # Error 422 scenarios
 
@@ -192,8 +178,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
     And the response property "$.code" is "CARRIER_BILLING.PHONE_NUMBER_REQUIRED"
     And the response property "$.message" contains a user friendly text
 
-
   ##############################
   ##END
   ##############################
-

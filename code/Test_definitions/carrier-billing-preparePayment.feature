@@ -3,7 +3,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
   #
   # Implementation indications:
   # * Telco Operator carrier billing behaviour mode: sync or async
-  # 
+  #
   # Testing assets:
   # * A phone number eligible for payment (no restrictions for it to be used to perform a payment)
   # * A phone number not-eligible for payment (payment is denied for it due to business conditions)
@@ -21,7 +21,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
   # Happy path scenarios
   ##############################
 
-
   @prepare_payment_01_generic_success_scenario
   Scenario: Common validations for any success scenario
     # Valid default request body compliant with the schema
@@ -34,7 +33,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response header "x-correlator" has same value as the request header "x-correlator"
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
-
 
   @prepare_payment_02_generic_success_scenario_with_sink_information
   Scenario: Common validations for any success scenario with sink information provided
@@ -49,7 +47,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response header "x-correlator" has same value as the request header "x-correlator"
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
-
 
   @prepare_payment_03_generic_success_scenario_with_sink_and_sinkCredential_information
   Scenario: Common validations for any success scenario sink and sinkCredential information provided
@@ -67,7 +64,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
 
-
   # Scenarios testing specific situations for amountTransaction
 
   @prepare_payment_04_amountTransaction_gross_amount
@@ -81,7 +77,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.amountTransaction.paymentAmount.chargingInformation.isTaxIncluded" is true
 
-
   @prepare_payment_05_amountTransaction_net_amount
   Scenario: Request 2-step payment with net amount
     Given the request body property "$.amountTransaction" is set with valid required information
@@ -93,7 +88,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.amountTransaction.paymentAmount.chargingInformation.isTaxIncluded" is false OR not returned
 
-
   @prepare_payment_06_amountTransaction_taxAmount
   Scenario: Request 2-step payment indicating taxAmount
     Given the request body property "$.amountTransaction" is set with valid required information
@@ -104,7 +98,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.amountTransaction.paymentAmount.chargingInformation.taxAmount" has the same value as provided in the request body
-
 
   @prepare_payment_07_amountTransaction_merchantIdentifier
   # May be relevant scenario for Payment Aggregator Case
@@ -118,9 +111,8 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.amountTransaction.paymentAmount.chargingMetaData.merchantIdentifier" has the same value as provided in the request body
 
-
   @prepare_payment_08_amountTransaction_paymentDetails
-  Scenario: Request 2-step payment indicating merchantIdentifier
+  Scenario: Request 2-step payment indicating paymentDetails
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body array property "$.amountTransaction.paymentAmount.paymentDetails" is set with valid information
     When the HTTP "POST" request is sent
@@ -129,7 +121,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body array property "$.amountTransaction.paymentAmount.paymentDetails" has the same information as provided in the request body
-
 
   @prepare_payment_09_amountTransaction_clientCorrelator
   # Recommended scenario to manage request idempotency
@@ -143,10 +134,9 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.amountTransaction.clientCorrelator" has the same value as provided in the request body
 
-
   @prepare_payment_10_amountTransaction_phoneNumber_three_legged
   # Case using a 3-legged Access Token identifying a specific phone number
-  Scenario: Request 2-step payment indicating phoneNumber
+  Scenario: Request 2-step payment indicating phoneNumber in 3-legged access mode
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body property "$.amountTransaction.phoneNumber" is set to a valid value which is the same as associated to access token
     When the HTTP "POST" request is sent
@@ -156,10 +146,9 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.amountTransaction.phoneNumber" has the same value as provided in the request body
 
-
   @prepare_payment_11_amountTransaction_phoneNumber_two_legged
   # Case using a 2-legged Access Token. Only applicable for Countries and Operators whose regulation allows for it
-  Scenario: Request 2-step payment indicating phoneNumber
+  Scenario: Request 2-step payment indicating phoneNumber in 2-legged access mode
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body property "$.amountTransaction.phoneNumber" is set to a valid value
     When the HTTP "POST" request is sent
@@ -169,10 +158,9 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.amountTransaction.phoneNumber" has the same value as provided in the request body
 
-
   @prepare_payment_12_sync_behaviour_without_validation_info
   # Scenario for a Telco Operator that behaves synchronously
-  Scenario: Request 2-step payment with sync behaviour
+  Scenario: Request 2-step payment with sync behaviour without validation info in response
     Given the request body property "$.amountTransaction" is set with valid required information
     When the HTTP "POST" request is sent
     Then the response status code is 201
@@ -182,10 +170,9 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.validatioInfo" is not returned
     And the response body property "$.paymentStatus" is "reserved"
 
-
   @prepare_payment_13_sync_behaviour_with_validation_info
   # Scenario for a Telco Operator that behaves synchronously
-  Scenario: Request 2-step payment with sync behaviour
+  Scenario: Request 2-step payment with sync behaviour with validation info in response
     Given the request body property "$.amountTransaction" is set with valid required information
     When the HTTP "POST" request is sent
     Then the response status code is 201
@@ -194,7 +181,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response property "$.validatioInfo" is returned
     And the response body property "$.paymentStatus" is "pending_validation"
-
 
   @prepare_payment_14_async_behaviour
   # Scenario for a Telco Operator that behaves asynchronously
@@ -206,7 +192,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response body complies with the OAS schema at "/components/schemas/BodyAmountReservationTransactionForReserve"
     And the response body property "$.paymentStatus" is "processing"
-
 
   ##############################
   # Error scenarios
@@ -223,7 +208,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
 
-
   @prepare_payment_400.02_empty_request_body
   Scenario: Empty object as request body
     Given the request body is set to "{}"
@@ -232,7 +216,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
-
 
   @prepare_payment_400.03_other_input_properties_schema_not_compliant
   # Test other input properties in addition to amountTransaction
@@ -247,8 +230,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     Examples:
       | input_property          | oas_spec_schema                    |
       | $.sink                  | /components/schemas/CreatePayment  |
-      | $.sinkCredential        | /components/schemas/SinkCredential |                  |
-
+      | $.sinkCredential        | /components/schemas/SinkCredential |
 
   @prepare_payment_400.04_required_input_properties_missing
   Scenario Outline: Required input properties are missing
@@ -269,7 +251,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
       | $.amountTransaction.paymentAmount.chargingInformation.currency    |
       | $.amountTransaction.paymentAmount.chargingInformation.description |
 
-
   @prepare_payment_400.05_clientCorrelator_in_use
   Scenario: Using the same client correlator for two different payment requests
     Given the request body property includes property "$.clientCorrelator" with a value already use in a non-completed payment
@@ -278,7 +259,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
-
 
   @prepare_payment_400.06_invalid_sink
   Scenario: Using a invalid sink value
@@ -289,7 +269,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
 
-
   @prepare_payment_400.07_invalid_sinkCredential
   Scenario: Using a invalid sinkCredential type value
     Given the request body property includes property "$.sinkCredential.credentialType" whose value is not "ACCESSTOKEN"
@@ -298,7 +277,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_CREDENTIAL"
     And the response property "$.message" contains a user friendly text
-
 
   @prepare_payment_400.08_invalid_sinkCredential_Acccestoken
   Scenario: Using a invalid sinkCredential accesstoken type value
@@ -321,7 +299,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
 
-
   @prepare_payment_401.02_expired_access_token
   Scenario: Expired access token
     Given the header "Authorization" is set to an expired access token
@@ -331,7 +308,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
-
 
   @prepare_payment_401.03_invalid_access_token
   Scenario: Invalid access token
@@ -343,7 +319,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
-
 
   # Error 403 scenarios
 
@@ -358,7 +333,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
 
-
   @prepare_payment_403.02_phoneNumber_token_mismatch
   Scenario: Inconsistent access token context for the phoneNumber
     # To test this, a 3-legged access token has to be obtained for a different phoneNumber
@@ -370,7 +344,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.code" is "INVALID_TOKEN_CONTEXT"
     And the response property "$.message" contains a user friendly text
 
-
   @prepare_payment_403.03_payment_denied
   Scenario: Payment denied by business
     # To test this, a business context exists in the Telco Operator to deny the payment
@@ -381,7 +354,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.status" is 403
     And the response property "$.code" is "CARRIER_BILLING.PAYMENT_DENIED"
     And the response property "$.message" contains a user friendly text
-
 
   # Error 409 scenarios
 
@@ -397,7 +369,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.code" is "ALREADY_EXISTS"
     And the response property "$.message" contains a user friendly text
 
-
   # Error 422 scenarios
 
   @prepare_payment_422.01_phoneNumber_required
@@ -411,7 +382,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.code" is "CARRIER_BILLING.PHONE_NUMBER_REQUIRED"
     And the response property "$.message" contains a user friendly text
 
-
   @prepare_payment_422.02_unauthorized_amount
   Scenario: Payment amount exceeds the value allowed by the regulation
     # This test applies/depends on the regulation applicable for a given Country
@@ -423,7 +393,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.status" is 422
     And the response property "$.code" is "CARRIER_BILLING.UNAUTHORIZED_AMOUNT"
     And the response property "$.message" contains a user friendly text
-
 
   @prepare_payment_422.02_accumulated_threshold_amount_overpassed
   Scenario: Payment amount exceeds the accumulated threshold amount value allowed by the regulation
@@ -437,8 +406,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation preparePayment
     And the response property "$.code" is "CARRIER_BILLING.AMOUNT_THRESHOLD_OVERPASSED"
     And the response property "$.message" contains a user friendly text
 
-
   ##############################
   ##END
   ##############################
-
