@@ -3,7 +3,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation createPayment
   #
   # Implementation indications:
   # * Telco Operator carrier billing behaviour mode: sync or async
-  # 
+  #
   # Testing assets:
   # * A phone number eligible for payment (no restrictions for it to be used to perform a payment)
   # * A phone number not-eligible for payment (payment is denied for it due to business conditions)
@@ -11,7 +11,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation createPayment
   # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.3.0
 
   Background: Common createPayment setup
-    Given the resource "/carrier-billing/v0.3/payments"                                                              |
+    Given the resource "/carrier-billing/v0.3/payments"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" is set to a UUID value
