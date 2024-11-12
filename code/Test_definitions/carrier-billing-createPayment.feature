@@ -112,7 +112,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation createPayment
     And the response body property "$.amountTransaction.paymentAmount.chargingMetaData.merchantIdentifier" has the same value as provided in the request body
 
   @create_payment_08_amountTransaction_paymentDetails
-  Scenario: Request 1-step payment indicating merchantIdentifier
+  Scenario: Request 1-step payment indicating paymentDetails
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body array property "$.amountTransaction.paymentAmount.paymentDetails" is set with valid information
     When the HTTP "POST" request is sent
@@ -136,7 +136,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation createPayment
 
   @create_payment_10_amountTransaction_phoneNumber_three_legged
   # Case using a 3-legged Access Token emitted for a specific phone number
-  Scenario: Request 1-step payment indicating phoneNumber
+  Scenario: Request 1-step payment indicating phoneNumber in 3-legged access mode
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body property "$.amountTransaction.phoneNumber" is set to a valid value which is the same as associated to access token
     When the HTTP "POST" request is sent
@@ -148,7 +148,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation createPayment
 
   @create_payment_11_amountTransaction_phoneNumber_two_legged
   # Case using a 2-legged Access Token. Only applicable for Countries and Telco Operators whose regulation allows for it
-  Scenario: Request 1-step payment indicating phoneNumber
+  Scenario: Request 1-step payment indicating phoneNumber in 2-legged access mode
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body property "$.amountTransaction.phoneNumber" is set to a valid value
     When the HTTP "POST" request is sent

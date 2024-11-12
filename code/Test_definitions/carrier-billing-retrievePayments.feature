@@ -156,16 +156,16 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     And the response header "x-correlator" has same value as the request header "x-correlator"
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/PaymentArray"
-    And all the payments returned have their property "$.paymentStatus" == "<status>"
-    And only the payments with their property "$.paymentStatus" == "<status>" are returned
+    And all the payments returned have their property "$.paymentStatus" == "<payment_status>"
+    And only the payments with their property "$.paymentStatus" == "<payment_status>" are returned
 
     Examples:
       | payment_status     |
       | processing         |
       | pending_validation |
-      | denied             | 
-      | reserved           | 
-      | succeeded          | 
+      | denied             |
+      | reserved           |
+      | succeeded          |
       | cancelled          |
 
   @retrieve_payments_10_merchantIdentifier

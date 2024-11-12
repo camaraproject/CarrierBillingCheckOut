@@ -12,7 +12,7 @@
       "Scenario": 2,
       "Step": 2,
       "Examples": 4,
-      "example": 4,
+      "example": 6, //CHANGED: From "4" to "6". Should BE of level "6" to have more indentation that the "Examples" umbrella
       "given": 4,
       "when": 4,
       "then": 4,

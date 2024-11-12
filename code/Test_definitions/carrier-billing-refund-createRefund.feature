@@ -232,7 +232,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation createRefund
     Examples:
       | input_property          | oas_spec_schema                    |
       | $.sink                  | /components/schemas/CreateRefund   |
-      | $.sinkCredential        | /components/schemas/SinkCredential |                  |
+      | $.sinkCredential        | /components/schemas/SinkCredential |
 
   @create_refunds_400.04_required_input_properties_missing
   Scenario Outline: Required input properties are missing
