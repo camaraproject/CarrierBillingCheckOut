@@ -97,8 +97,8 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     And the response header "x-correlator" has same value as the request header "x-correlator"
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/PaymentArray"
-    And all the payments returned have their property "$.paymentCreationDate" =< "<creation_date>"
-    And only the payments with their property "$.paymentCreationDate" =< "<creation_date>" are returned
+    And all the payments returned have their property "$.paymentCreationDate" <= "<creation_date>"
+    And only the payments with their property "$.paymentCreationDate" <= "<creation_date>" are returned
 
     Examples:
       | creation_date |
