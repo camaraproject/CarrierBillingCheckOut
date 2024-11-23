@@ -2,6 +2,7 @@
 
 ## Table of Contents
 
+- [r1.3](#r13)
 - [r1.2](#r12)
 - [r1.1 - rc](#r11---rc)
 - [v0.2.1](#v021)
@@ -14,6 +15,74 @@ The below sections record the changes for each API version in each release as fo
 * for each first alpha or release-candidate API version, all changes since the release of the previous public API version
 * for subsequent alpha or release-candidate API versions, the delta with respect to the previous pre-release
 * for a public API version, the consolidated changes since the release of the previous public API version
+
+## r1.3
+
+## Release Notes
+
+This release contains the definition and documentation of
+* Carrier Billing v0.3.1
+* Carrier Billing Refund v0.1.1
+
+The API definition(s) are based on
+* Commonalities v0.4.0
+* Identity and Consent Management v0.2.0
+
+## Carrier Billing v0.3.1
+
+**Carrier Billing v0.3.1 is a public release (patch release for v0.3.0) of the Carrier Billing (Payment) API.**
+- **This version contains documentational updates compared to v0.3.0, being backwards compatible:**
+  - Added a section `# Generic Clarification about optional parameters` within API Spec `info.description` field
+
+- API definition **with inline documentation**:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.3/code/API_definitions/carrier-billing.yaml&nocors)
+  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.3/code/API_definitions/carrier-billing.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r1.3/code/API_definitions/carrier-billing.yaml)
+
+**Main changes since [r1.2](#r12)**
+
+### Added
+* New section `# Generic Clarification about optional parameters` within API Spec `info.description` field in https://github.com/camaraproject/CarrierBillingCheckOut/pull/183
+
+### Changed
+* Update `README.md` with new wiki domain for the Sub-project in https://github.com/camaraproject/CarrierBillingCheckOut/pull/182
+
+### Fixed
+* N/A
+
+### Removed
+* N/A
+
+## Carrier Billing Refund v0.1.1
+
+**Carrier Billing Refund v0.1.1 is a public release (patch release for v0.1.0) of the Carrier Billing Refund API.**
+- **This version contains documentational updates compared to v0.1.0, being backwards compatible:**
+  - Added a section `# Generic Clarification about optional parameters` within API Spec `info.description` field
+
+- API definition **with inline documentation**:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.3/code/API_definitions/carrier-billing-refund.yaml&nocors)
+  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.3/code/API_definitions/carrier-billing-refund.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r1.3/code/API_definitions/carrier-billing-refund.yaml)
+
+**Main changes since [r1.2](#r12)**
+
+### Added
+* New section `# Generic Clarification about optional parameters` within API Spec `info.description` field in https://github.com/camaraproject/CarrierBillingCheckOut/pull/183
+
+### Changed
+* Update `README.md` with new wiki domain for the Sub-project in https://github.com/camaraproject/CarrierBillingCheckOut/pull/182
+
+### Fixed
+* N/A
+
+### Removed
+* N/A
+
+## New Contributors
+* N/A
+
+
+**Full Changelog**: https://github.com/camaraproject/CarrierBillingCheckOut/compare/r1.2...r1.3
 
 ## r1.2
 
