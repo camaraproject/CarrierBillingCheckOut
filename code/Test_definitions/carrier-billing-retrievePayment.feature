@@ -2,7 +2,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayment
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
-  # * 
+  #
   #
   # Testing assets:
   # * A phone number eligible for payment (no restrictions for it to be used to perform a payment)
@@ -11,7 +11,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayment
   # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.3.0
 
   Background: Common retrievePayment setup
-    Given the resource "/carrier-billing/v0.3/payments/{paymentId}"                                                              |
+    Given the resource "/carrier-billing/v0.3/payments/{paymentId}"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" is set to a UUID value
@@ -20,7 +20,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayment
   ##############################
   # Happy path scenarios
   ##############################
-
 
   @retrieve_payment_01_generic_success_scenario
   Scenario: Common validations for any success scenario
@@ -32,7 +31,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayment
     And the response header "x-correlator" has same value as the request header "x-correlator"
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/Payment"
-
 
   ##############################
   # Error scenarios
@@ -50,7 +48,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayment
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
 
-
   @retrieve_payment_401.02_expired_access_token
   Scenario: Expired access token
     Given the header "Authorization" is set to an expired access token
@@ -60,7 +57,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayment
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
-
 
   @retrieve_payment_401.03_invalid_access_token
   Scenario: Invalid access token
@@ -72,7 +68,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayment
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
-
 
   # Error 403 scenarios
 
@@ -87,7 +82,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayment
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
 
-
   @retrieve_payment_403.02_phoneNumber_token_mismatch
   Scenario: Inconsistent access token context for the phoneNumber
     # To test this, a 3-legged access token has to be obtained for a different phoneNumber
@@ -98,7 +92,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayment
     And the response property "$.status" is 403
     And the response property "$.code" is "INVALID_TOKEN_CONTEXT"
     And the response property "$.message" contains a user friendly text
-
 
   # Error 404 scenarios
 
@@ -113,8 +106,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayment
     And the response property "$.code" is "NOT_FOUND"
     And the response property "$.message" contains a user friendly text
 
-
   ##############################
   ##END
   ##############################
-

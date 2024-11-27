@@ -2,7 +2,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation retrieveRefund
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
-  # * 
+  #
   #
   # Testing assets:
   # * A phone number eligible for payment & refund
@@ -22,7 +22,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation retrieveRefund
   # Happy path scenarios
   ##############################
 
-
   @retrieve_refund_01_generic_success_scenario
   Scenario: Common validations for any success scenario
     Given an existing refund created by operation createRefund
@@ -34,7 +33,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation retrieveRefund
     And the response header "x-correlator" has same value as the request header "x-correlator"
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/Refund"
-
 
   ##############################
   # Error scenarios
@@ -53,7 +51,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation retrieveRefund
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
 
-
   @retrieve_refund_401.02_expired_access_token
   Scenario: Expired access token
     Given the header "Authorization" is set to an expired access token
@@ -64,7 +61,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation retrieveRefund
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
-
 
   @retrieve_refund_401.03_invalid_access_token
   Scenario: Invalid access token
@@ -77,7 +73,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation retrieveRefund
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
-
 
   # Error 403 scenarios
 
@@ -92,7 +87,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation retrieveRefund
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
 
-
   @retrieve_refund_403.02_phoneNumber_token_mismatch
   Scenario: Inconsistent access token context for the phoneNumber
     # To test this, a 3-legged access token has to be obtained for a different phoneNumber
@@ -105,26 +99,24 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation retrieveRefund
     And the response property "$.code" is "INVALID_TOKEN_CONTEXT"
     And the response property "$.message" contains a user friendly text
 
-
   # Error 404 scenarios
 
   @retrieve_refund_404.01_payment_not_found
   Scenario: Payment not found
     # To test this, a 2-legged access token is needed, just beacuse if not it triggers test "@retrieve_refund_403.02_phoneNumber_token_mismatch"
     Given the path parameter "paymentId" is set to a non-existing value in the environment
-    Given the path parameter "refundId" is set to a valid value in the environment
+    And the path parameter "refundId" is set to a valid value in the environment
     And the header "Authorization" is set to a valid access token
     When the HTTP "POST" request is sent
     Then the response status code is 404
     And the response property "$.status" is 404
     And the response property "$.code" is "NOT_FOUND"
     And the response property "$.message" contains a user friendly text
-
 
   @retrieve_refund_404.02_refund_not_found
   Scenario: Refund not found
     Given the path parameter "paymentId" is set to a valid value in the environment
-    Given the path parameter "refundId" is set to a non-existing value in the environment
+    And the path parameter "refundId" is set to a non-existing value in the environment
     And the header "Authorization" is set to a valid access token
     When the HTTP "POST" request is sent
     Then the response status code is 404
@@ -132,8 +124,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation retrieveRefund
     And the response property "$.code" is "NOT_FOUND"
     And the response property "$.message" contains a user friendly text
 
-
   ##############################
   ##END
   ##############################
-

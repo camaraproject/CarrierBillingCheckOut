@@ -2,7 +2,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
-  # * 
+  #
   #
   # Testing assets:
   # * A phone number eligible for payment (no restrictions for it to be used to perform a payment)
@@ -11,7 +11,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
   # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.3.0
 
   Background: Common retrievePayment setup
-    Given the resource "/carrier-billing/v0.3/payments"                                                              |
+    Given the resource "/carrier-billing/v0.3/payments"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" is set to a UUID value
@@ -19,7 +19,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
   ##############################
   # Happy path scenarios
   ##############################
-
 
   @retrieve_payments_01_generic_success_scenario
   Scenario: Common validations for any success scenario
@@ -31,7 +30,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/PaymentArray"
 
-
   @retrieve_payments_02_no_payments
   Scenario: No existing payments
     Given no payments have been created by operation createPayment OR preparePayment
@@ -40,7 +38,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response body is an empty array "[]"
-
 
   @retrieve_payments_03_for_phoneNumber
   Scenario: List of payments for a given phone number
@@ -53,7 +50,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/PaymentArray"
     And only the payments associated to that phone number are returned
-
 
   @retrieve_payments_04_for_application
   Scenario: List of payments for a given application (API client)
@@ -68,7 +64,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     And the response body complies with the OAS schema at "/components/schemas/PaymentArray"
     And only the payments associated to that application are returned
 
-
   # Query Parameter scenarios
 
   @retrieve_payments_05_start_creationDate
@@ -82,15 +77,14 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     And the response header "x-correlator" has same value as the request header "x-correlator"
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/PaymentArray"
-    And all the payments returned have their property "$.paymentCreationDate" >= "<creation_date>"
-    And only the payments with their property "$.paymentCreationDate" >= "<creation_date>" are returned
+    And all the payments returned have their property "$.paymentCreationDate" greater or equal than "<creation_date>"
+    And only the payments with their property "$.paymentCreationDate" greater or equal than "<creation_date>" are returned
 
     Examples:
       | creation_date |
       | NOW - 1 day   |
       | NOW - 7 days  |
       | NOW - 30 days |
-
 
   @retrieve_payments_06_end_creationDate
   Scenario Outline: List of payments up to a given creationDate
@@ -103,15 +97,14 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     And the response header "x-correlator" has same value as the request header "x-correlator"
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/PaymentArray"
-    And all the payments returned have their property "$.paymentCreationDate" <= "<creation_date>"
-    And only the payments with their property "$.paymentCreationDate" <= "<creation_date>" are returned
+    And all the payments returned have their property "$.paymentCreationDate" lower or equal than "<creation_date>"
+    And only the payments with their property "$.paymentCreationDate" lower or equal than "<creation_date>" are returned
 
     Examples:
       | creation_date |
       | NOW - 1 day   |
       | NOW - 3 days  |
       | NOW - 7 days  |
-
 
   @retrieve_payments_07_date_range
   Scenario Outline: List of payments within a creationDate range
@@ -134,7 +127,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
       | NOW - 30 days       | NOW               |
       | NOW - 30 days       | NOW - 7 days      |
 
-
   @retrieve_payments_08_ordering
   Scenario Outline: List of payments ordered by creationPaymentDate
     Given several existing payments created by operation createPayment OR preparePayment
@@ -153,7 +145,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
       | desc  |
       | asc   |
 
-
   @retrieve_payments_09_payment_status
   Scenario Outline: List of payments in a given status
     Given several existing payments created by operation createPayment OR preparePayment in different payment status
@@ -165,18 +156,17 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     And the response header "x-correlator" has same value as the request header "x-correlator"
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/PaymentArray"
-    And all the payments returned have their property "$.paymentStatus" == "<status>"
-    And only the payments with their property "$.paymentStatus" == "<status>" are returned
+    And all the payments returned have their property "$.paymentStatus" == "<payment_status>"
+    And only the payments with their property "$.paymentStatus" == "<payment_status>" are returned
 
     Examples:
       | payment_status     |
       | processing         |
       | pending_validation |
-      | denied             | 
-      | reserved           | 
-      | succeeded          | 
+      | denied             |
+      | reserved           |
+      | succeeded          |
       | cancelled          |
-
 
   @retrieve_payments_10_merchantIdentifier
   Scenario: List of payments for a given merchantIdentifier
@@ -192,7 +182,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     And all the payments returned have their property "$.amountTransaction.paymentAmount.chargingMetadata.merchantIdentifier" set to the same value as the query parameter "merchantIdentifier"
     And only the payments with their property "$.amountTransaction.paymentAmount.chargingMetadata.merchantIdentifier" set to the same value as the query parameter "merchantIdentifier" are returned
 
-
   @retrieve_payments_11_pagination
   Scenario: Pagination in List of payments
     Given several existing payments created by operation createPayment OR preparePayment, at least more than five
@@ -206,7 +195,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     # The response has to comply with the generic response schema which is part of the spec
     And the response body complies with the OAS schema at "/components/schemas/PaymentArray"
     And only five payments returned
-
 
   ##############################
   # Error scenarios
@@ -231,7 +219,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
       | NOW                 | NOW - 7 days      |
       | NOW - 7 days        | NOW - 30 days     |
 
-
   @retrieve_payments_400.02_out_of_range
   Scenario: List of payments out of range
     Given several existing payments created by operation createPayment OR preparePayment
@@ -243,7 +230,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     And the response property "$.status" is 400
     And the response property "$.code" is "CARRIER_BILLING.OUT_OF_RANGE"
     And the response property "$.message" contains a user friendly text
-
 
   @retrieve_payments_400.03_too_many_matching_records
   Scenario: List of payments too many matching records
@@ -258,7 +244,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     And the response property "$.code" is "CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS"
     And the response property "$.message" contains a user friendly text
 
-
   # Error 401 scenarios
 
   @retrieve_payments_401.01_no_authorization_header
@@ -270,7 +255,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
 
-
   @retrieve_payments_401.02_expired_access_token
   Scenario: Expired access token
     Given the header "Authorization" is set to an expired access token
@@ -279,7 +263,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
-
 
   @retrieve_payments_401.03_invalid_access_token
   Scenario: Invalid access token
@@ -290,7 +273,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
     And the response property "$.message" contains a user friendly text
-
 
   # Error 403 scenarios
 
@@ -304,7 +286,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
 
-
   @retrieve_payment_403.02_phoneNumber_token_mismatch
   Scenario: Inconsistent access token context for the phoneNumber
     # To test this, a 3-legged access token has to be obtained without associated to a phoneNumber
@@ -315,8 +296,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation retrievePayments
     And the response property "$.code" is "INVALID_TOKEN_CONTEXT"
     And the response property "$.message" contains a user friendly text
 
-
   ##############################
   ##END
   ##############################
-

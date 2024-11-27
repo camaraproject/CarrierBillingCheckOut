@@ -1,0 +1,74 @@
+{
+  "no-files-without-scenarios" : "on",
+  "no-unnamed-features": "on",
+  "no-unnamed-scenarios": "on",
+  "no-dupe-scenario-names": ["on", "in-feature"],
+  "no-dupe-feature-names": "on",
+  "no-partially-commented-tag-lines": "on",
+  "indentation" : [
+    "on", {
+      "Feature": 0,
+      "Background": 2, //CHANGED: From "0" to "2". Should BE of level "2"
+      "Scenario": 2,
+      "Step": 2,
+      "Examples": 4,
+      "example": 6, //CHANGED: From "4" to "6". Should BE of level "6" to have more indentation than the "Examples" umbrella
+      "given": 4,
+      "when": 4,
+      "then": 4,
+      "and": 4,
+      "but": 4,
+      "feature tag": 2,
+      "scenario tag": 2
+    }
+  ],
+  "no-trailing-spaces": "on",
+  "new-line-at-eof": ["on", "no"],
+  "no-multiple-empty-lines": "on",
+  "no-empty-file": "on",
+  "no-scenario-outlines-without-examples": "on",
+  "name-length": ["on", {"Feature": 90, "Step": 190, "Scenario": 190}],
+  "no-restricted-tags": ["on", {"tags": ["@watch", "@wip"]}],
+  "use-and": "on",
+  "keywords-in-logical-order": "on",
+  "no-duplicate-tags": "on",
+  "no-superfluous-tags": "on",
+  "no-homogenous-tags": "on",
+  "one-space-between-tags": "on",
+  "no-unused-variables": "on",
+  "no-background-only-scenario": "on",
+  "no-empty-background": "on",
+  "scenario-size": ["on", { "steps-length": {"Background": 15, "Scenario": 15}}],
+  "only-one-when": "off",
+  "allowed-tags": ["on", {
+  "patterns": [
+    "^@watch$",                        
+    "^@wip$",                                            
+    "^@.*$"                                   
+  ]
+ }],
+  "file-name": ["off", {"style": "kebab-case"}], //DISABLED ("on" -> "off"): As per ATP testing guidelines, the `operationId` can be part of the test file and `operationId` follow lowerCamelCase format
+  "max-scenarios-per-file": ["on", {"maxScenarios": 50, "countOutlineExamples": true}],
+  "no-restricted-patterns": ["on", {
+    "Global": [
+      "^globally restricted pattern"
+    ],
+    "Feature": [
+      "poor description",
+//     "validate", //DISABLED: Specifically for Carrier Billing as there is an operation named validatePayment
+      "verify"
+    ],
+    "Background": [
+      "show last response",
+      "a debugging step"
+    ],
+    "Scenario": [
+      "show last response",
+      "a debugging step"
+    ]
+  }],
+  "required-tags": ["on", {
+  "tags": ["^@.*$"], // Allow any tag starting with '@'
+  "ignoreUntagged": false // Enforce tagging
+}]
+}
