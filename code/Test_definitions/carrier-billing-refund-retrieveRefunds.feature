@@ -1,4 +1,4 @@
-Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation retrieveRefunds
+Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrieveRefunds
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
@@ -11,7 +11,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation retrieveRefunds
   # References to OAS spec schemas refer to schemas specifies in carrier-billing-refund.yaml, version 0.1.0
 
   Background: Common retrievePayment setup
-    Given the resource "/carrier-billing-refund/v0.1/payments/{paymentId}/refunds"
+    Given the resource "/carrier-billing-refund/v0.2/payments/{paymentId}/refunds"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" is set to a UUID value
@@ -291,7 +291,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.1 - Operation retrieveRefunds
     When the HTTP "GET" request is sent
     Then the response status code is 403
     And the response property "$.status" is 403
-    And the response property "$.code" is "INVALID_TOKEN_CONTEXT"
+    And the response property "$.code" is "CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT"
     And the response property "$.message" contains a user friendly text
 
   ##############################

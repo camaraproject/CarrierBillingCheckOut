@@ -1,4 +1,4 @@
-Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
+Feature: CAMARA Carrier Billing API, v0.4 - Operation confirmPayment
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
@@ -11,7 +11,7 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
   # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.3.0
 
   Background: Common confirmPayment setup
-    Given the resource "/carrier-billing/v0.3/payments/{paymentId}/confirm"
+    Given the resource "/carrier-billing/v0.4/payments/{paymentId}/confirm"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" is set to a UUID value
@@ -73,6 +73,16 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
 
+  @confirm_payment_C02.01_phone_number_not_schema_compliant
+  Scenario: Phone number value does not comply with the schema
+    Given the header "Authorization" is set to a valid access which does not identify a single phone number
+    And the request body property "$.phoneNumber" does not comply with the OAS schema at "/components/schemas/PhoneNumber"
+    When the HTTP "POST" request is sent
+    Then the response status code is 400
+    And the response property "$.status" is 400
+    And the response property "$.code" is "INVALID_ARGUMENT"
+    And the response property "$.message" contains a user friendly text
+
   # Error 401 scenarios
 
   @confirm_payment_401.01_no_authorization_header
@@ -117,17 +127,6 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
     Then the response status code is 403
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
-    And the response property "$.message" contains a user friendly text
-
-  @confirm_payment_403.02_phoneNumber_token_mismatch
-  Scenario: Inconsistent access token context for the phoneNumber
-    # To test this, a 3-legged access token has to be obtained for a different phoneNumber
-    Given the request body property "$.amountTransaction.phoneNumber" is set to a valid testing phone number
-    And the header "Authorization" is set to a valid access token emitted for a different phone number
-    When the HTTP "POST" request is sent
-    Then the response status code is 403
-    And the response property "$.status" is 403
-    And the response property "$.code" is "INVALID_TOKEN_CONTEXT"
     And the response property "$.message" contains a user friendly text
 
   @confirm_payment_403.02_payment_denied
@@ -176,6 +175,37 @@ Feature: CAMARA Carrier Billing API, v0.3 - Operation confirmPayment
     Then the response status code is 422
     And the response property "$.status" is 422
     And the response property "$.code" is "CARRIER_BILLING.PHONE_NUMBER_REQUIRED"
+    And the response property "$.message" contains a user friendly text
+
+  @confirm_payment_C02.03_unnecessary_phone_number
+  Scenario: Phone number not to included when can be deducted from the access token
+    Given the header "Authorization" is set to a valid access token identifying a phone number
+    And the request body property "$.phoneNumber" is set to a valid phone number
+    When the HTTP "POST" request is sent
+    Then the response status code is 422
+    And the response property "$.status" is 422
+    And the response property "$.code" is "UNNECESSARY_IDENTIFIER"
+    And the response property "$.message" contains a user friendly text
+
+  @confirm_payment_C02.04_missing_phone_number
+  Scenario: Phone number not included and cannot be deducted from the access token
+    Given the header "Authorization" is set to a valid access which does not identify a single phone number
+    And the request body property "$.phoneNumber" is not included
+    When the HTTP "POST" request is sent
+    Then the response status code is 422
+    And the response property "$.status" is 422
+    And the response property "$.code" is "MISSING_IDENTIFIER"
+    And the response property "$.message" contains a user friendly text
+
+  # When the service is only offered to certain type of subscriptions, e.g. IoT, , B2C, etc
+  @confirm_payment_C02.05_phone_number_not_supported
+  Scenario: Service not available for the phone number
+    Given that the service is not available for all phone numbers commercialized by the operator
+    And a valid phone number, identified by the token or provided in the request body, for which the service is not applicable
+    When the HTTP "POST" request is sent
+    Then the response status code is 422
+    And the response property "$.status" is 422
+    And the response property "$.code" is "SERVICE_NOT_APPLICABLE"
     And the response property "$.message" contains a user friendly text
 
   ##############################
