@@ -47,24 +47,24 @@ The API definition(s) are based on
   - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.1/code/API_definitions/carrier_billing.yaml)
 
 ### Added
-* Added `# Identifying the phone number from the access token` section within `info.description` from Commonalities guideline.
-* Added `403 - CARRIER_BILLING.INVALID_PAYMENT_CONTEXT` for GET endpoints, to deal with the case where 3-legged Access Token is not valid for payment context, that is paymentId is not related to the phone number associated to the token.
-* Added applicable `422` traversal exceptions  
-* Added `429 - TOO_MANY_REQUESTS` to API endpoints.
+* Added `# Identifying the phone number from the access token` section within `info.description` from Commonalities guideline in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Added `403 - CARRIER_BILLING.INVALID_PAYMENT_CONTEXT` for GET endpoints, to deal with the case where 3-legged Access Token is not valid for payment context, that is paymentId is not related to the phone number associated to the token in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Added applicable `422` traversal exceptions in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Added `429 - TOO_MANY_REQUESTS` to API endpoints in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 * Added Gherkin Testing Linter in https://github.com/camaraproject/CarrierBillingCheckOut/pull/191.
 
 ### Changed
-* Updated `# Authorization and authentication` section from ICM guideline.
-* Error model aligment with commonalities. Normalization values (i.e. enums) for `status` and `code`.
-
+* Updated `# Authorization and authentication` section from ICM guideline in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Error model aligment with commonalities. Normalization values (i.e. enums) for `status` and `code`. In https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Updated testing plan in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 
 ### Fixed
-* Updated `accessTokenExpiresUtc` description 
-* Some clarifications on descriptions.
+* Updated `accessTokenExpiresUtc` description in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Some clarifications on descriptions in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 
 ### Removed
-* Removed `403 - INVALID_TOKEN_CONTEXT`
-* Removed `5XX` errors
+* Removed `403 - INVALID_TOKEN_CONTEXT` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Removed `5XX` errors in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 
 ## Carrier Billing Refund v0.2.0-rc.1
 
@@ -83,23 +83,23 @@ The API definition(s) are based on
   - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.1/code/API_definitions/carrier_billing_refund.yaml)
 
 ### Added
-* Added `403 - CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT` for GET endpoints, to deal with the case where 3-legged Access Token is not valid for refund context, that is refundId is not related to the phone number associated to the token.
-* Added applicable `422` traversal exceptions  
-* Added `429 - TOO_MANY_REQUESTS` to API endpoints.
+* Added `403 - CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT` for GET endpoints, to deal with the case where 3-legged Access Token is not valid for refund context, that is refundId is not related to the phone number associated to the token in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Added applicable `422` traversal exceptions in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Added `429 - TOO_MANY_REQUESTS` to API endpoints in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 * Added Gherkin Testing Linter in https://github.com/camaraproject/CarrierBillingCheckOut/pull/191.
 
 ### Changed
-* Updated `# Authorization and authentication` section from ICM guideline.
-* Error model aligment with commonalities. Normalization values (i.e. enums) for `status` and `code`.
-
+* Updated `# Authorization and authentication` section from ICM guideline in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Error model aligment with commonalities. Normalization values (i.e. enums) for `status` and `code`. In https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Updated testing plan in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 
 ### Fixed
-* Updated `accessTokenExpiresUtc` description 
-* Some clarifications on descriptions.
+* Updated `accessTokenExpiresUtc` description in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Some clarifications on descriptions in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 
 ### Removed
-* Removed `403 - INVALID_TOKEN_CONTEXT`
-* Removed `5XX` errors
+* Removed `403 - INVALID_TOKEN_CONTEXT` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Removed `5XX` errors in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 
 ## New Contributors
 * N/A
