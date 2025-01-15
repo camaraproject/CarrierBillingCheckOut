@@ -8,7 +8,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrieveRefunds
   # * A phone number eligible for payment & refund
   # * Several payments and refunds performed in the environment (at least 10 for each of them)
   #
-  # References to OAS spec schemas refer to schemas specifies in carrier-billing-refund.yaml, version 0.1.0
+  # References to OAS spec schemas refer to schemas specifies in carrier-billing-refund.yaml, version 0.2.0
 
   Background: Common retrievePayment setup
     Given the resource "/carrier-billing-refund/v0.2/payments/{paymentId}/refunds"
