@@ -8,7 +8,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation createPayment
   # * A phone number eligible for payment (no restrictions for it to be used to perform a payment)
   # * A phone number not-eligible for payment (payment is denied for it due to business conditions)
   #
-  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.4.0
+  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.4.0-rc.1
 
   Background: Common createPayment setup
     Given the resource "/carrier-billing/v0.4/payments"
@@ -276,7 +276,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation createPayment
 
   @create_payment_C02.01_phone_number_not_schema_compliant
   Scenario: Phone number value does not comply with the schema
-    Given the header "Authorization" is set to a valid access which does not identify a single phone number
+    Given the header "Authorization" is set to a valid access token which does not identify a single phone number
     And the request body property "$.phoneNumber" does not comply with the OAS schema at "/components/schemas/PhoneNumber"
     When the HTTP "POST" request is sent
     Then the response status code is 400
@@ -393,7 +393,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation createPayment
     And the response property "$.message" contains a user friendly text
 
   @create_payment_C02.03_unnecessary_phone_number
-  Scenario: Phone number not to included when can be deducted from the access token
+  Scenario: Phone number not to be included when it can be deduced from the access token
     Given the header "Authorization" is set to a valid access token identifying a phone number
     And the request body property "$.phoneNumber" is set to a valid phone number
     When the HTTP "POST" request is sent
@@ -404,7 +404,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation createPayment
 
   @create_payment_C02.04_missing_phone_number
   Scenario: Phone number not included and cannot be deducted from the access token
-    Given the header "Authorization" is set to a valid access which does not identify a single phone number
+    Given the header "Authorization" is set to a valid access token which does not identify a single phone number
     And the request body property "$.phoneNumber" is not included
     When the HTTP "POST" request is sent
     Then the response status code is 422

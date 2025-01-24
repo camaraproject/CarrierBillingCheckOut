@@ -66,7 +66,7 @@ info:
 externalDocs:
   description: Product documentation at Camara
   url: https://github.com/camaraproject/CarrierBillingCheckOut
-x-camara-commonalities: 0.5.0
+x-camara-commonalities: 0.5
 servers:
   - url: "{apiRoot}/carrier-billing-refund/v0.2rc1"
     variables:
@@ -1364,11 +1364,11 @@ components:
           examples:
             GENERIC_429_TOO_MANY_REQUESTS:
               summary: Generic Too Many Requests
-              description: API Server request limit is overpassed
+              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
               value:
                 status: 429
                 code: TOO_MANY_REQUESTS
-                message: Either out of resource quota or reaching rate limiting.
+                message: Rate limit reached.
   parameters:
     x-correlator:
       name: x-correlator
@@ -1376,6 +1376,8 @@ components:
       description: Correlation id for the different services
       schema:
         type: string
+        pattern: ^[a-zA-Z0-9-]{0,55}$
+        example: "b4333c46-49c0-4f62-80d7-f0ef930f1c46"
     Page:
       name: page
       in: query
@@ -1442,6 +1444,7 @@ components:
       description: Correlation id for the different services
       schema:
         type: string
+        pattern: ^[a-zA-Z0-9-]{0,55}$
     Content-Last-Key:
       description: Indicates the index of the last result provided in the response
       schema:

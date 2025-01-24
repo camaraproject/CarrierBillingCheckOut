@@ -7,7 +7,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation validatePayment
   # Testing assets:
   # * N/A (so far)
   #
-  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.4.0
+  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.4.0-rc.1
 
   Background: Common validatePayment setup
     Given the resource "/carrier-billing/v0.4/payments/{paymentId}/validate"
