@@ -826,8 +826,7 @@ components:
             A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
 
             Additional Considerations:
-            - When phoneNumber is not indicated, it can be inferred from authorization context (i.e. token), otherwise `HTTP 422 - MISSING_IDENTIFIER` will be answered.
-            - When phoneNumber is indicated, authorization context will be consistent, otherwise `HTTP 422 - UNNECESSARY_IDENTIFIER` will be answered.
+            - Take a look to section `# Identifying the phone number from the access token` regarding the use of this field.
           pattern: '^\+[1-9][0-9]{4,14}$'
           example: "+34671999000"
         clientCorrelator:
@@ -868,8 +867,7 @@ components:
             A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
 
             Additional Considerations:
-            - When phoneNumber is not indicated, it can be inferred from authorization context (i.e. token), otherwise `HTTP 422 - MISSING_IDENTIFIER` will be answered.
-            - When phoneNumber is indicated, authorization context will be consistent, otherwise `HTTP 422 - UNNECESSARY_IDENTIFIER` will be answered.
+            - Take a look to section `# Identifying the phone number from the access token` regarding the use of this field.
           pattern: '^\+[1-9][0-9]{4,14}$'
           example: "+34671999000"
     ValidatePayment:
@@ -991,8 +989,7 @@ components:
             A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
 
             Additional Considerations:
-            - When phoneNumber is not indicated, it can be inferred from authorization context (i.e. token), otherwise `HTTP 422 - MISSING_IDENTIFIER` will be answered.
-            - When phoneNumber is indicated, authorization context will be consistent, otherwise `HTTP 422 - UNNECESSARY_IDENTIFIER` will be answered.
+            - Take a look to section `# Identifying the phone number from the access token` regarding the use of this field.
           pattern: '^\+[1-9][0-9]{4,14}$'
           example: "+34671999000"
         clientCorrelator:
