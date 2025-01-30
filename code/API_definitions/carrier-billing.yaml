@@ -105,16 +105,30 @@ info:
 
     # Authorization and authentication
 
-    The "Camara Security and Interoperability Profile" provides details on how a client requests an access token. Please refer to Identify and Consent Management (https://github.com/camaraproject/IdentityAndConsentManagement/) for the released version of the Profile.
+    The "Camara Security and Interoperability Profile" provides details of how an API consumer requests an access token. Please refer to Identity and Consent Management (https://github.com/camaraproject/IdentityAndConsentManagement/) for the released version of the profile.
 
-    Which specific authorization flows are to be used will be determined during onboarding process, happening between the API Client and the Telco Operator exposing the API, taking into account the declared purpose for accessing the API, while also being subject to the prevailing legal framework dictated by local legislation.
+    The specific authorization flows to be used will be agreed upon during the onboarding process, happening between the provider of the application consuming the API and the operator's API exposure platform, taking into account the declared purpose for accessing the API, whilst also being subject to the prevailing legal framework dictated by local legislation.
 
-    It is important to remark that in cases where personal user data is processed by the API, and users can exercise their rights through mechanisms such as opt-in and/or opt-out, the use of 3-legged access tokens becomes mandatory. This measure ensures that the API remains in strict compliance with user privacy preferences and regulatory obligations, upholding the principles of transparency and user-centric data control.
+    In cases where personal data is processed by the API and users can exercise their rights through mechanisms such as opt-in and/or opt-out, the use of three-legged access tokens is mandatory. This ensures that the API remains in compliance with privacy regulations, upholding the principles of transparency and user-centric privacy-by-design.
+
+    # Identifying the phone number from the access token
+
+    This API requires the API consumer to identify a phone number as the subject of the API as follows:
+    - When the API is invoked using a two-legged access token, the subject will be identified from the optional `phoneNumber` field, which therefore MUST be provided.
+    - When a three-legged access token is used however, this optional identifier MUST NOT be provided, as the subject will be uniquely identified from the access token.
+
+    This approach simplifies API usage for API consumers using a three-legged access token to invoke the API by relying on the information that is associated with the access token and was identified during the authentication process.
+
+    ## Error handling:
+
+    - If the subject cannot be identified from the access token and the optional `phoneNumber` field is not included in the request, then the server will return an error with the `422 MISSING_IDENTIFIER` error code.
+
+    - If the subject can be identified from the access token and the optional `phoneNumber` field is also included in the request, then the server will return an error with the `422 UNNECESSARY_IDENTIFIER` error code. This will be the case even if the same phone number is identified by these two methods, as the server is unable to make this comparison.
 
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
-  version: 0.3.1
+  version: 0.4.0-rc.1
   title: Carrier Billing
   license:
     name: Apache 2.0
@@ -122,9 +136,9 @@ info:
 externalDocs:
   description: Product documentation at Camara
   url: https://github.com/camaraproject/CarrierBillingCheckOut
-x-camara-commonalities: 0.4.0
+x-camara-commonalities: 0.5
 servers:
-  - url: "{apiRoot}/carrier-billing/v0.3"
+  - url: "{apiRoot}/carrier-billing/v0.4rc1"
     variables:
       apiRoot:
         default: http://localhost:9091
@@ -195,10 +209,6 @@ paths:
                   $ref: "#/components/responses/Generic410"
                 "429":
                   $ref: "#/components/responses/Generic429"
-                "500":
-                  $ref: "#/components/responses/Generic500"
-                "503":
-                  $ref: "#/components/responses/Generic503"
       responses:
         "201":
           description: Created
@@ -219,12 +229,8 @@ paths:
           $ref: "#/components/responses/Generic409"
         "422":
           $ref: "#/components/responses/PaymentUnprocessable422"
-        "500":
-          $ref: "#/components/responses/Generic500"
-        "503":
-          $ref: "#/components/responses/Generic503"
-        "504":
-          $ref: "#/components/responses/Generic504"
+        "429":
+          $ref: "#/components/responses/Generic429"
     get:
       security:
         - openId:
@@ -274,12 +280,8 @@ paths:
           $ref: "#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/PaymentReadPermissionDenied403"
-        "500":
-          $ref: "#/components/responses/Generic500"
-        "503":
-          $ref: "#/components/responses/Generic503"
-        "504":
-          $ref: "#/components/responses/Generic504"
+        "429":
+          $ref: "#/components/responses/Generic429"
   /payments/{paymentId}:
     get:
       security:
@@ -317,12 +319,8 @@ paths:
           $ref: "#/components/responses/PaymentReadPermissionDenied403"
         "404":
           $ref: "#/components/responses/Generic404"
-        "500":
-          $ref: "#/components/responses/Generic500"
-        "503":
-          $ref: "#/components/responses/Generic503"
-        "504":
-          $ref: "#/components/responses/Generic504"
+        "429":
+          $ref: "#/components/responses/Generic429"
   /payments/prepare:
     post:
       security:
@@ -381,10 +379,6 @@ paths:
                   $ref: "#/components/responses/Generic410"
                 "429":
                   $ref: "#/components/responses/Generic429"
-                "500":
-                  $ref: "#/components/responses/Generic500"
-                "503":
-                  $ref: "#/components/responses/Generic503"
       responses:
         "201":
           description: Created
@@ -409,19 +403,28 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorInfo"
-              example:
-                code: ALREADY_EXISTS
-                status: 409
-                message: "Another session is created for the same UE"
+                allOf:
+                  - $ref: "#/components/schemas/ErrorInfo"
+                  - type: object
+                    properties:
+                      status:
+                        enum:
+                          - 409
+                      code:
+                        enum:
+                          - ALREADY_EXISTS
+              examples:
+                GENERIC_409_ALREADY_EXISTS:
+                  summary: Generic Already Exists
+                  description: Trying to create an existing resource
+                  value:
+                    code: ALREADY_EXISTS
+                    status: 409
+                    message: "Another session is created for the same UE"
         "422":
           $ref: "#/components/responses/PaymentUnprocessable422"
-        "500":
-          $ref: "#/components/responses/Generic500"
-        "503":
-          $ref: "#/components/responses/Generic503"
-        "504":
-          $ref: "#/components/responses/Generic504"
+        "429":
+          $ref: "#/components/responses/Generic429"
   /payments/{paymentId}/validate:
     post:
       security:
@@ -467,20 +470,26 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorInfo"
+                allOf:
+                  - $ref: "#/components/schemas/ErrorInfo"
+                  - type: object
+                    properties:
+                      status:
+                        enum:
+                          - 409
+                      code:
+                        enum:
+                          - ALREADY_EXISTS
               examples:
-                Generic409:
+                GENERIC_409_ALREADY_EXISTS:
                   summary: Conflict
+                  description: paymentId already validated
                   value:
                     code: ALREADY_EXISTS
                     status: 409
                     message: "Payment already validated"
-        "500":
-          $ref: "#/components/responses/Generic500"
-        "503":
-          $ref: "#/components/responses/Generic503"
-        "504":
-          $ref: "#/components/responses/Generic504"
+        "429":
+          $ref: "#/components/responses/Generic429"
   /payments/{paymentId}/confirm:
     post:
       security:
@@ -524,12 +533,8 @@ paths:
           $ref: "#/components/responses/PaymentConfirmConflict409"
         "422":
           $ref: "#/components/responses/PaymentSecondStepUnprocessable422"
-        "500":
-          $ref: "#/components/responses/Generic500"
-        "503":
-          $ref: "#/components/responses/Generic503"
-        "504":
-          $ref: "#/components/responses/Generic504"
+        "429":
+          $ref: "#/components/responses/Generic429"
   /payments/{paymentId}/cancel:
     post:
       security:
@@ -573,12 +578,8 @@ paths:
           $ref: "#/components/responses/PaymentCancelConflict409"
         "422":
           $ref: "#/components/responses/PaymentSecondStepUnprocessable422"
-        "500":
-          $ref: "#/components/responses/Generic500"
-        "503":
-          $ref: "#/components/responses/Generic503"
-        "504":
-          $ref: "#/components/responses/Generic504"
+        "429":
+          $ref: "#/components/responses/Generic429"
 components:
   securitySchemes:
     openId:
@@ -728,7 +729,7 @@ components:
             accessTokenExpiresUtc:
               type: string
               format: date-time
-              description: REQUIRED. An absolute UTC instant at which the token shall be considered expired.
+              description: REQUIRED. An absolute (UTC) timestamp at which the token shall be considered expired. Token expiration should occur after the expiration of the requested payment, allowing the client to be notified of any changes during the payment's existence. If the token expires while the payment is still active, the client will stop receiving notifications.
             accessTokenType:
               description: REQUIRED. Type of the access token (See [OAuth 2.0](https://tools.ietf.org/html/rfc6749#section-7.1)).
               type: string
@@ -751,7 +752,7 @@ components:
             accessTokenExpiresUtc:
               type: string
               format: date-time
-              description: REQUIRED. An absolute UTC instant at which the token shall be considered expired.
+              description: REQUIRED. An absolute (UTC) timestamp at which the token shall be considered expired. Token expiration should occur after the expiration of the requested payment, allowing the client to be notified of any changes during the payment's existence. If the token expires while the payment is still active, the client will stop receiving notifications.
             accessTokenType:
               description: REQUIRED. Type of the access token (See [OAuth 2.0](https://tools.ietf.org/html/rfc6749#section-7.1)).
               type: string
@@ -825,8 +826,7 @@ components:
             A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
 
             Additional Considerations:
-            - When phoneNumber is not indicated, it can be inferred from authorization context (i.e. token), otherwise `HTTP 403` will be answered.
-            - When phoneNumber is indicated, authorization context will be consistent, otherwise `HTTP 403` will be answered.
+            - Take a look to section `# Identifying the phone number from the access token` regarding the use of this field.
           pattern: '^\+[1-9][0-9]{4,14}$'
           example: "+34671999000"
         clientCorrelator:
@@ -867,8 +867,7 @@ components:
             A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
 
             Additional Considerations:
-            - When phoneNumber is not indicated, it can be inferred from authorization context (i.e. token), otherwise `HTTP 403` will be answered.
-            - When phoneNumber is indicated, authorization context will be consistent, otherwise `HTTP 403` will be answered.
+            - Take a look to section `# Identifying the phone number from the access token` regarding the use of this field.
           pattern: '^\+[1-9][0-9]{4,14}$'
           example: "+34671999000"
     ValidatePayment:
@@ -990,8 +989,7 @@ components:
             A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
 
             Additional Considerations:
-            - When phoneNumber is not indicated, it can be inferred from authorization context (i.e. token), otherwise `HTTP 403` will be answered.
-            - When phoneNumber is indicated, authorization context will be consistent, otherwise `HTTP 403` will be answered.
+            - Take a look to section `# Identifying the phone number from the access token` regarding the use of this field.
           pattern: '^\+[1-9][0-9]{4,14}$'
           example: "+34671999000"
         clientCorrelator:
@@ -1365,7 +1363,16 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 400
+                  code:
+                    enum:
+                      - INVALID_ARGUMENT
           examples:
             GENERIC_400_INVALID_ARGUMENT:
               summary: Generic Invalid Argument
@@ -1386,7 +1393,19 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 400
+                  code:
+                    enum:
+                      - INVALID_ARGUMENT
+                      - OUT_OF_RANGE
+                      - CARRIER_BILLING.INVALID_DATE_RANGE
+                      - CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS
           examples:
             GENERIC_400_INVALID_ARGUMENT:
               summary: Generic Invalid Argument
@@ -1433,7 +1452,18 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 400
+                  code:
+                    enum:
+                      - INVALID_ARGUMENT
+                      - INVALID_CREDENTIAL
+                      - INVALID_TOKEN
           examples:
             GENERIC_400_INVALID_ARGUMENT:
               summary: Generic Invalid Argument
@@ -1486,7 +1516,18 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 400
+                  code:
+                    enum:
+                      - INVALID_ARGUMENT
+                      - INVALID_CREDENTIAL
+                      - INVALID_TOKEN
           examples:
             GENERIC_400_INVALID_ARGUMENT:
               summary: Generic Invalid Argument
@@ -1528,7 +1569,16 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 400
+                  code:
+                    enum:
+                      - INVALID_ARGUMENT
           examples:
             GENERIC_400_INVALID_ARGUMENT:
               summary: Generic Invalid Argument
@@ -1557,7 +1607,19 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 400
+                  code:
+                    enum:
+                      - INVALID_ARGUMENT
+                      - CARRIER_BILLING.INVALID_AUTHORIZATION_ID
+                      - CARRIER_BILLING.INVALID_CODE
+                      - CARRIER_BILLING.VALIDATION_FAILED
           examples:
             GENERIC_400_INVALID_ARGUMENT:
               summary: Generic Invalid Argument
@@ -1609,7 +1671,17 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 401
+                  code:
+                    enum:
+                      - UNAUTHENTICATED
+                      - AUTHENTICATION_REQUIRED
           examples:
             GENERIC_401_UNAUTHENTICATED:
               summary: Generic Unauthenticated
@@ -1633,7 +1705,16 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 403
+                  code:
+                    enum:
+                      - PERMISSION_DENIED
           examples:
             GENERIC_403_PERMISSION_DENIED:
               description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
@@ -1645,7 +1726,6 @@ components:
       description: |-
         Client does not have sufficient permission.
         In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Phone Number provided not matching Access Token context ("code": "INVALID_TOKEN_CONTEXT","message": "Phone Number is not consistent with access token.").
           - Payment denied by business ("code": "CARRIER_BILLING.PAYMENT_DENIED","message": "Payment denied by business.").
       headers:
         x-correlator:
@@ -1653,7 +1733,17 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 403
+                  code:
+                    enum:
+                      - PERMISSION_DENIED
+                      - CARRIER_BILLING.PAYMENT_DENIED
           examples:
             GENERIC_403_PERMISSION_DENIED:
               description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
@@ -1661,13 +1751,6 @@ components:
                 status: 403
                 code: PERMISSION_DENIED
                 message: Client does not have sufficient permissions to perform this action.
-            GENERIC_403_INVALID_TOKEN_CONTEXT:
-              summary: Invalid access token context
-              description: Reflects some inconsistency between information in some field of the API and the related OAuth2 Token
-              value:
-                status: 403
-                code: INVALID_TOKEN_CONTEXT
-                message: "Phone Number is not consistent with access token."
             GENERIC_403_PAYMENT_DENIED:
               summary: Generic Payment Denied
               description: Payment denied by business
@@ -1679,7 +1762,6 @@ components:
       description: |-
         Client does not have sufficient permission.
         In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Phone Number provided not matching Access Token context ("code": "INVALID_TOKEN_CONTEXT","message": "Phone Number is not consistent with access token.").
           - Payment denied by business ("code": "CARRIER_BILLING.PAYMENT_DENIED","message": "Payment denied by business.").
       headers:
         x-correlator:
@@ -1687,7 +1769,17 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 403
+                  code:
+                    enum:
+                      - PERMISSION_DENIED
+                      - CARRIER_BILLING.PAYMENT_DENIED
           examples:
             GENERIC_403_PERMISSION_DENIED:
               description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
@@ -1695,13 +1787,6 @@ components:
                 status: 403
                 code: PERMISSION_DENIED
                 message: Client does not have sufficient permissions to perform this action.
-            GENERIC_403_INVALID_TOKEN_CONTEXT:
-              summary: Invalid access token context
-              description: Reflects some inconsistency between information in some field of the API and the related OAuth2 Token
-              value:
-                status: 403
-                code: INVALID_TOKEN_CONTEXT
-                message: "Phone Number is not consistent with access token."
             GENERIC_403_PAYMENT_DENIED:
               summary: Generic Payment Denied
               description: Payment denied by business
@@ -1712,15 +1797,22 @@ components:
     PaymentCancelPermissionDenied403:
       description: |-
         Client does not have sufficient permission.
-        In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Phone Number provided not matching Access Token context ("code": "INVALID_TOKEN_CONTEXT","message": "Phone Number is not consistent with access token.").
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 403
+                  code:
+                    enum:
+                      - PERMISSION_DENIED
           examples:
             GENERIC_403_PERMISSION_DENIED:
               description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
@@ -1728,25 +1820,28 @@ components:
                 status: 403
                 code: PERMISSION_DENIED
                 message: Client does not have sufficient permissions to perform this action.
-            GENERIC_403_INVALID_TOKEN_CONTEXT:
-              summary: Invalid access token context
-              description: Reflects some inconsistency between information in some field of the API and the related OAuth2 Token
-              value:
-                status: 403
-                code: INVALID_TOKEN_CONTEXT
-                message: "Phone Number is not consistent with access token."
     PaymentReadPermissionDenied403:
       description: |-
         Client does not have sufficient permission.
         In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Phone Number cannot be deducted from access token context ("code": "INVALID_TOKEN_CONTEXT","message": "User phone number cannot be deducted from access token context.").
+          - Access Token is not valid for payment context (3-legged scenario) ("code": "CARRIER_BILLING.INVALID_PAYMENT_CONTEXT","message": "Invalid Access Token for payment context.").
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 403
+                  code:
+                    enum:
+                      - PERMISSION_DENIED
+                      - CARRIER_BILLING.INVALID_PAYMENT_CONTEXT
           examples:
             GENERIC_403_PERMISSION_DENIED:
               description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
@@ -1754,13 +1849,13 @@ components:
                 status: 403
                 code: PERMISSION_DENIED
                 message: Client does not have sufficient permissions to perform this action.
-            GENERIC_403_INVALID_TOKEN_CONTEXT:
-              summary: Invalid access token context
-              description: Reflects some inconsistency between information in some field of the API and the related OAuth2 Token
+            GENERIC_403_INVALID_PAYMENT_CONTEXT:
+              summary: Invalid payment context
+              description: Access Token is not valid for payment context
               value:
                 status: 403
-                code: INVALID_TOKEN_CONTEXT
-                message: "User phone number cannot be deducted from access token context."
+                code: CARRIER_BILLING.INVALID_PAYMENT_CONTEXT
+                message: "Invalid Access Token for payment context."
     Generic404:
       description: Resource Not Found
       headers:
@@ -1769,7 +1864,16 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 404
+                  code:
+                    enum:
+                      - NOT_FOUND
           examples:
             GENERIC_404_NOT_FOUND:
               summary: Generic Not Found
@@ -1786,7 +1890,16 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 409
+                  code:
+                    enum:
+                      - ALREADY_EXISTS
           examples:
             GENERIC_409_ALREADY_EXISTS:
               summary: Generic Already Exists
@@ -1806,7 +1919,18 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 409
+                  code:
+                    enum:
+                      - ALREADY_EXISTS
+                      - CARRIER_BILLING.PAYMENT_CONFIRMED
+                      - CARRIER_BILLING.PAYMENT_CANCELLED
           examples:
             GENERIC_409_ALREADY_EXISTS:
               summary: Generic Already Exists
@@ -1840,7 +1964,18 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 409
+                  code:
+                    enum:
+                      - ALREADY_EXISTS
+                      - CARRIER_BILLING.PAYMENT_CONFIRMED
+                      - CARRIER_BILLING.PAYMENT_CANCELLED
           examples:
             GENERIC_409_ALREADY_EXISTS:
               summary: Generic Already Exists
@@ -1871,7 +2006,16 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 410
+                  code:
+                    enum:
+                      - GONE
           examples:
             GENERIC_410_GONE:
               summary: Generic Gone
@@ -1884,7 +2028,9 @@ components:
       description: |-
         Client indicates content that is understable by the Server but unable to be processed.
         Scenarios that may exist:
-          - Phone Number is required ("code": "CARRIER_BILLING.PHONE_NUMBER_REQUIRED","message": "Phone Number is required.").
+          - Service not applicable for the provided identifier ("code": "SERVICE_NOT_APPLICABLE","message": "The service is not available for the provided identifier.")
+          - An identifier is not included in the request and the device or phone number identification cannot be derived from the 3-legged access token ("code": "MISSING_IDENTIFIER","message": "The phone number cannot be identified.")
+          - An explicit identifier is provided when a device or phone number has already been identified from the access token ("code": "UNNECESSARY_IDENTIFIER","message": "The phone number is already identified by the access token.")
           - Unauthorized amount requested ("code": "CARRIER_BILLING.UNAUTHORIZED_AMOUNT","message": "Unauthorized amount requested.").
           - Accumulated threshold amount for the user's mobile account overpassed ("code": "CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED","message": "Unathorized payment request. Accumulated user mobile payments overpass account amount threshold.").
       headers:
@@ -1893,15 +2039,39 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 422
+                  code:
+                    enum:
+                      - SERVICE_NOT_APPLICABLE
+                      - MISSING_IDENTIFIER
+                      - UNNECESSARY_IDENTIFIER
+                      - CARRIER_BILLING.UNAUTHORIZED_AMOUNT
+                      - CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED
           examples:
-            GENERIC_422_PHONE_NUMBER_REQUIRED:
-              summary: Generic Phone Number Required
-              description: Phone Number is required
+            GENERIC_422_SERVICE_NOT_APPLICABLE:
+              description: Service not applicable for the provided identifier
               value:
                 status: 422
-                code: CARRIER_BILLING.PHONE_NUMBER_REQUIRED
-                message: "Phone Number is required."
+                code: SERVICE_NOT_APPLICABLE
+                message: The service is not available for the provided identifier.
+            GENERIC_422_MISSING_IDENTIFIER:
+              description: An identifier is not included in the request and the device or phone number identification cannot be derived from the 3-legged access token
+              value:
+                status: 422
+                code: MISSING_IDENTIFIER
+                message: The phone number cannot be identified.
+            GENERIC_422_UNNECESSARY_IDENTIFIER:
+              description: An explicit identifier is provided when a device or phone number has already been identified from the access token
+              value:
+                status: 422
+                code: UNNECESSARY_IDENTIFIER
+                message: The phone number is already identified by the access token.
             GENERIC_422_UNAUTHORIZED_AMOUNT:
               summary: Generic Unauthorized Amount
               description: Unauthorized amount requested
@@ -1920,22 +2090,47 @@ components:
       description: |-
         Client indicates content that is understable by the Server but unable to be processed.
         Scenarios that may exist:
-          - Phone Number is required ("code": "CARRIER_BILLING.PHONE_NUMBER_REQUIRED","message": "Phone Number is required").
+          - Service not applicable for the provided identifier ("code": "SERVICE_NOT_APPLICABLE","message": "The service is not available for the provided identifier.")
+          - An identifier is not included in the request and the device or phone number identification cannot be derived from the 3-legged access token ("code": "MISSING_IDENTIFIER","message": "The phone number cannot be identified.")
+          - An explicit identifier is provided when a device or phone number has already been identified from the access token ("code": "UNNECESSARY_IDENTIFIER","message": "The phone number is already identified by the access token.")
+
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 422
+                  code:
+                    enum:
+                      - SERVICE_NOT_APPLICABLE
+                      - MISSING_IDENTIFIER
+                      - UNNECESSARY_IDENTIFIER
           examples:
-            GENERIC_422_PHONE_NUMBER_REQUIRED:
-              summary: Generic Phone Number Required
-              description: Phone Number is required
+            GENERIC_422_SERVICE_NOT_APPLICABLE:
+              description: Service not applicable for the provided identifier
               value:
                 status: 422
-                code: CARRIER_BILLING.PHONE_NUMBER_REQUIRED
-                message: "Phone Number is required."
+                code: SERVICE_NOT_APPLICABLE
+                message: The service is not available for the provided identifier.
+            GENERIC_422_MISSING_IDENTIFIER:
+              description: An identifier is not included in the request and the device or phone number identification cannot be derived from the 3-legged access token
+              value:
+                status: 422
+                code: MISSING_IDENTIFIER
+                message: The phone number cannot be identified.
+            GENERIC_422_UNNECESSARY_IDENTIFIER:
+              description: An explicit identifier is provided when a device or phone number has already been identified from the access token
+              value:
+                status: 422
+                code: UNNECESSARY_IDENTIFIER
+                message: The phone number is already identified by the access token.
     Generic429:
       description: Too Many Requests
       headers:
@@ -1944,66 +2139,24 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 429
+                  code:
+                    enum:
+                      - TOO_MANY_REQUESTS
           examples:
             GENERIC_429_TOO_MANY_REQUESTS:
               summary: Generic Too Many Requests
-              description: API Server request limit is overpassed
+              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
               value:
                 status: 429
                 code: TOO_MANY_REQUESTS
-                message: Either out of resource quota or reaching rate limiting.
-    Generic500:
-      description: Server error
-      headers:
-        x-correlator:
-          $ref: "#/components/headers/x-correlator"
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorInfo"
-          examples:
-            GENERIC_500_INTERNAL:
-              summary: Generic Server Error
-              description: Problem in Server side. Regular Server Exception
-              value:
-                status: 500
-                code: INTERNAL
-                message: Unknown server error. Typically a server bug.
-    Generic503:
-      description: Service unavailable
-      headers:
-        x-correlator:
-          $ref: "#/components/headers/x-correlator"
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorInfo"
-          examples:
-            GENERIC_503_UNAVAILABLE:
-              summary: Generic Service Unavailable
-              description: Service is not available. Temporary situation usually related to maintenance process in the server side
-              value:
-                status: 503
-                code: UNAVAILABLE
-                message: Service Unavailable.
-    Generic504:
-      description: Request timeout exceeded
-      headers:
-        x-correlator:
-          $ref: "#/components/headers/x-correlator"
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorInfo"
-          examples:
-            GENERIC_504_TIMEOUT:
-              summary: Generic Request Timeout
-              description: API Server Timeout
-              value:
-                status: 504
-                code: TIMEOUT
-                message: Request timeout exceeded.
+                message: Rate limit reached.
   parameters:
     x-correlator:
       name: x-correlator
@@ -2011,6 +2164,8 @@ components:
       description: Correlation id for the different services
       schema:
         type: string
+        pattern: ^[a-zA-Z0-9-]{0,55}$
+        example: "b4333c46-49c0-4f62-80d7-f0ef930f1c46"
     Page:
       name: page
       in: query
@@ -2080,6 +2235,7 @@ components:
       description: Correlation id for the different services
       schema:
         type: string
+        pattern: ^[a-zA-Z0-9-]{0,55}$
     Content-Last-Key:
       description: Indicates the index of the last result provided in the response
       schema:
