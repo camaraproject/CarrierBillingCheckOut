@@ -599,7 +599,7 @@ components:
           $ref: "#/components/schemas/AmountTransactionInput"
         sink:
           type: string
-          format: url
+          format: uri
           description: The address to which events shall be delivered, using the HTTP protocol.
           example: "https://endpoint.example.com/sink"
         sinkCredential:
@@ -634,13 +634,9 @@ components:
           description: Date time when the payment is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
         sink:
           type: string
-          format: url
+          format: uri
           description: The address to which events shall be delivered, using the HTTP protocol.
           example: "https://endpoint.example.com/sink"
-        sinkCredential:
-          allOf:
-            - description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
-            - $ref: "#/components/schemas/SinkCredential"
     PaymentArray:
       description: A list of payment(s)
       type: array
@@ -675,13 +671,9 @@ components:
           description: Date time when the payment is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
         sink:
           type: string
-          format: url
+          format: uri
           description: The address to which events shall be delivered, using the HTTP protocol.
           example: "https://endpoint.example.com/sink"
-        sinkCredential:
-          allOf:
-            - description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
-            - $ref: "#/components/schemas/SinkCredential"
     SinkCredential:
       type: object
       properties:
@@ -912,13 +904,9 @@ components:
             - description: Information to perform otp validation. Only needed when business case requires it. Sending of OTP is outside the scope of this specification.
         sink:
           type: string
-          format: url
+          format: uri
           description: The address to which events shall be delivered, using the HTTP protocol.
           example: "https://endpoint.example.com/sink"
-        sinkCredential:
-          allOf:
-            - description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
-            - $ref: "#/components/schemas/SinkCredential"
     BodyAmountReservationTransactionForReserveInput:
       required:
         - amountTransaction
@@ -928,7 +916,7 @@ components:
           $ref: "#/components/schemas/AmountReservationTransactionForReserveInput"
         sink:
           type: string
-          format: url
+          format: uri
           description: The address to which events shall be delivered, using the HTTP protocol.
           example: "https://endpoint.example.com/sink"
         sinkCredential:

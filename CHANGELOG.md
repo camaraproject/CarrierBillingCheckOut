@@ -61,6 +61,7 @@ The API definition(s) are based on
 * Updated testing plan in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 * Update API specification version and servers.url in https://github.com/camaraproject/CustomerInsights/pull/206.
 * Update Test Definitions API version in https://github.com/camaraproject/CustomerInsights/pull/206.
+* Update `sink` format to `uri` in https://github.com/camaraproject/CustomerInsights/pull/206.
 
 ### Fixed
 * Updated `accessTokenExpiresUtc` description in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
@@ -70,6 +71,7 @@ The API definition(s) are based on
 ### Removed
 * Removed `403 - INVALID_TOKEN_CONTEXT` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 * Removed `5XX` errors in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Removed `sinkCredential` from API responses in https://github.com/camaraproject/CustomerInsights/pull/206.
 
 ## Carrier Billing Refund v0.2.0
 
@@ -100,6 +102,7 @@ The API definition(s) are based on
 * Updated testing plan in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 * Update API specification version and servers.url in https://github.com/camaraproject/CustomerInsights/pull/206.
 * Update Test Definitions API version in https://github.com/camaraproject/CustomerInsights/pull/206.
+* Update `sink` format to `uri` in https://github.com/camaraproject/CustomerInsights/pull/206.
 
 ### Fixed
 * Updated `accessTokenExpiresUtc` description in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
@@ -109,6 +112,7 @@ The API definition(s) are based on
 ### Removed
 * Removed `403 - INVALID_TOKEN_CONTEXT` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 * Removed `5XX` errors in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Removed `sinkCredential` from API responses in https://github.com/camaraproject/CustomerInsights/pull/206.
 
 ## New Contributors
 * N/A
