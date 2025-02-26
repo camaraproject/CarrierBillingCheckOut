@@ -257,10 +257,6 @@ paths:
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
-            Content-Last-Key:
-              $ref: "#/components/headers/Content-Last-Key"
-            X-Total-Count:
-              $ref: "#/components/headers/X-Total-Count"
           content:
             application/json:
               schema:
@@ -324,10 +320,6 @@ paths:
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
-            Content-Last-Key:
-              $ref: "#/components/headers/Content-Last-Key"
-            X-Total-Count:
-              $ref: "#/components/headers/X-Total-Count"
           content:
             application/json:
               schema:
