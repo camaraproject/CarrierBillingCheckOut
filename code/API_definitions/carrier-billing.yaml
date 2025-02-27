@@ -1372,7 +1372,7 @@ components:
     GetPaymentsInvalid400:
       description: |-
         Invalid input. In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:
-          - Inconsistent startDate and endDate values ("code": "CARRIER_BILLING.INVALID_DATE_RANGE","message": "Client specified an invalid date range").
+          - Inconsistent paymentCreationDate.gte and paymentCreationDate.lte values ("code": "CARRIER_BILLING.INVALID_DATE_RANGE","message": "Client specified an invalid date range").
           - Request out of range ("code": "OUT_OF_RANGE","message": "Client specified an invalid range").
           - Too many matching records found ("code": "CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS","message": "Too many matching records found. Specify additional/suitable criteria to limit the number of records.").
       headers:
@@ -1404,7 +1404,7 @@ components:
                 message: Client specified an invalid argument, request body or query param.
             GENERIC_400_INVALID_DATE_RANGE:
               summary: Generic Invalid Date Range
-              description: Inconsistent startDate and endDate values
+              description: Inconsistent paymentCreationDate.gte and paymentCreationDate.lte values
               value:
                 status: 400
                 code: CARRIER_BILLING.INVALID_DATE_RANGE

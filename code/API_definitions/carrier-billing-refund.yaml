@@ -923,9 +923,9 @@ components:
     GetRefundsInvalid400:
       description: |-
         Invalid input. In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:
-          - Inconsistent startDate and endDate values ("code": "CARRIER_BILLING.INVALID_DATE_RANGE","message": "Client specified an invalid date range.").
+          - Inconsistent refundCreationDate.gte and refundCreationDate.lte values ("code": "CARRIER_BILLING_REFUND.INVALID_DATE_RANGE","message": "Client specified an invalid date range.").
           - Request out of range ("code": "OUT_OF_RANGE","message": "Client specified an invalid range.").
-          - Too many matching records found ("code": "CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS","message": "Too many matching records found. Specify additional/suitable criteria to limit the number of records.").
+          - Too many matching records found ("code": "CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS","message": "Too many matching records found. Specify additional/suitable criteria to limit the number of records.").
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
@@ -943,8 +943,8 @@ components:
                     enum:
                       - INVALID_ARGUMENT
                       - OUT_OF_RANGE
-                      - CARRIER_BILLING.INVALID_DATE_RANGE
-                      - CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS
+                      - CARRIER_BILLING_REFUND.INVALID_DATE_RANGE
+                      - CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS
           examples:
             GENERIC_400_INVALID_ARGUMENT:
               summary: Generic Invalid Argument
@@ -955,10 +955,10 @@ components:
                 message: Client specified an invalid argument, request body or query param.
             GENERIC_400_INVALID_DATE_RANGE:
               summary: Generic Invalid Date Range
-              description: Inconsistent startDate and endDate values
+              description: Inconsistent refundCreationDate.gte and refundCreationDate.lte values
               value:
                 status: 400
-                code: CARRIER_BILLING.INVALID_DATE_RANGE
+                code: CARRIER_BILLING_REFUND.INVALID_DATE_RANGE
                 message: "Client specified an invalid date range."
             GENERIC_400_OUT_OF_RANGE:
               summary: Generic Out Of Range
@@ -972,7 +972,7 @@ components:
               description: Too many matching records found
               value:
                 status: 400
-                code: CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS
+                code: CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS
                 message: "Too many matching records found. Specify additional/suitable criteria to limit the number of records."
     RefundInvalid400:
       description: |-
@@ -1397,7 +1397,7 @@ components:
         format: date-time
         type: string
     Order:
-      description: Used to return the sorted results in descending (default) or ascending order, based on `paymentCreationDate` property
+      description: Used to return the sorted results in descending (default) or ascending order, based on `refundCreationDate` property
       in: query
       name: order
       required: false
