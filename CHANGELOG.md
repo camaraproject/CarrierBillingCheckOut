@@ -53,7 +53,7 @@ The API definition(s) are based on
 * Added applicable `422` traversal exceptions in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 * Added `429 - TOO_MANY_REQUESTS` to API endpoints in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 * Added Gherkin Testing Linter in https://github.com/camaraproject/CarrierBillingCheckOut/pull/191.
-* Generate Tests for 429 Error in https://github.com/camaraproject/CustomerInsights/pull/206.
+* Generate Tests for 429 Error in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
 
 ### Changed
 * Updated `# Authorization and authentication` section from ICM guideline in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
