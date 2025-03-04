@@ -66,7 +66,7 @@ The API definition(s) are based on
 ### Fixed
 * Updated `accessTokenExpiresUtc` description in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 * Some clarifications on descriptions in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
-* Update `@{operationId}_403.01_invalid_token_permissions` test wording to be more generic in https://github.com/camaraproject/CustomerInsights/pull/206.
+* Update `@{operationId}_403.01_invalid_token_permissions` test wording to be more generic in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
 * Fix `CARRIER_BILLING.INVALID_DATE_RANGE` description in https://github.com/camaraproject/CustomerInsights/pull/206.
 
 ### Removed
