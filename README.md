@@ -7,17 +7,18 @@
 <a href="https://github.com/camaraproject/CarrierBillingCheckOut/releases/latest" title="Latest Release"><img src="https://img.shields.io/github/release/camaraproject/CarrierBillingCheckOut?style=plastic"></a>
 
 # CarrierBillingCheckOut
-Repository to describe, develop, document and test the CarrierBilling API family
+Repository to describe, develop, document and test the CarrierBilling APIs
 
 ## Scope
 * Service APIs for “CarrierBillingCheckOut” (see APIBacklog.md)  
-* It provides the customer with the ability to: 
-  * trigger carrier billing payment request (in one or two steps) 
-  * follow up of payment processing using as Payment Method Carrier Billing, i.e.: the operator performs the billing of the goods.
-  * NOTE: The scope of this API family should be limited (at least at a first stage) to 4G and 5G.
+* It provides the API consumer with the ability to: 
+  * Trigger carrier billing payment request (in one or two steps), which is a process that allows API consumers to make purchases by charging payments against Telco Operator Billing Systems.
+    * Follow up of payment, by means of query endpoints to get information about a list of payments or a specific payment.
+  * Trigger carrier billing refund request, which is a process that allows API consumers to ask for a `total` or `partial` return of the amount associated to a previous performed payment.
+    * Follow up of refund, by means of query endpoints to get information about a list of refunds or a specific refund.
+  * NOTE: The scope of these APIs should be limited (at least at a first stage) to 4G and 5G.
 * Describe, develop, document and test the APIs (with 1-2 Telcos)  
-  * Started: October 2022
-  * Location: virtually  
+  * Started: October 2022 
 
 ## Release Information
 <!-- Use/uncomment one or multiple the following options -->

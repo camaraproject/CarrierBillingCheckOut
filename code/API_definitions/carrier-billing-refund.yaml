@@ -63,10 +63,10 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
+  x-camara-commonalities: 0.5
 externalDocs:
   description: Product documentation at Camara
   url: https://github.com/camaraproject/CarrierBillingCheckOut
-x-camara-commonalities: 0.5
 servers:
   - url: "{apiRoot}/carrier-billing-refund/v0.2"
     variables:

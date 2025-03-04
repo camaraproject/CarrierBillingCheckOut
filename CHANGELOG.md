@@ -14,9 +14,10 @@
 
 The below sections record the changes for each API version in each release as follows:
 
-* for each first alpha or release-candidate API version, all changes since the release of the previous public API version
-* for subsequent alpha or release-candidate API versions, the delta with respect to the previous pre-release
-* for a public API version, the consolidated changes since the release of the previous public API version
+* for an alpha release, the delta with respect to the previous release
+* for the first release-candidate, all changes since the last public release
+* for subsequent release-candidate(s), only the delta to the previous release-candidate
+* for a public release, the consolidated changes since the previous public release
 
 ## r2.2
 
@@ -102,7 +103,7 @@ The API definition(s) are based on
 * Error model aligment with commonalities. Normalization values (i.e. enums) for `status` and `code`. In https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 * Updated testing plan in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 * Update API specification version and servers.url in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
-* Update Test Definitions API version in https://github.com/camaraproject/CustomerInsights/pull/206.
+* Update Test Definitions API version in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
 * Update `sink` format to `uri` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
 
 ### Fixed
