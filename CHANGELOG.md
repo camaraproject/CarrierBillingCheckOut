@@ -115,7 +115,7 @@ The API definition(s) are based on
 ### Removed
 * Removed `403 - INVALID_TOKEN_CONTEXT` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 * Removed `5XX` errors in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
-* Removed `sinkCredential` from API responses in https://github.com/camaraproject/CustomerInsights/pull/206.
+* Removed `sinkCredential` from API responses in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
 * Remove `Content-Last-Key` and `X-Total-Count` from `retrieveRefund` and `retrievePaymentRemainingAmount` operations as they are not applicable in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
 
 ## New Contributors
