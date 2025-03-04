@@ -101,7 +101,7 @@ The API definition(s) are based on
 * Updated `# Authorization and authentication` section from ICM guideline in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 * Error model aligment with commonalities. Normalization values (i.e. enums) for `status` and `code`. In https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 * Updated testing plan in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
-* Update API specification version and servers.url in https://github.com/camaraproject/CustomerInsights/pull/206.
+* Update API specification version and servers.url in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
 * Update Test Definitions API version in https://github.com/camaraproject/CustomerInsights/pull/206.
 * Update `sink` format to `uri` in https://github.com/camaraproject/CustomerInsights/pull/206.
 
