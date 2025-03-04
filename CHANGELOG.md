@@ -110,7 +110,7 @@ The API definition(s) are based on
 * Some clarifications on descriptions in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
 * Update `@{operationId}_403.01_invalid_token_permissions` test wording to be more generic in https://github.com/camaraproject/CustomerInsights/pull/206.
 * Fix `CARRIER_BILLING_REFUND.INVALID_DATE_RANGE` description in https://github.com/camaraproject/CustomerInsights/pull/206.
-* Fix some Error exceptions `CARRIER_BILLING...` to `CARRIER_BILLING_REFUND...` in https://github.com/camaraproject/CustomerInsights/pull/206.
+* Fix some Error exceptions `CARRIER_BILLING...` to `CARRIER_BILLING_REFUND...` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
 
 ### Removed
 * Removed `403 - INVALID_TOKEN_CONTEXT` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
