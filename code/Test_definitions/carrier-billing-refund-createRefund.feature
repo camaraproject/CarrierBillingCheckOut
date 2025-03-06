@@ -374,7 +374,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation createRefund
     And the header "Authorization" is set to a valid access token
     When the HTTP "POST" request is sent
     Then the response status code is 404
-    And the response property "$.status" is 409
+    And the response property "$.status" is 404
     And the response property "$.code" is "NOT_FOUND"
     And the response property "$.message" contains a user friendly text
 
@@ -426,7 +426,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation createRefund
     And the path parameter "paymentId" is set to a valid value of a payment whose "paymentStatus" != "succeeded"
     And the header "Authorization" is set to a valid access token
     When the HTTP "POST" request is sent
-    Then the response status code is 409
+    Then the response status code is 422
     And the response property "$.status" is 422
     And the response property "$.code" is "CARRIER_BILLING_REFUND.INVALID_PAYMENT_STATUS"
     And the response property "$.message" contains a user friendly text
