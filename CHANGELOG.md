@@ -44,9 +44,9 @@ The API definition(s) are based on
 
 
 - API definition **with inline documentation**:
-  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier_billing.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier_billing.yaml)
-  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.2/code/API_definitions/carrier_billing.yaml)
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing.yaml&nocors)
+  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.2/code/API_definitions/carrier-billing.yaml)
 
 ### Added
 * Added `# Identifying the phone number from the access token` section within `info.description` from Commonalities guideline in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
@@ -87,9 +87,9 @@ The API definition(s) are based on
   - Addition of `429 - TOO_MANY_REQUESTS`
 
 - API definition **with inline documentation**:
-  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier_billing_refund.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier_billing_refund.yaml)
-  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.2/code/API_definitions/carrier_billing_refund.yaml)
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing-refund.yaml&nocors)
+  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing-refund.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.2/code/API_definitions/carrier-billing-refund.yaml)
 
 ### Added
 * Added `403 - CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT` for GET endpoints, to deal with the case where 3-legged Access Token is not valid for refund context, that is refundId is not related to the phone number associated to the token in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
@@ -150,9 +150,9 @@ The API definition(s) are based on
 
 
 - API definition **with inline documentation**:
-  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.1/code/API_definitions/carrier_billing.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.1/code/API_definitions/carrier_billing.yaml)
-  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.1/code/API_definitions/carrier_billing.yaml)
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.1/code/API_definitions/carrier-billing.yaml&nocors)
+  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.1/code/API_definitions/carrier-billing.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.1/code/API_definitions/carrier-billing.yaml)
 
 ### Added
 * Added `# Identifying the phone number from the access token` section within `info.description` from Commonalities guideline in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
@@ -186,9 +186,9 @@ The API definition(s) are based on
   - Addition of `429 - TOO_MANY_REQUESTS`
 
 - API definition **with inline documentation**:
-  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.1/code/API_definitions/carrier_billing_refund.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.1/code/API_definitions/carrier_billing_refund.yaml)
-  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.1/code/API_definitions/carrier_billing_refund.yaml)
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.1/code/API_definitions/carrier-billing-refund.yaml&nocors)
+  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.1/code/API_definitions/carrier-billing-refund.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.1/code/API_definitions/carrier-billing-refund.yaml)
 
 ### Added
 * Added `403 - CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT` for GET endpoints, to deal with the case where 3-legged Access Token is not valid for refund context, that is refundId is not related to the phone number associated to the token in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
