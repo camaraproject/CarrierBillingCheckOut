@@ -26,7 +26,7 @@ info:
 
     This API allows to third party clients to request the payment of a (set of) digital good(s)/service(s), as well as to retrieve information about a specific payment or a list of payments.
 
-    In the scope of **version v0.3, only one-off payments are covered**. Recurrent payments (a.k.a. payment subscriptions) are not covered so far.
+    In the scope of **version v0.4, only one-off payments are covered**. Recurrent payments (a.k.a. payment subscriptions) are not covered so far.
 
     The API provides several endpoints/operations:
     - An endpoint to request a 1-STEP Payment, named `createPayment`.
@@ -107,7 +107,7 @@ info:
 
     The "Camara Security and Interoperability Profile" provides details of how an API consumer requests an access token. Please refer to Identity and Consent Management (https://github.com/camaraproject/IdentityAndConsentManagement/) for the released version of the profile.
 
-    The specific authorization flows to be used will be agreed upon during the onboarding process, happening between the provider of the application consuming the API and the operator's API exposure platform, taking into account the declared purpose for accessing the API, whilst also being subject to the prevailing legal framework dictated by local legislation.
+    The specific authorization flows to be used will be agreed upon during the onboarding process, happening between the API consumer and the API provider, taking into account the declared purpose for accessing the API, whilst also being subject to the prevailing legal framework dictated by local legislation.
 
     In cases where personal data is processed by the API and users can exercise their rights through mechanisms such as opt-in and/or opt-out, the use of three-legged access tokens is mandatory. This ensures that the API remains in compliance with privacy regulations, upholding the principles of transparency and user-centric privacy-by-design.
 
@@ -128,17 +128,17 @@ info:
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
-  version: 0.4.0-rc.1
+  version: 0.4.0
   title: Carrier Billing
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
+  x-camara-commonalities: 0.5
 externalDocs:
   description: Product documentation at Camara
   url: https://github.com/camaraproject/CarrierBillingCheckOut
-x-camara-commonalities: 0.5
 servers:
-  - url: "{apiRoot}/carrier-billing/v0.4rc1"
+  - url: "{apiRoot}/carrier-billing/v0.4"
     variables:
       apiRoot:
         default: http://localhost:9091
@@ -599,7 +599,7 @@ components:
           $ref: "#/components/schemas/AmountTransactionInput"
         sink:
           type: string
-          format: url
+          format: uri
           description: The address to which events shall be delivered, using the HTTP protocol.
           example: "https://endpoint.example.com/sink"
         sinkCredential:
@@ -634,13 +634,9 @@ components:
           description: Date time when the payment is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
         sink:
           type: string
-          format: url
+          format: uri
           description: The address to which events shall be delivered, using the HTTP protocol.
           example: "https://endpoint.example.com/sink"
-        sinkCredential:
-          allOf:
-            - description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
-            - $ref: "#/components/schemas/SinkCredential"
     PaymentArray:
       description: A list of payment(s)
       type: array
@@ -675,13 +671,9 @@ components:
           description: Date time when the payment is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
         sink:
           type: string
-          format: url
+          format: uri
           description: The address to which events shall be delivered, using the HTTP protocol.
           example: "https://endpoint.example.com/sink"
-        sinkCredential:
-          allOf:
-            - description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
-            - $ref: "#/components/schemas/SinkCredential"
     SinkCredential:
       type: object
       properties:
@@ -912,13 +904,9 @@ components:
             - description: Information to perform otp validation. Only needed when business case requires it. Sending of OTP is outside the scope of this specification.
         sink:
           type: string
-          format: url
+          format: uri
           description: The address to which events shall be delivered, using the HTTP protocol.
           example: "https://endpoint.example.com/sink"
-        sinkCredential:
-          allOf:
-            - description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
-            - $ref: "#/components/schemas/SinkCredential"
     BodyAmountReservationTransactionForReserveInput:
       required:
         - amountTransaction
@@ -928,7 +916,7 @@ components:
           $ref: "#/components/schemas/AmountReservationTransactionForReserveInput"
         sink:
           type: string
-          format: url
+          format: uri
           description: The address to which events shall be delivered, using the HTTP protocol.
           example: "https://endpoint.example.com/sink"
         sinkCredential:
@@ -1384,7 +1372,7 @@ components:
     GetPaymentsInvalid400:
       description: |-
         Invalid input. In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:
-          - Inconsistent startDate and endDate values ("code": "CARRIER_BILLING.INVALID_DATE_RANGE","message": "Client specified an invalid date range").
+          - Inconsistent paymentCreationDate.gte and paymentCreationDate.lte values ("code": "CARRIER_BILLING.INVALID_DATE_RANGE","message": "Client specified an invalid date range").
           - Request out of range ("code": "OUT_OF_RANGE","message": "Client specified an invalid range").
           - Too many matching records found ("code": "CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS","message": "Too many matching records found. Specify additional/suitable criteria to limit the number of records.").
       headers:
@@ -1416,7 +1404,7 @@ components:
                 message: Client specified an invalid argument, request body or query param.
             GENERIC_400_INVALID_DATE_RANGE:
               summary: Generic Invalid Date Range
-              description: Inconsistent startDate and endDate values
+              description: Inconsistent paymentCreationDate.gte and paymentCreationDate.lte values
               value:
                 status: 400
                 code: CARRIER_BILLING.INVALID_DATE_RANGE

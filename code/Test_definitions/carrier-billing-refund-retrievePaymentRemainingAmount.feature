@@ -8,7 +8,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
   # * A phone number eligible for payment & refund
   # * Several payments refunds performed in different situations (total and partial)
   #
-  # References to OAS spec schemas refer to schemas specifies in carrier-billing-refund.yaml, version 0.2.0-rc.1
+  # References to OAS spec schemas refer to schemas specifies in carrier-billing-refund.yaml, version 0.2.0
 
   Background: Common retrievePayment setup
     Given the resource "/carrier-billing-refund/v0.2/payments/{paymentId}/refunds/remaining-amount"
@@ -151,8 +151,8 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
 
   @retrieve_payment_remaining_amount_403.01_invalid_token_permissions
   Scenario: Inconsistent access token permissions
-    # To test this, an access token has to be obtained without carrier-billing-refund:refunds:read scope
-    Given header "Authorization" is set to a valid access token emitted without carrier-billing-refund:refunds:read scope
+    # To test this scenario, it will be necessary to obtain a token without the required scope
+    Given header "Authorization" is set to an access token without the required scope
     And the path parameter "paymentId" is set to a valid value
     When the HTTP "GET" request is sent
     Then the response status code is 403
@@ -177,10 +177,24 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
   Scenario: Payment not found
     Given the path parameter "paymentId" is set to non-existing value in the environment
     And the header "Authorization" is set to a valid access token
-    When the HTTP "POST" request is sent
+    When the HTTP "GET" request is sent
     Then the response status code is 404
     And the response property "$.status" is 404
     And the response property "$.code" is "NOT_FOUND"
+    And the response property "$.message" contains a user friendly text
+
+  # Error 429 scenarios
+
+  @retrieve_payment_remaining_amount_429.01_Too_Many_Requests
+  #To test this scenario environment has to be configured to reject requests reaching the threshold limit settled. N is a value defined by the Telco Operator
+  Scenario: Request is rejected due to threshold policy
+    Given the path parameter "paymentId" is set to a valid value in the environment
+    And the header "Authorization" is set to a valid access token
+    And the threshold of requests has been reached
+    When the "GET" request is sent
+    Then the response status code is 429
+    And the response property "$.status" is 429
+    And the response property "$.code" is "TOO_MANY_REQUESTS"
     And the response property "$.message" contains a user friendly text
 
   ##############################

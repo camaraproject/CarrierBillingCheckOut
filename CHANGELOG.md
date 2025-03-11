@@ -2,6 +2,7 @@
 
 ## Table of Contents
 
+- [r2.2](#r22)
 - [r2.1 - rc](#r21---rc)
 - [r1.3](#r13)
 - [r1.2](#r12)
@@ -13,9 +14,116 @@
 
 The below sections record the changes for each API version in each release as follows:
 
-* for each first alpha or release-candidate API version, all changes since the release of the previous public API version
-* for subsequent alpha or release-candidate API versions, the delta with respect to the previous pre-release
-* for a public API version, the consolidated changes since the release of the previous public API version
+* for an alpha release, the delta with respect to the previous release
+* for the first release-candidate, all changes since the last public release
+* for subsequent release-candidate(s), only the delta to the previous release-candidate
+* for a public release, the consolidated changes since the previous public release
+
+## r2.2
+
+## Release Notes
+
+This release contains the definition and documentation of
+* Carrier Billing v0.4.0
+* Carrier Billing Refund v0.2.0
+
+The API definition(s) are based on
+* Commonalities v0.5.0
+* Identity and Consent Management v0.3.0
+
+## Carrier Billing v0.4.0
+
+**Carrier Billing v0.4.0 is the first public release version for v0.4.0 of the Carrier Billing (Payment) API.**
+- **This version contains significant changes compared to v0.3.1, and it is not backward compatible:**
+  - Error model aligment with commonalities, which implies use of normalization values (i.e. enums) for `status` and `code`
+  - Removal of `403 - INVALID_TOKEN_CONTEXT`
+  - Removal of `5XX` errors
+  - Addition of `403 - CARRIER_BILLING.INVALID_PAYMENT_CONTEXT` for GET endpoints
+  - Addition of applicable `422` traversal exceptions  
+  - Addition of `429 - TOO_MANY_REQUESTS`
+
+
+- API definition **with inline documentation**:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier_billing.yaml&nocors)
+  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier_billing.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.2/code/API_definitions/carrier_billing.yaml)
+
+### Added
+* Added `# Identifying the phone number from the access token` section within `info.description` from Commonalities guideline in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Added `403 - CARRIER_BILLING.INVALID_PAYMENT_CONTEXT` for GET endpoints, to deal with the case where 3-legged Access Token is not valid for payment context, that is paymentId is not related to the phone number associated to the token in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Added applicable `422` traversal exceptions in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Added `429 - TOO_MANY_REQUESTS` to API endpoints in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Added Gherkin Testing Linter in https://github.com/camaraproject/CarrierBillingCheckOut/pull/191.
+* Generate Tests for 429 Error in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+
+### Changed
+* Updated `# Authorization and authentication` section from ICM guideline in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Error model aligment with commonalities. Normalization values (i.e. enums) for `status` and `code`. In https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Updated testing plan in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Update API specification version and servers.url in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+* Update Test Definitions API version in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+* Update `sink` format to `uri` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+
+### Fixed
+* Updated `accessTokenExpiresUtc` description in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Some clarifications on descriptions in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Update `@{operationId}_403.01_invalid_token_permissions` test wording to be more generic in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+* Fix `CARRIER_BILLING.INVALID_DATE_RANGE` description in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+
+### Removed
+* Removed `403 - INVALID_TOKEN_CONTEXT` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Removed `5XX` errors in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Removed `sinkCredential` from API responses in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+
+## Carrier Billing Refund v0.2.0
+
+**Carrier Billing Refund v0.2.0 is the first public release version for v0.2.0 of the Carrier Billing Refund API.**
+- **This version contains significant changes compared to v0.1.1, and it is not backward compatible:**
+  - Error model aligment with commonalities, which implies use of normalization values (i.e. enums) for `status` and `code`
+  - Removal of `403 - INVALID_TOKEN_CONTEXT`
+  - Removal of `5XX` errors
+  - Addition of `403 - CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT` for GET endpoints
+  - Addition of applicable `422` traversal exceptions  
+  - Addition of `429 - TOO_MANY_REQUESTS`
+
+- API definition **with inline documentation**:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier_billing_refund.yaml&nocors)
+  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier_billing_refund.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.2/code/API_definitions/carrier_billing_refund.yaml)
+
+### Added
+* Added `403 - CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT` for GET endpoints, to deal with the case where 3-legged Access Token is not valid for refund context, that is refundId is not related to the phone number associated to the token in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Added applicable `422` traversal exceptions in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Added `429 - TOO_MANY_REQUESTS` to API endpoints in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Added Gherkin Testing Linter in https://github.com/camaraproject/CarrierBillingCheckOut/pull/191.
+* Generate Tests for 429 Error in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+
+### Changed
+* Updated `# Authorization and authentication` section from ICM guideline in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Error model aligment with commonalities. Normalization values (i.e. enums) for `status` and `code`. In https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Updated testing plan in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Update API specification version and servers.url in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+* Update Test Definitions API version in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+* Update `sink` format to `uri` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+
+### Fixed
+* Updated `accessTokenExpiresUtc` description in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Some clarifications on descriptions in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Update `@{operationId}_403.01_invalid_token_permissions` test wording to be more generic in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+* Fix `CARRIER_BILLING_REFUND.INVALID_DATE_RANGE` description in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+* Fix some Error exceptions `CARRIER_BILLING...` to `CARRIER_BILLING_REFUND...` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+
+### Removed
+* Removed `403 - INVALID_TOKEN_CONTEXT` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Removed `5XX` errors in https://github.com/camaraproject/CarrierBillingCheckOut/pull/202.
+* Removed `sinkCredential` from API responses in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+* Remove `Content-Last-Key` and `X-Total-Count` from `retrieveRefund` and `retrievePaymentRemainingAmount` operations as they are not applicable in https://github.com/camaraproject/CarrierBillingCheckOut/pull/206.
+
+## New Contributors
+* N/A
+
+
+**Full Changelog**: https://github.com/camaraproject/CarrierBillingCheckOut/compare/r1.3...r2.2
 
 ## r2.1 - rc
 

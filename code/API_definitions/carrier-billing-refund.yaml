@@ -51,24 +51,24 @@ info:
 
     The "Camara Security and Interoperability Profile" provides details of how an API consumer requests an access token. Please refer to Identity and Consent Management (https://github.com/camaraproject/IdentityAndConsentManagement/) for the released version of the profile.
 
-    The specific authorization flows to be used will be agreed upon during the onboarding process, happening between the provider of the application consuming the API and the operator's API exposure platform, taking into account the declared purpose for accessing the API, whilst also being subject to the prevailing legal framework dictated by local legislation.
+    The specific authorization flows to be used will be agreed upon during the onboarding process, happening between the API consumer and the API provider, taking into account the declared purpose for accessing the API, whilst also being subject to the prevailing legal framework dictated by local legislation.
 
     In cases where personal data is processed by the API and users can exercise their rights through mechanisms such as opt-in and/or opt-out, the use of three-legged access tokens is mandatory. This ensures that the API remains in compliance with privacy regulations, upholding the principles of transparency and user-centric privacy-by-design.
 
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
-  version: 0.2.0-rc.1
+  version: 0.2.0
   title: Carrier Billing Refunds
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
+  x-camara-commonalities: 0.5
 externalDocs:
   description: Product documentation at Camara
   url: https://github.com/camaraproject/CarrierBillingCheckOut
-x-camara-commonalities: 0.5
 servers:
-  - url: "{apiRoot}/carrier-billing-refund/v0.2rc1"
+  - url: "{apiRoot}/carrier-billing-refund/v0.2"
     variables:
       apiRoot:
         default: http://localhost:9091
@@ -257,10 +257,6 @@ paths:
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
-            Content-Last-Key:
-              $ref: "#/components/headers/Content-Last-Key"
-            X-Total-Count:
-              $ref: "#/components/headers/X-Total-Count"
           content:
             application/json:
               schema:
@@ -324,10 +320,6 @@ paths:
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
-            Content-Last-Key:
-              $ref: "#/components/headers/Content-Last-Key"
-            X-Total-Count:
-              $ref: "#/components/headers/X-Total-Count"
           content:
             application/json:
               schema:
@@ -370,7 +362,7 @@ components:
           description: Reason provided to request the refund. Optionally provided by the user or the merchant.
         sink:
           type: string
-          format: url
+          format: uri
           description: The address to which events shall be delivered, using the HTTP protocol.
           example: "https://endpoint.example.com/sink"
         sinkCredential:
@@ -439,13 +431,9 @@ components:
           description: Reason provided to request the refund. Optionally provided by the user or the merchant.
         sink:
           type: string
-          format: url
+          format: uri
           description: The address to which events shall be delivered, using the HTTP protocol.
           example: "https://endpoint.example.com/sink"
-        sinkCredential:
-          allOf:
-            - description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
-            - $ref: "#/components/schemas/SinkCredential"
       discriminator:
         propertyName: type
         mapping:
@@ -935,9 +923,9 @@ components:
     GetRefundsInvalid400:
       description: |-
         Invalid input. In addition to regular INVALID_ARGUMENT scenario other scenarios may exist:
-          - Inconsistent startDate and endDate values ("code": "CARRIER_BILLING.INVALID_DATE_RANGE","message": "Client specified an invalid date range.").
+          - Inconsistent refundCreationDate.gte and refundCreationDate.lte values ("code": "CARRIER_BILLING_REFUND.INVALID_DATE_RANGE","message": "Client specified an invalid date range.").
           - Request out of range ("code": "OUT_OF_RANGE","message": "Client specified an invalid range.").
-          - Too many matching records found ("code": "CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS","message": "Too many matching records found. Specify additional/suitable criteria to limit the number of records.").
+          - Too many matching records found ("code": "CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS","message": "Too many matching records found. Specify additional/suitable criteria to limit the number of records.").
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
@@ -955,8 +943,8 @@ components:
                     enum:
                       - INVALID_ARGUMENT
                       - OUT_OF_RANGE
-                      - CARRIER_BILLING.INVALID_DATE_RANGE
-                      - CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS
+                      - CARRIER_BILLING_REFUND.INVALID_DATE_RANGE
+                      - CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS
           examples:
             GENERIC_400_INVALID_ARGUMENT:
               summary: Generic Invalid Argument
@@ -967,10 +955,10 @@ components:
                 message: Client specified an invalid argument, request body or query param.
             GENERIC_400_INVALID_DATE_RANGE:
               summary: Generic Invalid Date Range
-              description: Inconsistent startDate and endDate values
+              description: Inconsistent refundCreationDate.gte and refundCreationDate.lte values
               value:
                 status: 400
-                code: CARRIER_BILLING.INVALID_DATE_RANGE
+                code: CARRIER_BILLING_REFUND.INVALID_DATE_RANGE
                 message: "Client specified an invalid date range."
             GENERIC_400_OUT_OF_RANGE:
               summary: Generic Out Of Range
@@ -984,7 +972,7 @@ components:
               description: Too many matching records found
               value:
                 status: 400
-                code: CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS
+                code: CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS
                 message: "Too many matching records found. Specify additional/suitable criteria to limit the number of records."
     RefundInvalid400:
       description: |-
@@ -1409,7 +1397,7 @@ components:
         format: date-time
         type: string
     Order:
-      description: Used to return the sorted results in descending (default) or ascending order, based on `paymentCreationDate` property
+      description: Used to return the sorted results in descending (default) or ascending order, based on `refundCreationDate` property
       in: query
       name: order
       required: false

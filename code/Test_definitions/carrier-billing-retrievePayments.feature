@@ -8,7 +8,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
   # * A phone number eligible for payment (no restrictions for it to be used to perform a payment)
   # * Several payments performed in different status in the environment (at least 10)
   #
-  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.4.0-rc.1
+  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.4.0
 
   Background: Common retrievePayment setup
     Given the resource "/carrier-billing/v0.4/payments"
@@ -276,17 +276,17 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
 
   # Error 403 scenarios
 
-  @retrieve_payment_403.01_invalid_token_permissions
+  @retrieve_payments_403.01_invalid_token_permissions
   Scenario: Inconsistent access token permissions
-    # To test this, an access token has to be obtained without carrier-billing:payments:read scope
-    Given header "Authorization" is set to a valid access token emitted without carrier-billing:payments:read scope
+    # To test this scenario, it will be necessary to obtain a token without the required scope
+    Given header "Authorization" is set to an access token without the required scope
     When the HTTP "GET" request is sent
     Then the response status code is 403
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
 
-  @retrieve_payment_403.02_phoneNumber_token_mismatch
+  @retrieve_payments_403.02_phoneNumber_token_mismatch
   Scenario: Inconsistent access token context for the phoneNumber
     # To test this, a 3-legged access token has to be obtained without associated to a phoneNumber
     Given the header "Authorization" is set to a valid access token not emitted for a phone number
@@ -294,6 +294,20 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
     Then the response status code is 403
     And the response property "$.status" is 403
     And the response property "$.code" is "CARRIER_BILLING.INVALID_PAYMENT_CONTEXT"
+    And the response property "$.message" contains a user friendly text
+
+  # Error 429 scenarios
+
+  @retrieve_payments_429.01_Too_Many_Requests
+  #To test this scenario environment has to be configured to reject requests reaching the threshold limit settled. N is a value defined by the Telco Operator
+  Scenario: Request is rejected due to threshold policy
+    Given the path parameter "paymentId" is set to a valid value in the environment
+    And the header "Authorization" is set to a valid access token
+    And the threshold of requests has been reached
+    When the "GET" request is sent
+    Then the response status code is 429
+    And the response property "$.status" is 429
+    And the response property "$.code" is "TOO_MANY_REQUESTS"
     And the response property "$.message" contains a user friendly text
 
   ##############################
