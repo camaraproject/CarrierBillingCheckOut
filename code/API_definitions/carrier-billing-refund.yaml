@@ -58,7 +58,7 @@ info:
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
-  version: 0.2.0
+  version: wip
   title: Carrier Billing Refunds
   license:
     name: Apache 2.0
@@ -68,7 +68,7 @@ externalDocs:
   description: Product documentation at Camara
   url: https://github.com/camaraproject/CarrierBillingCheckOut
 servers:
-  - url: "{apiRoot}/carrier-billing-refund/v0.2"
+  - url: "{apiRoot}/carrier-billing-refund/vwip"
     variables:
       apiRoot:
         default: http://localhost:9091
