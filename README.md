@@ -33,12 +33,12 @@ Repository to describe, develop, document and test the CarrierBilling APIs
 * The release **r2.2** is available in [r2.2](https://github.com/camaraproject/CarrierBillingCheckOut/tree/r2.2), and includes the following APIs:
 - API name: Carrier Billing (Payment) - API Definition v0.4.0 with inline documentation:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing.yaml)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing.yaml)
   - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.2/code/API_definitions/carrier-billing.yaml)
 
 - API name: Carrier Billing Refund - API Definition v0.2.0 with inline documentation:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing-refund.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing-refund.yaml)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing-refund.yaml)
   - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.2/code/API_definitions/carrier-billing-refund.yaml)
 
 * Other releases of this sub project are available in [CarrierBillingCheckout Releases](https://github.com/camaraproject/CarrierBillingCheckout/releases)

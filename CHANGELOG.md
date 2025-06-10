@@ -45,7 +45,7 @@ The API definition(s) are based on
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing.yaml)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing.yaml)
   - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.2/code/API_definitions/carrier-billing.yaml)
 
 ### Added
@@ -88,7 +88,7 @@ The API definition(s) are based on
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing-refund.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing-refund.yaml)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.2/code/API_definitions/carrier-billing-refund.yaml)
   - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.2/code/API_definitions/carrier-billing-refund.yaml)
 
 ### Added
@@ -151,7 +151,7 @@ The API definition(s) are based on
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.1/code/API_definitions/carrier-billing.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.1/code/API_definitions/carrier-billing.yaml)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.1/code/API_definitions/carrier-billing.yaml)
   - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.1/code/API_definitions/carrier-billing.yaml)
 
 ### Added
@@ -187,7 +187,7 @@ The API definition(s) are based on
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.1/code/API_definitions/carrier-billing-refund.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.1/code/API_definitions/carrier-billing-refund.yaml)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r2.1/code/API_definitions/carrier-billing-refund.yaml)
   - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r2.1/code/API_definitions/carrier-billing-refund.yaml)
 
 ### Added
@@ -235,7 +235,7 @@ The API definition(s) are based on
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.3/code/API_definitions/carrier-billing.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.3/code/API_definitions/carrier-billing.yaml)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.3/code/API_definitions/carrier-billing.yaml)
   - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r1.3/code/API_definitions/carrier-billing.yaml)
 
 **Main changes since [r1.2](#r12)**
@@ -260,7 +260,7 @@ The API definition(s) are based on
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.3/code/API_definitions/carrier-billing-refund.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.3/code/API_definitions/carrier-billing-refund.yaml)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.3/code/API_definitions/carrier-billing-refund.yaml)
   - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r1.3/code/API_definitions/carrier-billing-refund.yaml)
 
 **Main changes since [r1.2](#r12)**
@@ -305,7 +305,7 @@ The API definition(s) are based on
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.2/code/API_definitions/carrier-billing.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.2/code/API_definitions/carrier-billing.yaml)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.2/code/API_definitions/carrier-billing.yaml)
   - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r1.2/code/API_definitions/carrier-billing.yaml)
 
 **Main changes since [r1.1 - rc](#r11---rc)**
@@ -342,7 +342,7 @@ The API definition(s) are based on
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.2/code/API_definitions/carrier-billing-refund.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.2/code/API_definitions/carrier-billing-refund.yaml)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.2/code/API_definitions/carrier-billing-refund.yaml)
   - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r1.2/code/API_definitions/carrier-billing-refund.yaml)
 
 **Main changes since [r1.1 - rc](#r11---rc)**
@@ -393,7 +393,7 @@ The API definition(s) are based on
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.1/code/API_definitions/carrier_billing.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.1/code/API_definitions/carrier_billing.yaml)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.1/code/API_definitions/carrier_billing.yaml)
   - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r1.1/code/API_definitions/carrier_billing.yaml)
 
 ### Added
@@ -424,7 +424,7 @@ The API definition(s) are based on
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.1/code/API_definitions/carrier_billing_refund.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.1/code/API_definitions/carrier_billing_refund.yaml)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r1.1/code/API_definitions/carrier_billing_refund.yaml)
   - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r1.1/code/API_definitions/carrier_billing_refund.yaml)
 
 ### Added
@@ -452,7 +452,7 @@ The API definition(s) are based on
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/release-v0.2.1/code/API_definitions/carrier_billing.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/release-v0.2.1/code/API_definitions/carrier_billing.yaml)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/release-v0.2.1/code/API_definitions/carrier_billing.yaml)
   - OpenAPI [YAML spec file](https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/release-v0.2.1/code/API_definitions/carrier_billing.yaml)
 
 ### Added
