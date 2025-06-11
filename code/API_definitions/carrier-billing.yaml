@@ -1902,7 +1902,7 @@ components:
                 code: IDENTIFIER_NOT_FOUND
                 message: phoneNumber not found.
     Identifier2StepNotFound404:
-      description: |- 
+      description: |-
         Resource Not Found.
         In addition to regular NOT_FOUND scenario other scenarios may exist:
           - Phone Number not found ("code": "IDENTIFIER_NOT_FOUND","message": "phoneNumber not found.").
