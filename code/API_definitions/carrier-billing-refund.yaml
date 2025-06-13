@@ -219,7 +219,7 @@ paths:
         "401":
           $ref: "#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/RefundReadPermissionDenied403"
+          $ref: "#/components/responses/Generic403"
         "404":
           $ref: "#/components/responses/Generic404"
         "429":
@@ -264,7 +264,7 @@ paths:
         "401":
           $ref: "#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/RefundReadPermissionDenied403"
+          $ref: "#/components/responses/Generic403"
         "404":
           $ref: "#/components/responses/Generic404"
         "429":
@@ -327,7 +327,7 @@ paths:
         "401":
           $ref: "#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/RefundReadPermissionDenied403"
+          $ref: "#/components/responses/Generic403"
         "404":
           $ref: "#/components/responses/Generic404"
         "429":
@@ -1102,7 +1102,6 @@ components:
       description: |-
         Client does not have sufficient permission.
         In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Access Token is not valid for refund context (3-legged scenario) ("code": "CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT","message": "Invalid Access Token for refund context.").
           - Refund denied by business ("code": "CARRIER_BILLING_REFUND.REFUND_DENIED","message": "Refund denied by business.").
           - Payment not eligible for Refund (e.g. Payment conditions agreed do not allow refund) ("code": "CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND","message": "Payment not eligible for refund.").
       headers:
@@ -1121,7 +1120,6 @@ components:
                   code:
                     enum:
                       - PERMISSION_DENIED
-                      - CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT
                       - CARRIER_BILLING_REFUND.REFUND_DENIED
                       - CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND
           examples:
@@ -1131,13 +1129,6 @@ components:
                 status: 403
                 code: PERMISSION_DENIED
                 message: Client does not have sufficient permissions to perform this action.
-            GENERIC_403_INVALID_REFUND_CONTEXT:
-              summary: Invalid refund context
-              description: Access Token is not valid for refund context
-              value:
-                status: 403
-                code: CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT
-                message: "Invalid Access Token for refund context."
             GENERIC_403_REFUND_DENIED:
               summary: Generic Refund Denied
               description: Refund denied by business
@@ -1152,42 +1143,6 @@ components:
                 status: 403
                 code: CARRIER_BILLING_REFUND.PAYMENT_NOT_ELIGIBLE_FOR_REFUND
                 message: "Payment not eligible for refund."
-    RefundReadPermissionDenied403:
-      description: |-
-        Client does not have sufficient permission.
-        In addition to regular PERMISSION_DENIED scenario other scenarios may exist:
-          - Access Token is not valid for refund context (3-legged scenario) ("code": "CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT","message": "Invalid Access Token for refund context.").
-      headers:
-        x-correlator:
-          $ref: "#/components/headers/x-correlator"
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/ErrorInfo"
-              - type: object
-                properties:
-                  status:
-                    enum:
-                      - 403
-                  code:
-                    enum:
-                      - PERMISSION_DENIED
-                      - CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
-            GENERIC_403_INVALID_REFUND_CONTEXT:
-              summary: Invalid refund context
-              description: Access Token is not valid for refund context
-              value:
-                status: 403
-                code: CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT
-                message: "Invalid Access Token for refund context."
     Generic404:
       description: Resource Not Found
       headers:
