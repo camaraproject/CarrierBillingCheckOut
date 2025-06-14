@@ -5,9 +5,13 @@
 <a href="https://github.com/camaraproject/CarrierBillingCheckOut" title="Repo Size"><img src="https://img.shields.io/github/repo-size/camaraproject/CarrierBillingCheckOut?style=plastic"></a>
 <a href="https://github.com/camaraproject/CarrierBillingCheckOut/blob/main/LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=plastic"></a>
 <a href="https://github.com/camaraproject/CarrierBillingCheckOut/releases/latest" title="Latest Release"><img src="https://img.shields.io/github/release/camaraproject/CarrierBillingCheckOut?style=plastic"></a>
+<a href="https://github.com/camaraproject/Governance/blob/main/ProjectStructureAndRoles.md" title="Sandbox API Repository"><img src="https://img.shields.io/badge/Sandbox%20API%20Repository-yellow?style=plastic"></a>
 
 # CarrierBillingCheckOut
-Repository to describe, develop, document and test the CarrierBilling APIs
+
+Sandbox API Repository to describe, develop, document, and test the CarrierBillingCheckOut Service API(s). The repository does not yet belong to a CAMARA Sub Project.
+
+* API Repository [wiki page](https://lf-camaraproject.atlassian.net/wiki/x/CDDe)
 
 ## Scope
 * Service APIs for “CarrierBillingCheckOut” (see APIBacklog.md)  
@@ -18,7 +22,7 @@ Repository to describe, develop, document and test the CarrierBilling APIs
     * Follow up of refund, by means of query endpoints to get information about a list of refunds or a specific refund.
   * NOTE: The scope of these APIs should be limited (at least at a first stage) to 4G and 5G.
 * Describe, develop, document and test the APIs (with 1-2 Telcos)  
-  * Started: October 2022 
+* Started: October 2022 
 
 ## Release Information
 <!-- Use/uncomment one or multiple the following options -->
@@ -45,11 +49,10 @@ Repository to describe, develop, document and test the CarrierBilling APIs
 * For changes see [CHANGELOG.md](https://github.com/camaraproject/CarrierBillingCheckout/blob/main/CHANGELOG.md)
 
 ## Contributing
-* Meetings are held virtually <!-- for new API families request a meeting link from the LF admin team or replace the information with the existing meeting information (of the API family) -->
+* Meetings are held virtually 
     * Schedule: Bi-Weekly, Wednesdays 13:00 - 14:00 UTC
     * [Registration / Join](https://zoom-lfx.platform.linuxfoundation.org/meeting/96513497117?password=ac26d34b-87d2-4d78-aa47-4de1ca14c882)
     * Minutes: Access [Meeting minutes](https://lf-camaraproject.atlassian.net/wiki/x/CDDe)
 * Mailing List
-    <!-- Note: the $sub-project-mailinglistname$ is either already existing or will be created by the CAMARA Admin Team  -->
     * Subscribe / Unsubscribe to the mailing list of this Sub Project <https://lists.camaraproject.org/g/sp-cbc>.
     * A message to the community of this Sub Project can be sent using <sp-cbc@lists.camaraproject.org>.
