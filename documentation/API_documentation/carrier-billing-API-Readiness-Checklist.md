@@ -16,6 +16,7 @@ Checklist for Carrier Billing v0.4.0 in r2.2
 | 10 | API release numbering convention applied     |   M   |         M         |    M    |    M   |  Y   |      |
 | 11 | Change log updated                           |   M   |         M         |    M    |    M   |  Y   | [link](/CHANGELOG.md) |
 | 12 | Previous public release was certified        |   O   |         O         |    O    |    M   |  N   |      |
+| 13 | API description (for marketing)              |   O   |         O         |    M    |    M   |      | [wiki link](https://lf-camaraproject.atlassian.net/wiki/xxx) |
 
 To fill the checklist:
 - in the line above the table, replace the api-name, api-version and the rx.y by their actual values for the current API version and release.
