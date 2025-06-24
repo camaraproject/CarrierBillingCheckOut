@@ -10,11 +10,11 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
   #
   # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.4.0
 
-  Background: Common retrievePayment setup
+  Background: Common retrievePayments setup
     Given the resource "/carrier-billing/v0.4/payments"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
-    And the header "x-correlator" is set to a UUID value
+    And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
 
   ##############################
   # Happy path scenarios
@@ -23,7 +23,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
   @retrieve_payments_01_generic_success_scenario
   Scenario: Common validations for any success scenario
     Given at least an existing payment created by operation createPayment OR preparePayment
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -33,7 +33,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
   @retrieve_payments_02_no_payments
   Scenario: No existing payments
     Given no payments have been created by operation createPayment OR preparePayment
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -43,7 +43,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
   Scenario: List of payments for a given phone number
     Given at least an existing payment created by operation createPayment OR preparePayment
     And the header "Authorization" is set to a valid access token associated for a phone number with payments requested
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -56,7 +56,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
   #To test this scenario, a 2-legged token is needed
     Given at least an existing payment created by operation createPayment OR preparePayment
     And the header "Authorization" is set to a valid access token not emitted for a specific phone number
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -71,7 +71,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
     Given several existing payments created by operation createPayment OR preparePayment
     And the header "Authorization" is set to a valid access token
     And the query parameter "paymentCreationDate.gte" is set to "<creation_date>"
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -91,7 +91,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
     Given several existing payments created by operation createPayment OR preparePayment
     And the header "Authorization" is set to a valid access token
     And the query parameter "paymentCreationDate.lte" is set to "<creation_date>"
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -112,7 +112,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
     And the header "Authorization" is set to a valid access token
     And the query parameter "paymentCreationDate.gte" is set to "<start_creation_date>"
     And the query parameter "paymentCreationDate.lte" is set to "<end_creation_date>"
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -132,7 +132,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
     Given several existing payments created by operation createPayment OR preparePayment
     And the header "Authorization" is set to a valid access token
     And the query parameter "order" is set to "<order>"
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -150,7 +150,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
     Given several existing payments created by operation createPayment OR preparePayment in different payment status
     And the header "Authorization" is set to a valid access token
     And the query parameter "paymentStatus" is set to "<payment_status>"
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -173,7 +173,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
     Given several existing payments created by operation createPayment OR preparePayment for a given merchant
     And the header "Authorization" is set to a valid access token
     And the query parameter "merchantIdentifier" is set to the value representing such a merchant
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -188,7 +188,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
     And the header "Authorization" is set to a valid access token
     And the query parameter "page" is set to "1"
     And the query parameter "perPage" is set to "5"
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -208,7 +208,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
     And the header "Authorization" is set to a valid access token
     And the query parameter "paymentCreationDate.gte" is set to "<start_creation_date>"
     And the query parameter "paymentCreationDate.lte" is set to "<end_creation_date>"
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "CARRIER_BILLING.INVALID_DATE_RANGE"
@@ -225,7 +225,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
     And the header "Authorization" is set to a valid access token
     And the query parameter "page" is set to "1000"
     And the query parameter "perPage" is set to "1000"
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "CARRIER_BILLING.OUT_OF_RANGE"
@@ -238,18 +238,26 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
     And the header "Authorization" is set to a valid access token
     And the query parameter "page" is set to "1"
     And the query parameter "perPage" is set to "1000"
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "CARRIER_BILLING.TOO_MANY_MATCHING_RECORDS"
     And the response property "$.message" contains a user friendly text
+
+  @retrieve_payments_400.04_invalid_x-correlator
+  Scenario: Invalid x-correlator header
+    Given the header "x-correlator" does not comply with the schema at "#/components/schemas/XCorrelator"
+    When the request "retrievePayments" is sent
+    Then the response status code is 400
+    And the response property "$.status" is 400
+    And the response property "$.code" is "INVALID_ARGUMENT"
 
   # Error 401 scenarios
 
   @retrieve_payments_401.01_no_authorization_header
   Scenario: No Authorization header
     Given the header "Authorization" is removed
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 401
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
@@ -258,7 +266,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
   @retrieve_payments_401.02_expired_access_token
   Scenario: Expired access token
     Given the header "Authorization" is set to an expired access token
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 401
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
@@ -267,7 +275,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
   @retrieve_payments_401.03_invalid_access_token
   Scenario: Invalid access token
     Given the header "Authorization" is set to an invalid access token
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 401
     And the response header "Content-Type" is "application/json"
     And the response property "$.status" is 401
@@ -280,7 +288,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
   Scenario: Inconsistent access token permissions
     # To test this scenario, it will be necessary to obtain a token without the required scope
     Given header "Authorization" is set to an access token without the required scope
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 403
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
@@ -290,7 +298,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
   Scenario: Inconsistent access token context for the phoneNumber
     # To test this, a 3-legged access token has to be obtained without associated to a phoneNumber
     Given the header "Authorization" is set to a valid access token not emitted for a phone number
-    When the HTTP "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 403
     And the response property "$.status" is 403
     And the response property "$.code" is "CARRIER_BILLING.INVALID_PAYMENT_CONTEXT"
@@ -304,7 +312,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation retrievePayments
     Given the path parameter "paymentId" is set to a valid value in the environment
     And the header "Authorization" is set to a valid access token
     And the threshold of requests has been reached
-    When the "GET" request is sent
+    When the request "retrievePayments" is sent
     Then the response status code is 429
     And the response property "$.status" is 429
     And the response property "$.code" is "TOO_MANY_REQUESTS"
