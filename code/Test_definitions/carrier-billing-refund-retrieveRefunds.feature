@@ -292,16 +292,6 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrieveRefunds
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
 
-  @retrieve_refunds_403.02_phoneNumber_token_mismatch
-  Scenario: Inconsistent access token context for the phoneNumber
-    # To test this, a 3-legged access token has to be obtained without associated to a phoneNumber
-    Given the header "Authorization" is set to a valid access token not emitted for a phone number
-    When the request "retrieveRefunds" is sent
-    Then the response status code is 403
-    And the response property "$.status" is 403
-    And the response property "$.code" is "CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT"
-    And the response property "$.message" contains a user friendly text
-
   # Error 429 scenarios
 
   @retrieve_refunds_429.01_Too_Many_Requests

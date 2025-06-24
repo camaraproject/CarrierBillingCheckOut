@@ -137,6 +137,29 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation cancelPayment
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
 
+  # Error 404 scenarios
+
+  @cancel_payment_404.01_payment_not_found
+  Scenario: Payment not found
+    Given the header "Authorization" is set to a valid access token
+    And the path parameter "paymentId" is compliant with the schema but does not identify a valid payment in the environment
+    And the request body is set to a valid request body
+    When the request "cancelPayment" is sent
+    Then the response status code is 404
+    And the response property "$.status" is 404
+    And the response property "$.code" is "NOT_FOUND"
+    And the response property "$.message" contains a user friendly text
+
+  @cancel_payment_C02.02_phone_number_not_found
+  Scenario: Phone number not found
+    Given the header "Authorization" is set to a valid access token which does not identify a single phone number
+    And the request body property "$.phoneNumber" is compliant with the schema but does not identify a valid phone number
+    When the request "cancelPayment" is sent
+    Then the response status code is 404
+    And the response property "$.status" is 404
+    And the response property "$.code" is "IDENTIFIER_NOT_FOUND"
+    And the response property "$.message" contains a user friendly text
+
   # Error 409 scenarios
 
   @cancel_payment_409.01_payment_confirmed

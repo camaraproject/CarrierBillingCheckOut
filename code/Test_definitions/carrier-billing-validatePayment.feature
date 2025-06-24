@@ -88,7 +88,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation validatePayment
     And the response property "$.code" is "CARRIER_BILLING.INVALID_CODE"
     And the response property "$.message" contains a user friendly text
 
-  @validate_payment_400.06_exceeding_validation attempts
+  @validate_payment_400.06_exceeding_validation_attempts
   # Variable "N" can vary up to Telco Operator policies
   Scenario Outline: Using a invalid code value after N requests
     Given the request body property includes property "$.code" with a non-existing value in the environment
@@ -156,6 +156,19 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation validatePayment
     Then the response status code is 403
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
+    And the response property "$.message" contains a user friendly text
+
+  # Error 404 scenarios
+
+  @validate_payment_404.01_payment_not_found
+  Scenario: Payment not found
+    Given the header "Authorization" is set to a valid access token
+    And the path parameter "paymentId" is compliant with the schema but does not identify a valid payment in the environment
+    And the request body is set to a valid request body
+    When the request "validatePayment" is sent
+    Then the response status code is 404
+    And the response property "$.status" is 404
+    And the response property "$.code" is "NOT_FOUND"
     And the response property "$.message" contains a user friendly text
 
   # Error 429 scenarios

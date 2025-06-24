@@ -97,26 +97,13 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrieveRefund
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
 
-  @retrieve_refund_403.02_phoneNumber_token_mismatch
-  Scenario: Inconsistent access token context for the phoneNumber
-    # To test this, a 3-legged access token has to be obtained for a different phoneNumber
-    Given the header "Authorization" is set to a valid access token emitted for a phone number
-    And the path parameter "paymentId" is set to a valid value associated to a phone number different than the access token is associated
-    And the path parameter "refundId" is set to a valid value associated to the "paymentId"
-    When the request "retrieveRefund" is sent
-    Then the response status code is 403
-    And the response property "$.status" is 403
-    And the response property "$.code" is "CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT"
-    And the response property "$.message" contains a user friendly text
-
   # Error 404 scenarios
 
   @retrieve_refund_404.01_payment_not_found
   Scenario: Payment not found
-    # To test this, a 2-legged access token is needed, just beacuse if not it triggers test "@retrieve_refund_403.02_phoneNumber_token_mismatch"
-    Given the path parameter "paymentId" is set to a non-existing value in the environment
+    Given the header "Authorization" is set to a valid access token
+    And the path parameter "paymentId" is compliant with the schema but does not identify a valid payment in the environment
     And the path parameter "refundId" is set to a valid value in the environment
-    And the header "Authorization" is set to a valid access token
     When the request "retrieveRefund" is sent
     Then the response status code is 404
     And the response property "$.status" is 404
@@ -125,9 +112,9 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrieveRefund
 
   @retrieve_refund_404.02_refund_not_found
   Scenario: Refund not found
-    Given the path parameter "paymentId" is set to a valid value in the environment
-    And the path parameter "refundId" is set to a non-existing value in the environment
-    And the header "Authorization" is set to a valid access token
+    Given the header "Authorization" is set to a valid access token
+    And the path parameter "paymentId" is set to a valid value in the environment
+    And the path parameter "refundId" is compliant with the schema but does not identify a valid refund in the environment
     When the request "retrieveRefund" is sent
     Then the response status code is 404
     And the response property "$.status" is 404

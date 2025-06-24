@@ -352,7 +352,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation preparePayment
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
 
-  @prepare_payment_403.03_payment_denied
+  @prepare_payment_403.02_payment_denied
   Scenario: Payment denied by business
     # To test this, a business context exists in the Telco Operator to deny the payment
     Given the request body is set to a valid request body
@@ -361,6 +361,18 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation preparePayment
     Then the response status code is 403
     And the response property "$.status" is 403
     And the response property "$.code" is "CARRIER_BILLING.PAYMENT_DENIED"
+    And the response property "$.message" contains a user friendly text
+
+  # Error 404 scenarios
+
+  @prepare_payment_C02.02_phone_number_not_found
+  Scenario: Phone number not found
+    Given the header "Authorization" is set to a valid access token which does not identify a single phone number
+    And the request body property "$.amountTransaction.phoneNumber" is compliant with the schema but does not identify a valid phone number
+    When the request "preparePayment" is sent
+    Then the response status code is 404
+    And the response property "$.status" is 404
+    And the response property "$.code" is "IDENTIFIER_NOT_FOUND"
     And the response property "$.message" contains a user friendly text
 
   # Error 409 scenarios

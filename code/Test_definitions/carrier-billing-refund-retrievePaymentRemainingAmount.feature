@@ -170,23 +170,12 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
 
-  @retrieve_payment_remaining_amount_403.02_phoneNumber_token_mismatch
-  Scenario: Inconsistent access token context for the phoneNumber
-    # To test this, a 3-legged access token has to be obtained for a different phoneNumber
-    Given the header "Authorization" is set to a valid access token emitted for a phone number
-    And the path parameter "paymentId" is set to a valid value associated to a phone number different than the access token is associated
-    When the request "retrievePaymentRemainingAmount" is sent
-    Then the response status code is 403
-    And the response property "$.status" is 403
-    And the response property "$.code" is "CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT"
-    And the response property "$.message" contains a user friendly text
-
   # Error 404 scenarios
 
   @retrieve_payment_remaining_amount_404.01_payment_not_found
   Scenario: Payment not found
-    Given the path parameter "paymentId" is set to non-existing value in the environment
-    And the header "Authorization" is set to a valid access token
+    Given the header "Authorization" is set to a valid access token
+    And the path parameter "paymentId" is compliant with the schema but does not identify a valid payment in the environment
     When the request "retrievePaymentRemainingAmount" is sent
     Then the response status code is 404
     And the response property "$.status" is 404
