@@ -225,6 +225,8 @@ paths:
           $ref: "#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/PaymentPermissionDenied403"
+        "404":
+          $ref: "#/components/responses/IdentifierNotFound404"
         "409":
           $ref: "#/components/responses/Generic409"
         "422":
@@ -395,6 +397,8 @@ paths:
           $ref: "#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/PaymentPermissionDenied403"
+        "404":
+          $ref: "#/components/responses/IdentifierNotFound404"
         "409":
           description: Conflict
           headers:
@@ -462,6 +466,8 @@ paths:
           $ref: "#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/Generic403"
+        "404":
+          $ref: "#/components/responses/Generic404"
         "409":
           description: Conflict
           headers:
@@ -528,7 +534,7 @@ paths:
         "403":
           $ref: "#/components/responses/PaymentConfirmPermissionDenied403"
         "404":
-          $ref: "#/components/responses/Generic404"
+          $ref: "#/components/responses/Identifier2StepNotFound404"
         "409":
           $ref: "#/components/responses/PaymentConfirmConflict409"
         "422":
@@ -573,7 +579,7 @@ paths:
         "403":
           $ref: "#/components/responses/PaymentCancelPermissionDenied403"
         "404":
-          $ref: "#/components/responses/Generic404"
+          $ref: "#/components/responses/Identifier2StepNotFound404"
         "409":
           $ref: "#/components/responses/PaymentCancelConflict409"
         "422":
@@ -1870,6 +1876,66 @@ components:
                 status: 404
                 code: NOT_FOUND
                 message: The specified resource is not found.
+    IdentifierNotFound404:
+      description: Phone Number Not Found
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 404
+                  code:
+                    enum:
+                      - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: Some identifier cannot be matched to a device. In this API it refers to a phoneNumber.
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: phoneNumber not found.
+    Identifier2StepNotFound404:
+      description: |-
+        Resource Not Found.
+        In addition to regular NOT_FOUND scenario other scenarios may exist:
+          - Phone Number not found ("code": "IDENTIFIER_NOT_FOUND","message": "phoneNumber not found.").
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 404
+                  code:
+                    enum:
+                      - NOT_FOUND
+                      - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: Some identifier cannot be matched to a device. In this API it refers to a phoneNumber.
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: phoneNumber not found.
     Generic409:
       description: Conflict
       headers:
