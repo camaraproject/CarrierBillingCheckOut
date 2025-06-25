@@ -48,6 +48,15 @@ Sandbox API Repository to describe, develop, document, and test the CarrierBilli
 * Other releases of this sub project are available in [CarrierBillingCheckout Releases](https://github.com/camaraproject/CarrierBillingCheckout/releases)
 * For changes see [CHANGELOG.md](https://github.com/camaraproject/CarrierBillingCheckout/blob/main/CHANGELOG.md)
 
+## Mock Server
+
+You can now try out the Carrier Billing API without any backend setup. Use a hosted mock server generated from the OpenAPI spec to simulate real-world interactions. This is useful for exploring the API structure, understanding expected request/response payloads, and testing integration flows before actual service provisioning.
+
+Click below to launch a mock server instantly:
+
+<a href="https://beeceptor.com/openapi-mock-server/?utm_source=github&utm_campaign=camaraproject-carrierbillingcheckout&url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/1fc73deae53bd98e337984b38a4c327057b49d7e/documentation/SupportingDocuments/carrier_billing_payment.yaml" target="_blank"><img src="https://cdn.beeceptor.com/assets/images/buttons/mock-openapi-with-beeceptor.png" alt="Mock These APIs Instantly" style="height: 60px;"></a>
+
+
 ## Contributing
 * Meetings are held virtually 
     * Schedule: Bi-Weekly, Wednesdays 13:00 - 14:00 UTC
