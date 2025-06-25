@@ -1,4 +1,4 @@
-Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRemainingAmount
+Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrievePaymentRemainingAmount
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
@@ -8,10 +8,10 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
   # * A phone number eligible for payment & refund
   # * Several payments refunds performed in different situations (total and partial)
   #
-  # References to OAS spec schemas refer to schemas specifies in carrier-billing-refund.yaml, version 0.2.0
+  # References to OAS spec schemas refer to schemas specifies in carrier-billing-refund.yaml, version 0.3.0-rc1
 
   Background: Common retrievePayment setup
-    Given the resource "/carrier-billing-refund/v0.2/payments/{paymentId}/refunds/remaining-amount"
+    Given the resource "/carrier-billing-refund/v0.3rc1/payments/{paymentId}/refunds/remaining-amount"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" is set to a UUID value
