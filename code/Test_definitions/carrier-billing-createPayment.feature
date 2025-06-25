@@ -1,4 +1,4 @@
-Feature: CAMARA Carrier Billing API, v0.4 - Operation createPayment
+Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
@@ -8,10 +8,10 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation createPayment
   # * A phone number eligible for payment (no restrictions for it to be used to perform a payment)
   # * A phone number not-eligible for payment (payment is denied for it due to business conditions)
   #
-  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.4.0
+  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.5.0-rc1
 
   Background: Common createPayment setup
-    Given the resource "/carrier-billing/v0.4/payments"
+    Given the resource "/carrier-billing/v0.5rc1/payments"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" is set to a UUID value

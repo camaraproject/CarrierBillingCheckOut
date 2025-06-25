@@ -128,7 +128,7 @@ info:
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
-  version: wip
+  version: 0.5.0-rc1
   title: Carrier Billing
   license:
     name: Apache 2.0
@@ -138,7 +138,7 @@ externalDocs:
   description: Product documentation at Camara
   url: https://github.com/camaraproject/CarrierBillingCheckOut
 servers:
-  - url: "{apiRoot}/carrier-billing/vwip"
+  - url: "{apiRoot}/carrier-billing/v0.5rc1"
     variables:
       apiRoot:
         default: http://localhost:9091
