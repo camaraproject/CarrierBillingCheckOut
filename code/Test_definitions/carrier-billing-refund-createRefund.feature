@@ -265,7 +265,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation createRefund
     When the request "createRefund" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
-    And the response property "$.code" is "INVALID_ARGUMENT"
+    And the response property "$.code" is "INVALID_SINK"
     And the response property "$.message" contains a user friendly text
 
   @create_refund_400.07_invalid_sinkCredential

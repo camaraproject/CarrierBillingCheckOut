@@ -266,7 +266,7 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation preparePayment
     When the request "preparePayment" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
-    And the response property "$.code" is "INVALID_ARGUMENT"
+    And the response property "$.code" is "INVALID_SINK"
     And the response property "$.message" contains a user friendly text
 
   @prepare_payment_400.07_invalid_sinkCredential
