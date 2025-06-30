@@ -10,11 +10,11 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
   #
   # References to OAS spec schemas refer to schemas specifies in carrier-billing-refund.yaml, version 0.2.0
 
-  Background: Common retrievePayment setup
+  Background: Common retrievePaymentRemainingAmount setup
     Given the resource "/carrier-billing-refund/v0.2/payments/{paymentId}/refunds/remaining-amount"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
-    And the header "x-correlator" is set to a UUID value
+    And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
     And the path parameter "paymentId" is set to a valid value
 
   ##############################
@@ -25,7 +25,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
   Scenario: Common validations for any success scenario
     Given an existing payment created by operation createPayment OR preparePayment
     And the path parameter "paymentId" is set to the value for that payment
-    When the HTTP "GET" request is sent
+    When the request "retrievePaymentRemainingAmount" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -37,7 +37,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
     Given an existing payment created by operation createPayment OR preparePayment
     And an existing total refund being perfomed for that "paymentId"
     And the path parameter "paymentId" is set to the value for that payment
-    When the HTTP "GET" request is sent
+    When the request "retrievePaymentRemainingAmount" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -50,7 +50,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
     Given an existing payment created by operation createPayment OR preparePayment
     And an existing total refund completed successfully for that "paymentId"
     And the path parameter "paymentId" is set to the value for that payment
-    When the HTTP "GET" request is sent
+    When the request "retrievePaymentRemainingAmount" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -63,7 +63,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
     Given an existing payment created by operation createPayment OR preparePayment
     And an existing total refund finally denied for that "paymentId"
     And the path parameter "paymentId" is set to the value for that payment
-    When the HTTP "GET" request is sent
+    When the request "retrievePaymentRemainingAmount" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -76,7 +76,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
     Given an existing payment created by operation createPayment OR preparePayment
     And an existing partial refund being perfomed for that "paymentId"
     And the path parameter "paymentId" is set to the value for that payment
-    When the HTTP "GET" request is sent
+    When the request "retrievePaymentRemainingAmount" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -89,7 +89,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
     Given an existing payment created by operation createPayment OR preparePayment
     And an existing partial refund completed successfully for that "paymentId"
     And the path parameter "paymentId" is set to the value for that payment
-    When the HTTP "GET" request is sent
+    When the request "retrievePaymentRemainingAmount" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -102,7 +102,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
     Given an existing payment created by operation createPayment OR preparePayment
     And an existing partial refund finally denied for that "paymentId"
     And the path parameter "paymentId" is set to the value for that payment
-    When the HTTP "GET" request is sent
+    When the request "retrievePaymentRemainingAmount" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -114,13 +114,23 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
   # Error scenarios
   ##############################
 
+  # Error 400 scenarios
+
+  @retrieve_payment_remaining_amount_400.01_invalid_x-correlator
+  Scenario: Invalid x-correlator header
+    Given the header "x-correlator" does not comply with the schema at "#/components/schemas/XCorrelator"
+    When the request "retrievePaymentRemainingAmount" is sent
+    Then the response status code is 400
+    And the response property "$.status" is 400
+    And the response property "$.code" is "INVALID_ARGUMENT"
+
   # Error 401 scenarios
 
   @retrieve_payment_remaining_amount_401.01_no_authorization_header
   Scenario: No Authorization header
     Given the header "Authorization" is removed
     And the path parameter "paymentId" is set to a valid value
-    When the HTTP "GET" request is sent
+    When the request "retrievePaymentRemainingAmount" is sent
     Then the response status code is 401
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
@@ -130,7 +140,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
   Scenario: Expired access token
     Given the header "Authorization" is set to an expired access token
     And the path parameter "paymentId" is set to a valid value
-    When the HTTP "GET" request is sent
+    When the request "retrievePaymentRemainingAmount" is sent
     Then the response status code is 401
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
@@ -140,7 +150,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
   Scenario: Invalid access token
     Given the header "Authorization" is set to an invalid access token
     And the path parameter "paymentId" is set to a valid value
-    When the HTTP "GET" request is sent
+    When the request "retrievePaymentRemainingAmount" is sent
     Then the response status code is 401
     And the response header "Content-Type" is "application/json"
     And the response property "$.status" is 401
@@ -154,30 +164,19 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
     # To test this scenario, it will be necessary to obtain a token without the required scope
     Given header "Authorization" is set to an access token without the required scope
     And the path parameter "paymentId" is set to a valid value
-    When the HTTP "GET" request is sent
+    When the request "retrievePaymentRemainingAmount" is sent
     Then the response status code is 403
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
-    And the response property "$.message" contains a user friendly text
-
-  @retrieve_payment_remaining_amount_403.02_phoneNumber_token_mismatch
-  Scenario: Inconsistent access token context for the phoneNumber
-    # To test this, a 3-legged access token has to be obtained for a different phoneNumber
-    Given the header "Authorization" is set to a valid access token emitted for a phone number
-    And the path parameter "paymentId" is set to a valid value associated to a phone number different than the access token is associated
-    When the HTTP "GET" request is sent
-    Then the response status code is 403
-    And the response property "$.status" is 403
-    And the response property "$.code" is "CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT"
     And the response property "$.message" contains a user friendly text
 
   # Error 404 scenarios
 
   @retrieve_payment_remaining_amount_404.01_payment_not_found
   Scenario: Payment not found
-    Given the path parameter "paymentId" is set to non-existing value in the environment
-    And the header "Authorization" is set to a valid access token
-    When the HTTP "GET" request is sent
+    Given the header "Authorization" is set to a valid access token
+    And the path parameter "paymentId" is compliant with the schema but does not identify a valid payment in the environment
+    When the request "retrievePaymentRemainingAmount" is sent
     Then the response status code is 404
     And the response property "$.status" is 404
     And the response property "$.code" is "NOT_FOUND"
@@ -191,7 +190,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrievePaymentRema
     Given the path parameter "paymentId" is set to a valid value in the environment
     And the header "Authorization" is set to a valid access token
     And the threshold of requests has been reached
-    When the "GET" request is sent
+    When the request "retrievePaymentRemainingAmount" is sent
     Then the response status code is 429
     And the response property "$.status" is 429
     And the response property "$.code" is "TOO_MANY_REQUESTS"

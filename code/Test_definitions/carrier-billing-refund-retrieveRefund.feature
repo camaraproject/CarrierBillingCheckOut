@@ -14,7 +14,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrieveRefund
     Given the resource "/carrier-billing-refund/v0.2/payments/{paymentId}/refunds/{refundId}"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
-    And the header "x-correlator" is set to a UUID value
+    And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
     And the path parameter "paymentId" is set to a valid value
     And the path parameter "refundId" is set to a valid value
 
@@ -27,7 +27,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrieveRefund
     Given an existing refund created by operation createRefund
     And the path parameter "refundId" is set to the value for this refund
     And the path parameter "paymentId" is set to the value of the payment related to this refund
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefund" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -38,6 +38,16 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrieveRefund
   # Error scenarios
   ##############################
 
+  # Error 400 scenarios
+
+  @retrieve_refund_400.01_invalid_x-correlator
+  Scenario: Invalid x-correlator header
+    Given the header "x-correlator" does not comply with the schema at "#/components/schemas/XCorrelator"
+    When the request "retrieveRefund" is sent
+    Then the response status code is 400
+    And the response property "$.status" is 400
+    And the response property "$.code" is "INVALID_ARGUMENT"
+
   # Error 401 scenarios
 
   @retrieve_refund_401.01_no_authorization_header
@@ -45,7 +55,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrieveRefund
     Given the header "Authorization" is removed
     And the path parameter "paymentId" is set to a valid value
     And the path parameter "refundId" is set to a valid value
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefund" is sent
     Then the response status code is 401
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
@@ -56,7 +66,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrieveRefund
     Given the header "Authorization" is set to an expired access token
     And the path parameter "paymentId" is set to a valid value
     And the path parameter "refundId" is set to a valid value
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefund" is sent
     Then the response status code is 401
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
@@ -67,7 +77,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrieveRefund
     Given the header "Authorization" is set to an invalid access token
     And the path parameter "paymentId" is set to a valid value
     And the path parameter "refundId" is set to a valid value
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefund" is sent
     Then the response status code is 401
     And the response header "Content-Type" is "application/json"
     And the response property "$.status" is 401
@@ -81,33 +91,20 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrieveRefund
     # To test this scenario, it will be necessary to obtain a token without the required scope
     Given header "Authorization" is set to an access token without the required scope
     And the path parameter "paymentId" is set to a valid value
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefund" is sent
     Then the response status code is 403
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
-    And the response property "$.message" contains a user friendly text
-
-  @retrieve_refund_403.02_phoneNumber_token_mismatch
-  Scenario: Inconsistent access token context for the phoneNumber
-    # To test this, a 3-legged access token has to be obtained for a different phoneNumber
-    Given the header "Authorization" is set to a valid access token emitted for a phone number
-    And the path parameter "paymentId" is set to a valid value associated to a phone number different than the access token is associated
-    And the path parameter "refundId" is set to a valid value associated to the "paymentId"
-    When the HTTP "GET" request is sent
-    Then the response status code is 403
-    And the response property "$.status" is 403
-    And the response property "$.code" is "CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT"
     And the response property "$.message" contains a user friendly text
 
   # Error 404 scenarios
 
   @retrieve_refund_404.01_payment_not_found
   Scenario: Payment not found
-    # To test this, a 2-legged access token is needed, just beacuse if not it triggers test "@retrieve_refund_403.02_phoneNumber_token_mismatch"
-    Given the path parameter "paymentId" is set to a non-existing value in the environment
+    Given the header "Authorization" is set to a valid access token
+    And the path parameter "paymentId" is compliant with the schema but does not identify a valid payment in the environment
     And the path parameter "refundId" is set to a valid value in the environment
-    And the header "Authorization" is set to a valid access token
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefund" is sent
     Then the response status code is 404
     And the response property "$.status" is 404
     And the response property "$.code" is "NOT_FOUND"
@@ -115,10 +112,10 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrieveRefund
 
   @retrieve_refund_404.02_refund_not_found
   Scenario: Refund not found
-    Given the path parameter "paymentId" is set to a valid value in the environment
-    And the path parameter "refundId" is set to a non-existing value in the environment
-    And the header "Authorization" is set to a valid access token
-    When the HTTP "GET" request is sent
+    Given the header "Authorization" is set to a valid access token
+    And the path parameter "paymentId" is set to a valid value in the environment
+    And the path parameter "refundId" is compliant with the schema but does not identify a valid refund in the environment
+    When the request "retrieveRefund" is sent
     Then the response status code is 404
     And the response property "$.status" is 404
     And the response property "$.code" is "NOT_FOUND"
@@ -133,7 +130,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.2 - Operation retrieveRefund
     And the path parameter "refundId" is set to a valid value in the environment
     And the header "Authorization" is set to a valid access token
     And the threshold of requests has been reached
-    When the "GET" request is sent
+    When the request "retrieveRefund" is sent
     Then the response status code is 429
     And the response property "$.status" is 429
     And the response property "$.code" is "TOO_MANY_REQUESTS"
