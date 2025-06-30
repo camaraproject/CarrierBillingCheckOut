@@ -14,7 +14,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
     Given the resource "/carrier-billing/v0.5rc1/payments/{paymentId}/confirm"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
-    And the header "x-correlator" is set to a UUID value
+    And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
     And the path parameter "paymentId" is set to a valid value
     And the request body is set by default to a request body compliant with the schema
 
@@ -26,7 +26,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
   Scenario: Common validations for any success scenario
     # Valid default request body compliant with the schema
     Given the request body is set to a valid request body
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 202
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -35,7 +35,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
   # Case using a 3-legged Access Token
   Scenario: Request confirm payment indicating phoneNumber in 3-legged access mode
     Given the request body property "$.phonenumber" is set to a valid value which is the same as associated to access token
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 202
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -44,7 +44,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
   # Case using a 2-legged Access Token. Only applicable for Countries and Telco Operators whose regulation allows for it
   Scenario: Request confirm payment indicating phoneNumber in 2-legged access mode
     Given the request body property "$.phonenumber" is set to a valid value which is the same as associated to access token
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 202
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -58,7 +58,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
   @confirm_payment_400.01_no_request_body
   Scenario: Missing request body
     Given the request body is not included
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
@@ -67,17 +67,26 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
   @confirm_payment_400.02_empty_request_body
   Scenario: Empty object as request body
     Given the request body is set to "{}"
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
 
+  @confirm_payment_400.03_invalid_x-correlator
+  Scenario: Invalid x-correlator header
+    Given the header "x-correlator" does not comply with the schema at "#/components/schemas/XCorrelator"
+    And the request body is set to a valid request body
+    When the request "confirmPayment" is sent
+    Then the response status code is 400
+    And the response property "$.status" is 400
+    And the response property "$.code" is "INVALID_ARGUMENT"
+
   @confirm_payment_C02.01_phone_number_not_schema_compliant
   Scenario: Phone number value does not comply with the schema
     Given the header "Authorization" is set to a valid access token which does not identify a single phone number
     And the request body property "$.phoneNumber" does not comply with the OAS schema at "/components/schemas/PhoneNumber"
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
@@ -89,7 +98,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
   Scenario: No Authorization header
     Given the header "Authorization" is removed
     And the request body is set to a valid request body
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 401
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
@@ -99,7 +108,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
   Scenario: Expired access token
     Given the header "Authorization" is set to an expired access token
     And the request body is set to a valid request body
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 401
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
@@ -109,7 +118,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
   Scenario: Invalid access token
     Given the header "Authorization" is set to an invalid access token
     And the request body is set to a valid request body
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 401
     And the response header "Content-Type" is "application/json"
     And the response property "$.status" is 401
@@ -123,7 +132,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
     # To test this scenario, it will be necessary to obtain a token without the required scope
     Given the request body is set to a valid request body
     And the header "Authorization" is set to an access token without the required scope
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 403
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
@@ -134,10 +143,33 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
     # To test this, a business context exists in the Telco Operator to deny the payment
     Given the request body is set to a valid request body
     And the header "Authorization" is set to a valid access token
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 403
     And the response property "$.status" is 403
     And the response property "$.code" is "CARRIER_BILLING.PAYMENT_DENIED"
+    And the response property "$.message" contains a user friendly text
+
+  # Error 404 scenarios
+
+  @confirm_payment_404.01_payment_not_found
+  Scenario: Payment not found
+    Given the header "Authorization" is set to a valid access token
+    And the path parameter "paymentId" is compliant with the schema but does not identify a valid payment in the environment
+    And the request body is set to a valid request body
+    When the request "confirmPayment" is sent
+    Then the response status code is 404
+    And the response property "$.status" is 404
+    And the response property "$.code" is "NOT_FOUND"
+    And the response property "$.message" contains a user friendly text
+
+  @confirm_payment_C02.02_phone_number_not_found
+  Scenario: Phone number not found
+    Given the header "Authorization" is set to a valid access token which does not identify a single phone number
+    And the request body property "$.phoneNumber" is compliant with the schema but does not identify a valid phone number
+    When the request "confirmPayment" is sent
+    Then the response status code is 404
+    And the response property "$.status" is 404
+    And the response property "$.code" is "IDENTIFIER_NOT_FOUND"
     And the response property "$.message" contains a user friendly text
 
   # Error 409 scenarios
@@ -147,7 +179,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
     Given the request body is set to a valid request body
     And the path param "paymentId" is set to a valid value of an already confirmed payment
     And the header "Authorization" is set to a valid access token
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 409
     And the response property "$.status" is 409
     And the response property "$.code" is "CARRIER_BILLING.PAYMENT_CONFIRMED"
@@ -158,7 +190,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
     Given the request body is set to a valid request body
     And the path param "paymentId" is set to a valid value of an already cancelled payment
     And the header "Authorization" is set to a valid access token
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 409
     And the response property "$.status" is 409
     And the response property "$.code" is "CARRIER_BILLING.PAYMENT_CANCELLED"
@@ -171,7 +203,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
     Given the request body is set to a valid request body
     And the request body property "$.phoneNumber" is missing
     And the header "Authorization" is set to a valid access token
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 422
     And the response property "$.status" is 422
     And the response property "$.code" is "CARRIER_BILLING.PHONE_NUMBER_REQUIRED"
@@ -181,7 +213,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
   Scenario: Phone number not to be included when it can be deduced from the access token
     Given the header "Authorization" is set to a valid access token identifying a phone number
     And the request body property "$.phoneNumber" is set to a valid phone number
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 422
     And the response property "$.status" is 422
     And the response property "$.code" is "UNNECESSARY_IDENTIFIER"
@@ -191,7 +223,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
   Scenario: Phone number not included and cannot be deducted from the access token
     Given the header "Authorization" is set to a valid access token which does not identify a single phone number
     And the request body property "$.phoneNumber" is not included
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 422
     And the response property "$.status" is 422
     And the response property "$.code" is "MISSING_IDENTIFIER"
@@ -202,7 +234,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
   Scenario: Service not available for the phone number
     Given that the service is not available for all phone numbers commercialized by the operator
     And a valid phone number, identified by the token or provided in the request body, for which the service is not applicable
-    When the HTTP "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 422
     And the response property "$.status" is 422
     And the response property "$.code" is "SERVICE_NOT_APPLICABLE"
@@ -217,7 +249,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation confirmPayment
     And the request body is set to a valid request body
     And the header "Authorization" is set to a valid access token
     And the threshold of requests has been reached
-    When the "POST" request is sent
+    When the request "confirmPayment" is sent
     Then the response status code is 429
     And the response property "$.status" is 429
     And the response property "$.code" is "TOO_MANY_REQUESTS"

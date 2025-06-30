@@ -14,7 +14,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
     Given the resource "/carrier-billing/v0.5rc1/payments"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
-    And the header "x-correlator" is set to a UUID value
+    And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
     And the request body is set by default to a request body compliant with the schema
 
   ##############################
@@ -27,7 +27,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
     # Property "$.amountTransaction" is set with required information only
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body is set to a valid request body
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -41,7 +41,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body property "$.sink" is set with a valid URL
     And the request body is set to a valid request body
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -57,7 +57,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
     And the request body property "$.sink" is set with a valid HTTPS URL
     And the request body property "$.sinkCredential" is set to a valid credential with property "$.sinkCredential.credentialType" set to "ACCESSTOKEN"
     And the request body is set to a valid request body
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -70,7 +70,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   Scenario: Request 1-step payment with gross amount
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body property "$.amountTransaction.paymentAmount.chargingInformation.isTaxIncluded" is set to true
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -81,7 +81,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   Scenario: Request 1-step payment with net amount
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body property "$.amountTransaction.paymentAmount.chargingInformation.isTaxIncluded" is set to false OR not set
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -92,7 +92,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   Scenario: Request 1-step payment indicating taxAmount
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body property "$.amountTransaction.paymentAmount.chargingInformation.taxAmount" is set to a valid value
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -104,7 +104,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   Scenario: Request 1-step payment indicating merchantIdentifier
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body property "$.amountTransaction.paymentAmount.chargingMetaData.merchantIdentifier" is set to a valid value
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -115,7 +115,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   Scenario: Request 1-step payment indicating paymentDetails
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body array property "$.amountTransaction.paymentAmount.paymentDetails" is set with valid information
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -127,7 +127,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   Scenario: Request 1-step payment indicating clientCorrelator
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body property "$.amountTransaction.clientCorrelator" is set to a valid value
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -139,7 +139,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   Scenario: Request 1-step payment indicating phoneNumber in 3-legged access mode
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body property "$.amountTransaction.phoneNumber" is set to a valid value which is the same as associated to access token
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -151,7 +151,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   Scenario: Request 1-step payment indicating phoneNumber in 2-legged access mode
     Given the request body property "$.amountTransaction" is set with valid required information
     And the request body property "$.amountTransaction.phoneNumber" is set to a valid value
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -162,7 +162,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   # Scenario for a Telco Operator that behaves synchronously
   Scenario: Request 1-step payment with sync behaviour
     Given the request body property "$.amountTransaction" is set with valid required information
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -173,7 +173,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   # Scenario for a Telco Operator that behaves asynchronously
   Scenario: Request 1-step payment with async behaviour
     Given the request body property "$.amountTransaction" is set with valid required information
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 201
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -189,7 +189,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   @create_payment_400.01_no_request_body
   Scenario: Missing request body
     Given the request body is not included
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
@@ -198,7 +198,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   @create_payment_400.02_empty_request_body
   Scenario: Empty object as request body
     Given the request body is set to "{}"
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
@@ -208,7 +208,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   # Test other input properties in addition to amountTransaction
   Scenario Outline: Input property values does not comply with the schema
     Given the request body property "<input_property>" does not comply with the OAS schema at <oas_spec_schema>
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
@@ -222,7 +222,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   @create_payment_400.04_required_input_properties_missing
   Scenario Outline: Required input properties are missing
     Given the request body property "<input_property>" is not included
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
@@ -241,7 +241,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   @create_payment_400.05_clientCorrelator_in_use
   Scenario: Using the same client correlator for two different payment requests
     Given the request body property includes property "$.clientCorrelator" with a value already use in a non-completed payment
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
@@ -250,16 +250,16 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   @create_payment_400.06_invalid_sink
   Scenario: Using a invalid sink value
     Given the request body property includes property "$.sink" which is not set to an url
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
-    And the response property "$.code" is "INVALID_ARGUMENT"
+    And the response property "$.code" is "INVALID_SINK"
     And the response property "$.message" contains a user friendly text
 
   @create_payment_400.07_invalid_sinkCredential
   Scenario: Using a invalid sinkCredential type value
     Given the request body property includes property "$.sinkCredential.credentialType" whose value is not "ACCESSTOKEN"
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_CREDENTIAL"
@@ -268,17 +268,26 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   @create_payment_400.08_invalid_sinkCredential_Acccestoken
   Scenario: Using a invalid sinkCredential accesstoken type value
     Given the request body property includes property "$.sinkCredential.accessTokenType" whose value is not "bearer"
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_TOKEN"
     And the response property "$.message" contains a user friendly text
 
+  @create_payment_400.09_invalid_x-correlator
+  Scenario: Invalid x-correlator header
+    Given the header "x-correlator" does not comply with the schema at "#/components/schemas/XCorrelator"
+    And the request body is set to a valid request body
+    When the request "createPayment" is sent
+    Then the response status code is 400
+    And the response property "$.status" is 400
+    And the response property "$.code" is "INVALID_ARGUMENT"
+
   @create_payment_C02.01_phone_number_not_schema_compliant
   Scenario: Phone number value does not comply with the schema
     Given the header "Authorization" is set to a valid access token which does not identify a single phone number
     And the request body property "$.phoneNumber" does not comply with the OAS schema at "/components/schemas/PhoneNumber"
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
@@ -290,7 +299,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   Scenario: No Authorization header
     Given the header "Authorization" is removed
     And the request body is set to a valid request body
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 401
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
@@ -300,7 +309,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   Scenario: Expired access token
     Given the header "Authorization" is set to an expired access token
     And the request body is set to a valid request body
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 401
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
@@ -310,7 +319,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   Scenario: Invalid access token
     Given the header "Authorization" is set to an invalid access token
     And the request body is set to a valid request body
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 401
     And the response header "Content-Type" is "application/json"
     And the response property "$.status" is 401
@@ -324,21 +333,33 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
     # To test this scenario, it will be necessary to obtain a token without the required scope
     Given the request body is set to a valid request body
     And the header "Authorization" is set to an access token without the required scope
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 403
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
 
-  @create_payment_403.03_payment_denied
+  @create_payment_403.02_payment_denied
   Scenario: Payment denied by business
     # To test this, a business context exists in the Telco Operator to deny the payment
     Given the request body is set to a valid request body
     And the header "Authorization" is set to a valid access token
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 403
     And the response property "$.status" is 403
     And the response property "$.code" is "CARRIER_BILLING.PAYMENT_DENIED"
+    And the response property "$.message" contains a user friendly text
+
+  # Error 404 scenarios
+
+  @create_payment_C02.02_phone_number_not_found
+  Scenario: Phone number not found
+    Given the header "Authorization" is set to a valid access token which does not identify a single phone number
+    And the request body property "$.amountTransaction.phoneNumber" is compliant with the schema but does not identify a valid phone number
+    When the request "createPayment" is sent
+    Then the response status code is 404
+    And the response property "$.status" is 404
+    And the response property "$.code" is "IDENTIFIER_NOT_FOUND"
     And the response property "$.message" contains a user friendly text
 
   # Error 409 scenarios
@@ -349,7 +370,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
     And the request body property "$.amountTransaction.referenceCode" is set to a value already use in another payment request
     And the request body property "$.clientCorrelator" is missing
     And the header "Authorization" is set to a valid access token
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 409
     And the response property "$.status" is 409
     And the response property "$.code" is "ALREADY_EXISTS"
@@ -362,7 +383,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
     Given the request body is set to a valid request body
     And the request body property "$.amountTransaction.phoneNumber" is missing
     And the header "Authorization" is set to a valid access token
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 422
     And the response property "$.status" is 422
     And the response property "$.code" is "CARRIER_BILLING.PHONE_NUMBER_REQUIRED"
@@ -374,7 +395,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
     Given the request body is set to a valid request body
     And the request body property "$.amountTransaction.paymentAmount.chargingInformationAmount" exceeds the value allowed by the regulation
     And the header "Authorization" is set to a valid access token
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 422
     And the response property "$.status" is 422
     And the response property "$.code" is "CARRIER_BILLING.UNAUTHORIZED_AMOUNT"
@@ -386,7 +407,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
     Given the request body is set to a valid request body
     And the request body property "$.amountTransaction.paymentAmount.chargingInformationAmount" exceeds the accumulated threshold amount value allowed by the regulation
     And the header "Authorization" is set to a valid access token
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 422
     And the response property "$.status" is 422
     And the response property "$.code" is "CARRIER_BILLING.AMOUNT_THRESHOLD_OVERPASSED"
@@ -396,7 +417,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   Scenario: Phone number not to be included when it can be deduced from the access token
     Given the header "Authorization" is set to a valid access token identifying a phone number
     And the request body property "$.phoneNumber" is set to a valid phone number
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 422
     And the response property "$.status" is 422
     And the response property "$.code" is "UNNECESSARY_IDENTIFIER"
@@ -406,7 +427,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   Scenario: Phone number not included and cannot be deducted from the access token
     Given the header "Authorization" is set to a valid access token which does not identify a single phone number
     And the request body property "$.phoneNumber" is not included
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 422
     And the response property "$.status" is 422
     And the response property "$.code" is "MISSING_IDENTIFIER"
@@ -417,7 +438,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
   Scenario: Service not available for the phone number
     Given that the service is not available for all phone numbers commercialized by the operator
     And a valid phone number, identified by the token or provided in the request body, for which the service is not applicable
-    When the HTTP "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 422
     And the response property "$.status" is 422
     And the response property "$.code" is "SERVICE_NOT_APPLICABLE"
@@ -432,7 +453,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation createPayment
     And the request body is set to a valid request body
     And the header "Authorization" is set to a valid access token
     And the threshold of requests has been reached
-    When the "POST" request is sent
+    When the request "createPayment" is sent
     Then the response status code is 429
     And the response property "$.status" is 429
     And the response property "$.code" is "TOO_MANY_REQUESTS"

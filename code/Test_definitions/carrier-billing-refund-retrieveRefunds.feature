@@ -14,7 +14,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
     Given the resource "/carrier-billing-refund/v0.3rc1/payments/{paymentId}/refunds"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
-    And the header "x-correlator" is set to a UUID value
+    And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
     And the path parameter "paymentId" is set to a valid value
 
   ##############################
@@ -24,7 +24,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
   @retrieve_refunds_01_generic_success_scenario
   Scenario: Common validations for any success scenario
     Given at least an existing refund created by operation createRefund
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -34,7 +34,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
   @retrieve_refunds_02_no_refunds
   Scenario: No existing refunds
     Given no refunds have been created by operation createRefund
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -44,7 +44,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
   Scenario: List of refunds for a given phone number
     Given at least an existing refund created by operation createRefund
     And the header "Authorization" is set to a valid access token associated for a phone number with refunds requested
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -55,9 +55,9 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
   @retrieve_refunds_04_for_application
   Scenario: List of refunds for a given application (API client)
   #To test this scenario, a 2-legged token is needed
-    Given several existing refund created by operation createRefund
+    Given several existing refunds created by operation createRefund
     And the header "Authorization" is set to a valid access token not emitted for a specific phone number
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -72,7 +72,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
     Given several existing refunds created by operation createRefund
     And the header "Authorization" is set to a valid access token
     And the query parameter "refundCreationDate.gte" is set to "<creation_date>"
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -92,7 +92,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
     Given several existing refunds created by operation createRefund
     And the header "Authorization" is set to a valid access token
     And the query parameter "refundCreationDate.lte" is set to "<creation_date>"
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -113,7 +113,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
     And the header "Authorization" is set to a valid access token
     And the query parameter "refundCreationDate.gte" is set to "<start_creation_date>"
     And the query parameter "refundCreationDate.lte" is set to "<end_creation_date>"
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -133,7 +133,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
     Given several existing refunds created by operation createRefund
     And the header "Authorization" is set to a valid access token
     And the query parameter "order" is set to "<order>"
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -151,7 +151,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
     Given several existing refunds created by operation createRefund in different refund status
     And the header "Authorization" is set to a valid access token
     And the query parameter "paymentStatus" is set to "<refund_status>"
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -171,7 +171,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
     Given several existing refunds created by operation createRefund for a given merchant
     And the header "Authorization" is set to a valid access token
     And the query parameter "merchantIdentifier" is set to the value representing such a merchant
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -186,7 +186,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
     And the header "Authorization" is set to a valid access token
     And the query parameter "page" is set to "1"
     And the query parameter "perPage" is set to "5"
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -206,7 +206,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
     And the header "Authorization" is set to a valid access token
     And the query parameter "refundCreationDate.gte" is set to "<start_creation_date>"
     And the query parameter "refundCreationDate.lte" is set to "<end_creation_date>"
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "CARRIER_BILLING_REFUND.INVALID_DATE_RANGE"
@@ -223,7 +223,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
     And the header "Authorization" is set to a valid access token
     And the query parameter "page" is set to "1000"
     And the query parameter "perPage" is set to "1000"
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "CARRIER_BILLING_REFUND.OUT_OF_RANGE"
@@ -236,18 +236,26 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
     And the header "Authorization" is set to a valid access token
     And the query parameter "page" is set to "1"
     And the query parameter "perPage" is set to "1000"
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "CARRIER_BILLING_REFUND.TOO_MANY_MATCHING_RECORDS"
     And the response property "$.message" contains a user friendly text
+
+  @retrieve_refunds_400.04_invalid_x-correlator
+  Scenario: Invalid x-correlator header
+    Given the header "x-correlator" does not comply with the schema at "#/components/schemas/XCorrelator"
+    When the request "retrieveRefunds" is sent
+    Then the response status code is 400
+    And the response property "$.status" is 400
+    And the response property "$.code" is "INVALID_ARGUMENT"
 
   # Error 401 scenarios
 
   @retrieve_refunds_401.01_no_authorization_header
   Scenario: No Authorization header
     Given the header "Authorization" is removed
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 401
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
@@ -256,7 +264,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
   @retrieve_refunds_401.02_expired_access_token
   Scenario: Expired access token
     Given the header "Authorization" is set to an expired access token
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 401
     And the response property "$.status" is 401
     And the response property "$.code" is "UNAUTHENTICATED"
@@ -265,7 +273,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
   @retrieve_refunds_401.03_invalid_access_token
   Scenario: Invalid access token
     Given the header "Authorization" is set to an invalid access token
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 401
     And the response header "Content-Type" is "application/json"
     And the response property "$.status" is 401
@@ -278,20 +286,10 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
   Scenario: Inconsistent access token permissions
     # To test this scenario, it will be necessary to obtain a token without the required scope
     Given header "Authorization" is set to an access token without the required scope
-    When the HTTP "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 403
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
-    And the response property "$.message" contains a user friendly text
-
-  @retrieve_refunds_403.02_phoneNumber_token_mismatch
-  Scenario: Inconsistent access token context for the phoneNumber
-    # To test this, a 3-legged access token has to be obtained without associated to a phoneNumber
-    Given the header "Authorization" is set to a valid access token not emitted for a phone number
-    When the HTTP "GET" request is sent
-    Then the response status code is 403
-    And the response property "$.status" is 403
-    And the response property "$.code" is "CARRIER_BILLING_REFUND.INVALID_REFUND_CONTEXT"
     And the response property "$.message" contains a user friendly text
 
   # Error 429 scenarios
@@ -303,7 +301,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation retrieveRefun
     And the path parameter "refundId" is set to a valid value in the environment
     And the header "Authorization" is set to a valid access token
     And the threshold of requests has been reached
-    When the "GET" request is sent
+    When the request "retrieveRefunds" is sent
     Then the response status code is 429
     And the response property "$.status" is 429
     And the response property "$.code" is "TOO_MANY_REQUESTS"
