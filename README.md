@@ -34,7 +34,7 @@ Sandbox API Repository to describe, develop, document, and test the CarrierBilli
 * **The pre-release [r3.1 - rc](https://github.com/camaraproject/CarrierBillingCheckout/releases/tag/r3.1) of the Carrier Billing APIs is available.**
 <br>This is a release candidate. Until the public release there are bug fixes to be expected. The release candidate is suitable for implementors, but it is not recommended to use the API with customers in productive environments.
 
-* The release **r3.1 - rc** is available in [r3.1](https://github.com/camaraproject/CarrierBillingCheckOut/tree/r3.1), and includes the following APIs:
+* The pre-release **r3.1 - rc** is available in [r3.1](https://github.com/camaraproject/CarrierBillingCheckOut/tree/r3.1), and includes the following APIs:
 - API name: Carrier Billing (Payment) - API Definition v0.5.0-rc.1 with inline documentation:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.1/code/API_definitions/carrier-billing.yaml&nocors)
   - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.1/code/API_definitions/carrier-billing.yaml)
