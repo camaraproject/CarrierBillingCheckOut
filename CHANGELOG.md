@@ -55,7 +55,7 @@ The API definition(s) are based on
 * `404 - IDENTIFIER_NOT_FOUND` error in `createPayment`, `preparePayment`, `confirmPayment` and `cancelPayment` endpoints in https://github.com/camaraproject/CarrierBillingCheckOut/pull/217.
 * `404 - NOT_FOUND` error in `validatePayment` endpoint in https://github.com/camaraproject/CarrierBillingCheckOut/pull/217.
 * New test for invalid `x-correlator` in Gherkin `.feature` files in https://github.com/camaraproject/CarrierBillingCheckOut/pull/230.
-* Error 404 scenarios in Gherkin `.feature` files for `createPayment`, `preparePayment`, `confirmPayment`, `cancelPayment` and `validatePayment` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/230.
+* Error 404 testing scenarios in Gherkin `.feature` files for `createPayment`, `preparePayment`, `confirmPayment`, `cancelPayment` and `validatePayment` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/230.
 
 ### Changed
 * New pattern for `x-correlator` and model aligment with Commonalities in https://github.com/camaraproject/CarrierBillingCheckOut/pull/229.
