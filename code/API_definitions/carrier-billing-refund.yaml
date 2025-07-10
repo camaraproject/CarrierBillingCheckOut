@@ -67,7 +67,7 @@ info:
 
     (FAQs will be added in a later version of the documentation)
   version: 0.3.0-rc.1
-  title: Carrier Billing Refunds
+  title: Carrier Billing Refund
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html

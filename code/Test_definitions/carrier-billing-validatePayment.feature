@@ -1,4 +1,4 @@
-Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation validatePayment
+Feature: CAMARA Carrier Billing API, v0.5.0-rc.1 - Operation validatePayment
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
@@ -7,7 +7,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation validatePayment
   # Testing assets:
   # * N/A (so far)
   #
-  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.5.0-rc1
+  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.5.0-rc.1
 
   Background: Common validatePayment setup
     Given the resource "/carrier-billing/v0.5rc1/payments/{paymentId}/validate"

@@ -1,4 +1,4 @@
-Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation createRefund
+Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc.1 - Operation createRefund
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
@@ -8,7 +8,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc1 - Operation createRefund
   # * A phone number eligible for payment & refund (no restrictions for it to be used to perform a payment or refund)
   # * A phone number not-eligible for refund (refund is denied for it due to business conditions)
   #
-  # References to OAS spec schemas refer to schemas specifies in carrier-billing-refund.yaml, version 0.3.0-rc1
+  # References to OAS spec schemas refer to schemas specifies in carrier-billing-refund.yaml, version 0.3.0-rc.1
 
   Background: Common createRefund setup
     Given the resource "/carrier-billing-refund/v0.3rc1/refunds"

@@ -1,4 +1,4 @@
-Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation cancelPayment
+Feature: CAMARA Carrier Billing API, v0.5.0-rc.1 - Operation cancelPayment
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
@@ -7,7 +7,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc1 - Operation cancelPayment
   # Testing assets:
   # * A phone number eligible for payment (no restrictions for it to be used to perform a payment)
   #
-  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.5.0-rc1
+  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.5.0-rc.1
 
   Background: Common cancelPayment setup
     Given the resource "/carrier-billing/v0.5rc1/payments/{paymentId}/cancel"

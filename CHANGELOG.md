@@ -35,7 +35,7 @@ The API definition(s) are based on
 ## Carrier Billing v0.5.0-rc.1
 
 **Carrier Billing v0.5.0-rc.1 is the first release-candidate version for v0.5.0 of the Carrier Billing (Payment) API.**
-- **This version contains significant changes compared to v0.4.0, and it is not backward compatible:**
+- **This version contains significant changes compared to v0.4.0:**
   - Removal of `401 - AUTHENTICATION_REQUIRED`
   - New pattern for `x-correlator`
   - Addition of a new section `# Additional CAMARA error responses` in `info.description` field
@@ -73,7 +73,7 @@ The API definition(s) are based on
 ## Carrier Billing Refund v0.3.0-rc.1
 
 **Carrier Billing Refund v0.3.0-rc.1 is the first release-candidate version for v0.3.0 of the Carrier Billing Refund API.**
-- **This version contains significant changes compared to v0.2.0, and it is not backward compatible:**
+- **This version contains significant changes compared to v0.2.0:**
   - Removal of `401 - AUTHENTICATION_REQUIRED`
   - New pattern for `x-correlator`
   - Addition of a new section `# Additional CAMARA error responses` in `info.description` field
