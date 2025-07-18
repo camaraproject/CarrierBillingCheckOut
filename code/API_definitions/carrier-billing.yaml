@@ -26,7 +26,7 @@ info:
 
     This API allows to third party clients to request the payment of a (set of) digital good(s)/service(s), as well as to retrieve information about a specific payment or a list of payments.
 
-    In the scope of **version v0.4, only one-off payments are covered**. Recurrent payments (a.k.a. payment subscriptions) are not covered so far.
+    In the scope of **version v0.5rc1, only one-off payments are covered**. Recurrent payments (a.k.a. payment subscriptions) are not covered so far.
 
     The API provides several endpoints/operations:
     - An endpoint to request a 1-STEP Payment, named `createPayment`.
@@ -136,7 +136,7 @@ info:
     # Further info and support
 
     (FAQs will be added in a later version of the documentation)
-  version: wip
+  version: 0.5.0-rc.1
   title: Carrier Billing
   license:
     name: Apache 2.0
@@ -146,7 +146,7 @@ externalDocs:
   description: Product documentation at Camara
   url: https://github.com/camaraproject/CarrierBillingCheckOut
 servers:
-  - url: "{apiRoot}/carrier-billing/vwip"
+  - url: "{apiRoot}/carrier-billing/v0.5rc1"
     variables:
       apiRoot:
         default: http://localhost:9091

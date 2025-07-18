@@ -1,4 +1,4 @@
-Feature: CAMARA Carrier Billing API, v0.4 - Operation validatePayment
+Feature: CAMARA Carrier Billing API, v0.5.0-rc.1 - Operation validatePayment
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
@@ -7,10 +7,10 @@ Feature: CAMARA Carrier Billing API, v0.4 - Operation validatePayment
   # Testing assets:
   # * N/A (so far)
   #
-  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.4.0
+  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.5.0-rc.1
 
   Background: Common validatePayment setup
-    Given the resource "/carrier-billing/v0.4/payments/{paymentId}/validate"
+    Given the resource "/carrier-billing/v0.5rc1/payments/{paymentId}/validate"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
