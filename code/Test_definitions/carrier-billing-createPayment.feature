@@ -8,7 +8,7 @@ Feature: CAMARA Carrier Billing API, v0.5.0-rc.1 - Operation createPayment
   # * A phone number eligible for payment (no restrictions for it to be used to perform a payment)
   # * A phone number not-eligible for payment (payment is denied for it due to business conditions)
   #
-  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml, version 0.5.0-rc.1
+  # References to OAS spec schemas refer to schemas specifies in carrier-billing.yaml
 
   Background: Common createPayment setup
     Given the resource "/carrier-billing/v0.5rc1/payments"

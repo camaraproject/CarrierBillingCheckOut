@@ -438,11 +438,11 @@ components:
         refundCreationDate:
           type: string
           format: date-time
-          description: Date time when the refund is created in server database. This is a technical information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+          description: Date time when the refund is created in server database. This is a technical information. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
         refundDate:
           type: string
           format: date-time
-          description: Date time when the refund is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+          description: Date time when the refund is effectively performed. This is a business information. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
         reason:
           type: string
           description: Reason provided to request the refund. Optionally provided by the user or the merchant.
@@ -590,7 +590,7 @@ components:
             accessTokenExpiresUtc:
               type: string
               format: date-time
-              description: REQUIRED. An absolute (UTC) timestamp at which the token shall be considered expired. Token expiration should occur after the expiration of the requested payment refund, allowing the client to be notified of any changes during the payment refund's existence. If the token expires while the payment refund is still active, the client will stop receiving notifications.
+              description: REQUIRED. An absolute (UTC) timestamp at which the token shall be considered expired. Token expiration should occur after the expiration of the requested payment refund, allowing the client to be notified of any changes during the payment refund's existence. If the token expires while the payment refund is still active, the client will stop receiving notifications. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
             accessTokenType:
               description: REQUIRED. Type of the access token (See [OAuth 2.0](https://tools.ietf.org/html/rfc6749#section-7.1)).
               type: string
@@ -613,7 +613,7 @@ components:
             accessTokenExpiresUtc:
               type: string
               format: date-time
-              description: REQUIRED. An absolute (UTC) timestamp at which the token shall be considered expired. Token expiration should occur after the expiration of the requested payment refund, allowing the client to be notified of any changes during the payment refund's existence. If the token expires while the payment refund is still active, the client will stop receiving notifications.
+              description: REQUIRED. An absolute (UTC) timestamp at which the token shall be considered expired. Token expiration should occur after the expiration of the requested payment refund, allowing the client to be notified of any changes during the payment refund's existence. If the token expires while the payment refund is still active, the client will stop receiving notifications. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
             accessTokenType:
               description: REQUIRED. Type of the access token (See [OAuth 2.0](https://tools.ietf.org/html/rfc6749#section-7.1)).
               type: string
@@ -812,7 +812,7 @@ components:
     DateTime:
       type: string
       format: date-time
-      description: Timestamp when the occurrence happened. Must adhere to RFC 3339.
+      description: Timestamp when the occurrence happened. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
       example: "2023-11-03T12:27:10Z"
     EventRefundCompleted:
       description: Event structure for refund completed
@@ -848,7 +848,7 @@ components:
           properties:
             refundDate:
               type: string
-              description: Date when the refund is effectively performed. This is a business information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+              description: Date when the refund is effectively performed. This is a business information. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
               format: date-time
               example: "2023-11-03T12:27:08.312Z"
     RefundDenied:
@@ -898,19 +898,19 @@ components:
     ErrorInfo:
       type: object
       required:
-        - code
         - message
         - status
+        - code
       properties:
-        code:
+        message:
           type: string
-          description: Code given to this error
+          description: A human-readable description of what the event represents
         status:
           type: integer
           description: HTTP response status code
-        message:
+        code:
           type: string
-          description: Detailed error description
+          description: A human-readable code to describe the error
   responses:
     Generic400:
       description: Invalid input
@@ -1352,7 +1352,7 @@ components:
         type: integer
         default: 10
     StartRefundCreationDate:
-      description: Initial `refundCreationDate` for running the query. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
+      description: Initial `refundCreationDate` for running the query. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
       in: query
       name: refundCreationDate.gte
       required: false
@@ -1360,7 +1360,7 @@ components:
         format: date-time
         type: string
     EndRefundCreationDate:
-      description: End `refundCreationDate` for running the query. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
+      description: End `refundCreationDate` for running the query. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
       in: query
       name: refundCreationDate.lte
       required: false

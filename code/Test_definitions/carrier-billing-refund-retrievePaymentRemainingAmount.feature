@@ -8,7 +8,7 @@ Feature: CAMARA Carrier Billing Refund API, v0.3.0-rc.1 - Operation retrievePaym
   # * A phone number eligible for payment & refund
   # * Several payments refunds performed in different situations (total and partial)
   #
-  # References to OAS spec schemas refer to schemas specifies in carrier-billing-refund.yaml, version 0.3.0-rc.1
+  # References to OAS spec schemas refer to schemas specifies in carrier-billing-refund.yaml
 
   Background: Common retrievePaymentRemainingAmount setup
     Given the resource "/carrier-billing-refund/v0.3rc1/payments/{paymentId}/refunds/remaining-amount"
