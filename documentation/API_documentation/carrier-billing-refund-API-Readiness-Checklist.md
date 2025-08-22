@@ -1,12 +1,12 @@
 # API Readiness Checklist
 
-Checklist for Carrier Billing Refund v0.3.0-rc.1 in r3.1
+Checklist for Carrier Billing Refund v0.3.0 in r3.2
 
 | Nr | API release assets  | alpha | release-candidate |  initial<br>public | stable<br> public | Status | Reference information |
 |----|----------------------------------------------|:-----:|:-----------------:|:-------:|:------:|:----:|:----:|
 |  1 | API definition                               |   M   |         M         |    M    |    M   |  Y   | [link](/code/API_definitions/carrier-billing-refund.yaml) |
-|  2 | Design guidelines from Commonalities applied |   O   |         M         |    M    |    M   |  Y   | [r3.2](https://github.com/camaraproject/Commonalities/releases/tag/r3.2) |
-|  3 | Guidelines from ICM applied                  |   O   |         M         |    M    |    M   |  Y   | [r3.2](https://github.com/camaraproject/IdentityAndConsentManagement/releases/tag/r3.2) |
+|  2 | Design guidelines from Commonalities applied |   O   |         M         |    M    |    M   |  Y   | [r3.3](https://github.com/camaraproject/Commonalities/releases/tag/r3.3) |
+|  3 | Guidelines from ICM applied                  |   O   |         M         |    M    |    M   |  Y   | [r3.3](https://github.com/camaraproject/IdentityAndConsentManagement/releases/tag/r3.3) |
 |  4 | API versioning convention applied            |   M   |         M         |    M    |    M   |  Y   |      |
 |  5 | API documentation                            |   M   |         M         |    M    |    M   |  Y   | [link](/code/API_definitions/carrier-billing-refund.yaml) |
 |  6 | User stories                                 |   O   |         O         |    O    |    M   |  Y   | [link](/documentation/API_documentation/Carrier Billing Refund User Story.md) |
