@@ -46,10 +46,10 @@ info:
     - **Notification URL**: Developers may provide a callback URL (`sink` param) on which status change notifications, regarding the payment, can be received from the Telco Operator. This is an optional parameter.
 
     Following diagram shows the API resources operation sequencing:
-    ![PaymentSequence](https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/main/documentation/API_documentation/resources/Carrier_Billing_sequence_diagram.png)
+    ![PaymentSequence](https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/documentation/API_documentation/resources/Carrier_Billing_sequence_diagram.png)
 
     Follow picture provides information about the payment state engine (state description & transition):
-    ![Payment State Engine](https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/main/documentation/API_documentation/resources/Carrier_Billing_State_Engine.JPG)
+    ![Payment State Engine](https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/documentation/API_documentation/resources/Carrier_Billing_State_Engine.JPG)
 
     State transitions:
 
@@ -2078,7 +2078,7 @@ components:
           - An identifier is not included in the request and the device or phone number identification cannot be derived from the 3-legged access token ("code": "MISSING_IDENTIFIER","message": "The phone number cannot be identified.")
           - An explicit identifier is provided when a device or phone number has already been identified from the access token ("code": "UNNECESSARY_IDENTIFIER","message": "The phone number is already identified by the access token.")
           - Unauthorized amount requested ("code": "CARRIER_BILLING.UNAUTHORIZED_AMOUNT","message": "Unauthorized amount requested.").
-          - Accumulated threshold amount for the user's mobile account overpassed ("code": "CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED","message": "Unathorized payment request. Accumulated user mobile payments overpass account amount threshold.").
+          - Accumulated threshold amount for the user's mobile account overpassed ("code": "CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED","message": "Unauthorized payment request. Accumulated user mobile payments overpass account amount threshold.").
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
@@ -2131,7 +2131,7 @@ components:
               value:
                 status: 422
                 code: CARRIER_BILLING.USER_AMOUNT_THRESHOLD_OVERPASSED
-                message: "Unathorized payment request. Accumulated user mobile payments overpass account amount threshold."
+                message: "Unauthorized payment request. Accumulated user mobile payments overpass account amount threshold."
     PaymentSecondStepUnprocessable422:
       description: |-
         Client indicates content that is understable by the Server but unable to be processed.
