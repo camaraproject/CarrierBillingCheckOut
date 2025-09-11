@@ -31,19 +31,19 @@ Sandbox API Repository to describe, develop, document, and test the CarrierBilli
 <!-- For changes see [CHANGELOG.md](https://github.com/camaraproject/§repo_name§/blob/main/CHANGELOG.md) -->
 * Note: Please be aware that the project will have updates to the main branch. There are no compatibility guarantees associated with code in any branch, including main, until a new release is created. For example, changes may be reverted before a release is created. **For best results, use the latest available release**.
 
-* **The pre-release [r3.1 - rc](https://github.com/camaraproject/CarrierBillingCheckout/releases/tag/r3.1) of the Carrier Billing APIs is available.**
-<br>This is a release candidate. Until the public release there are bug fixes to be expected. The release candidate is suitable for implementors, but it is not recommended to use the API with customers in productive environments.
+* **The release [r3.2](https://github.com/camaraproject/CarrierBillingCheckout/releases/tag/r3.2) of the Carrier Billing APIs is available.**
+<br>This is a public release.
 
-* The pre-release **r3.1 - rc** is available in [r3.1](https://github.com/camaraproject/CarrierBillingCheckOut/tree/r3.1), and includes the following APIs:
-- API name: Carrier Billing - API Definition v0.5.0-rc.1 with inline documentation:
-  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.1/code/API_definitions/carrier-billing.yaml&nocors)
-  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.1/code/API_definitions/carrier-billing.yaml)
-  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r3.1/code/API_definitions/carrier-billing.yaml)
+* The release **r3.2** is available in [r3.2](https://github.com/camaraproject/CarrierBillingCheckOut/tree/r3.2), and includes the following APIs:
+- API name: Carrier Billing - API Definition v0.5.0 with inline documentation:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing.yaml&nocors)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r3.2/code/API_definitions/carrier-billing.yaml)
 
-- API name: Carrier Billing Refund - API Definition v0.3.0-rc.1 with inline documentation:
-  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.1/code/API_definitions/carrier-billing-refund.yaml&nocors)
-  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.1/code/API_definitions/carrier-billing-refund.yaml)
-  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r3.1/code/API_definitions/carrier-billing-refund.yaml)
+- API name: Carrier Billing Refund - API Definition v0.3.0 with inline documentation:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing-refund.yaml&nocors)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing-refund.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r3.2/code/API_definitions/carrier-billing-refund.yaml)
 
 * Other releases of this sub project are available in [CarrierBillingCheckout Releases](https://github.com/camaraproject/CarrierBillingCheckout/releases)
 * For changes see [CHANGELOG.md](https://github.com/camaraproject/CarrierBillingCheckout/blob/main/CHANGELOG.md)

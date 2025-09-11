@@ -2,6 +2,7 @@
 
 ## Table of Contents
 
+- [r3.2](#r32)
 - [r3.1 - rc](#r31---rc)
 - [r2.2](#r22)
 - [r2.1 - rc](#r21---rc)
@@ -19,6 +20,97 @@ The below sections record the changes for each API version in each release as fo
 * for the first release-candidate, all changes since the last public release
 * for subsequent release-candidate(s), only the delta to the previous release-candidate
 * for a public release, the consolidated changes since the previous public release
+
+## r3.2
+
+## Release Notes
+
+This public release contains the definition and documentation of
+* Carrier Billing v0.5.0
+* Carrier Billing Refund v0.3.0
+
+The API definition(s) are based on
+* Commonalities v0.6.0
+* Identity and Consent Management v0.4.0
+
+## Carrier Billing v0.5.0
+
+**Carrier Billing v0.5.0 is the first public release version for v0.5.0 of the Carrier Billing API.**
+- **This version contains significant changes compared to v0.4.0:**
+  - Removal of `401 - AUTHENTICATION_REQUIRED`
+  - New pattern for `x-correlator`
+  - Addition of a new section `# Additional CAMARA error responses` in `info.description` field
+  - Addition of `404 - INVALID_SINK` in `createPayment` and `preparePayment` endpoints
+  - Addition of `404 - IDENTIFIER_NOT_FOUND` in `createPayment`, `preparePayment`, `confirmPayment` and `cancelPayment` endpoints
+  - Addition of `404 - NOT_FOUND` in `validatePayment` endpoint
+  - Removal of `403 - CARRIER_BILLING.INVALID_PAYMENT_CONTEXT` in `retrievePayment` and `retrievePayments` endpoints 
+
+- API definition **with inline documentation**:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing.yaml&nocors)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r3.2/code/API_definitions/carrier-billing.yaml)
+
+### Added
+* New section `# Additional CAMARA error responses` in `info.description` field in https://github.com/camaraproject/CarrierBillingCheckOut/pull/229.
+* `404 - INVALID_SINK` error in `createPayment` and `preparePayment` endpoints in https://github.com/camaraproject/CarrierBillingCheckOut/pull/229.
+* `404 - IDENTIFIER_NOT_FOUND` error in `createPayment`, `preparePayment`, `confirmPayment` and `cancelPayment` endpoints in https://github.com/camaraproject/CarrierBillingCheckOut/pull/217.
+* `404 - NOT_FOUND` error in `validatePayment` endpoint in https://github.com/camaraproject/CarrierBillingCheckOut/pull/217.
+* New test for invalid `x-correlator` in Gherkin `.feature` files in https://github.com/camaraproject/CarrierBillingCheckOut/pull/230.
+* Error 404 testing scenarios in Gherkin `.feature` files for `createPayment`, `preparePayment`, `confirmPayment`, `cancelPayment` and `validatePayment` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/230.
+
+### Changed
+* New pattern for `x-correlator` and model aligment with Commonalities in https://github.com/camaraproject/CarrierBillingCheckOut/pull/229.
+* Update Gherkin `.feature` files with Commonalities testing guidelines in https://github.com/camaraproject/CarrierBillingCheckOut/pull/230 and https://github.com/camaraproject/CarrierBillingCheckOut/pull/236.
+* Update test for invalid sink in Gherkin `.feature` files for `createPayment` and `preparePayment` endpoints in https://github.com/camaraproject/CarrierBillingCheckOut/pull/230.
+* Error schema model alignment with Commonalities in https://github.com/camaraproject/CarrierBillingCheckOut/pull/236.
+
+### Fixed
+* N/A
+
+### Removed
+* `401 - AUTHENTICATION_REQUIRED` error in https://github.com/camaraproject/CarrierBillingCheckOut/pull/229.
+* `403 - CARRIER_BILLING.INVALID_PAYMENT_CONTEXT` error in `retrievePayment` and `retrievePayments` endpoints in https://github.com/camaraproject/CarrierBillingCheckOut/pull/226.
+* Test `@*_403.02_phoneNumber_token_mismatch` in Gherkin `.feature` files for `retrievePayment` and `retrievePayments` in https://github.com/camaraproject/CarrierBillingCheckOut/pull/230.
+
+## Carrier Billing Refund v0.3.0
+
+**Carrier Billing Refund v0.3.0 is the first public release version for v0.3.0 of the Carrier Billing Refund API.**
+- **This version contains significant changes compared to v0.2.0:**
+  - Removal of `401 - AUTHENTICATION_REQUIRED`
+  - New pattern for `x-correlator`
+  - Addition of a new section `# Additional CAMARA error responses` in `info.description` field
+  - Addition of `404 - INVALID_SINK` in `createRefund` endpoint
+  - Removal of `403 - CARRIER_BILLING.INVALID_REFUND_CONTEXT`
+
+- API definition **with inline documentation**:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing-refund.yaml&nocors)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing-refund.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r3.2/code/API_definitions/carrier-billing-refund.yaml)
+
+### Added
+* * New section `# Additional CAMARA error responses` in `info.description` field in https://github.com/camaraproject/CarrierBillingCheckOut/pull/229.
+* `404 - INVALID_SINK` error in `createRefund` endpoint in https://github.com/camaraproject/CarrierBillingCheckOut/pull/229.
+* New test for invalid `x-correlator` in Gherkin `.feature` files in https://github.com/camaraproject/CarrierBillingCheckOut/pull/230.
+
+### Changed
+* New pattern for `x-correlator` and model aligment with Commonalities in https://github.com/camaraproject/CarrierBillingCheckOut/pull/229.
+* Update Gherkin `.feature` files with Commonalities testing guidelines in https://github.com/camaraproject/CarrierBillingCheckOut/pull/230 and https://github.com/camaraproject/CarrierBillingCheckOut/pull/236.
+* Update test for invalid sink in Gherkin `.feature` file for `createRefund` endpoint in https://github.com/camaraproject/CarrierBillingCheckOut/pull/230.
+* Error schema model alignment with Commonalities in https://github.com/camaraproject/CarrierBillingCheckOut/pull/236.
+
+### Fixed
+* N/A
+
+### Removed
+* `401 - AUTHENTICATION_REQUIRED` error in https://github.com/camaraproject/CarrierBillingCheckOut/pull/229.
+* `403 - CARRIER_BILLING.INVALID_REFUND_CONTEXT` error in https://github.com/camaraproject/CarrierBillingCheckOut/pull/226.
+* Test `@*_403.02_phoneNumber_token_mismatch` in Gherkin `.feature` files in https://github.com/camaraproject/CarrierBillingCheckOut/pull/230.
+
+## New Contributors
+* N/A
+
+
+**Full Changelog**: https://github.com/camaraproject/CarrierBillingCheckOut/compare/r2.2...r3.2
 
 ## r3.1 - rc
 
