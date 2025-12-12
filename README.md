@@ -24,29 +24,29 @@ Sandbox API Repository to describe, develop, document, and test the CarrierBilli
 * Describe, develop, document and test the APIs (with 1-2 Telcos)  
 * Started: October 2022 
 
+<!-- CAMARA:RELEASE-INFO:START -->
+<!-- This section is automatically maintained by the CAMARA project-administration tooling: https://github.com/camaraproject/project-administration -->
+
 ## Release Information
-<!-- Use/uncomment one or multiple the following options -->
-<!-- Pre-releases of this sub project are available in https://github.com/camaraproject/§repo_name§/releases -->
-<!-- The latest public release is available here: https://github.com/camaraproject/§repo_name§/releases/latest -->
-<!-- For changes see [CHANGELOG.md](https://github.com/camaraproject/§repo_name§/blob/main/CHANGELOG.md) -->
-* Note: Please be aware that the project will have updates to the main branch. There are no compatibility guarantees associated with code in any branch, including main, until a new release is created. For example, changes may be reverted before a release is created. **For best results, use the latest available release**.
 
-* **The release [r3.2](https://github.com/camaraproject/CarrierBillingCheckout/releases/tag/r3.2) of the Carrier Billing APIs is available.**
-<br>This is a public release.
+> [!NOTE]
+> Please be aware that the project will have frequent updates to the main branch. There are no compatibility guarantees associated with code in any branch, including main, until a new release is created. For example, changes may be reverted before a release is created. **For best results, use the latest available release**.
 
-* The release **r3.2** is available in [r3.2](https://github.com/camaraproject/CarrierBillingCheckOut/tree/r3.2), and includes the following APIs:
-- API name: Carrier Billing - API Definition v0.5.0 with inline documentation:
-  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing.yaml&nocors)
-  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing.yaml)
-  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r3.2/code/API_definitions/carrier-billing.yaml)
+* **NEW**: The latest public release is [r3.2](https://github.com/camaraproject/CarrierBillingCheckOut/releases/tag/r3.2) (Fall25), with the following API versions:
+  * **carrier-billing-refund v0.3.0**
+  [[YAML]](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r3.2/code/API_definitions/carrier-billing-refund.yaml)
+  [[ReDoc]](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing-refund.yaml&nocors)
+  [[Swagger]](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing-refund.yaml)
+  * **carrier-billing v0.5.0**
+  [[YAML]](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r3.2/code/API_definitions/carrier-billing.yaml)
+  [[ReDoc]](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing.yaml&nocors)
+  [[Swagger]](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing.yaml)
+* The latest public release is always available here: https://github.com/camaraproject/CarrierBillingCheckOut/releases/latest
+* Other releases of this repository are available in https://github.com/camaraproject/CarrierBillingCheckOut/releases
+* For changes see [CHANGELOG.md](https://github.com/camaraproject/CarrierBillingCheckOut/blob/main/CHANGELOG.md)
 
-- API name: Carrier Billing Refund - API Definition v0.3.0 with inline documentation:
-  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing-refund.yaml&nocors)
-  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/CarrierBillingCheckOut/r3.2/code/API_definitions/carrier-billing-refund.yaml)
-  - OpenAPI [YAML spec file](https://github.com/camaraproject/CarrierBillingCheckOut/blob/r3.2/code/API_definitions/carrier-billing-refund.yaml)
-
-* Other releases of this sub project are available in [CarrierBillingCheckout Releases](https://github.com/camaraproject/CarrierBillingCheckout/releases)
-* For changes see [CHANGELOG.md](https://github.com/camaraproject/CarrierBillingCheckout/blob/main/CHANGELOG.md)
+_The above section is automatically synchronized by CAMARA project-administration._
+<!-- CAMARA:RELEASE-INFO:END -->
 
 ## Contributing
 * Meetings are held virtually 
